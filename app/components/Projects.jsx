@@ -3,33 +3,42 @@ import ProjectCard from './ProjectCard';
 
 const projectData = [
   {
-    id: 1, title: 'Avansert Oppgavebehandler API',
-    description: 'Et robust RESTful API bygget med ASP.NET Core for å håndtere oppgaver, brukere og prosjekter.',
-    imageUrl: '/prosjekt1_bilde.png', technologies: ['C#', 'ASP.NET Core', 'SQL Server'],
+    id: 1, 
+    title: 'Bomberman Spillmotor (Backend)',
+    description: 'Utviklet en solid backend-arkitektur for et Bomberman-spill, med fokus på robust spillogikk, kollisjonshåndtering, og flerspiller-støtte. Implementerte spillregler og gamestate management i C#.',
+    technologies: ['C#', '.NET', 'Spill-logikk', 'State Management'],
     sourceCodeUrl: '#',
   },
   {
-    id: 2, title: 'Personlig Bloggplattform',
-    description: 'En Next.js-applikasjon for min personlige blogg, med Markdown-støtte.',
-    imageUrl: '/prosjekt2_bilde.jpg', technologies: ['Next.js', 'React', 'Tailwind CSS'],
-    liveDemoUrl: '#', sourceCodeUrl: '#',
+    id: 2, 
+    title: 'Hangman Spill',
+    description: 'Et enkelt men funksjonelt Hangman-spill som demonstrerer grunnleggende programmeringskonsepter, inkludert streng-manipulasjon, tilfeldig ordvalg fra en database, og logikk for spilltilstand.',
+    technologies: ['C#', 'Console Application', 'Game Logic'],
+    sourceCodeUrl: '#',
+  },
+  {
+    id: 3, 
+    title: 'Discord Bot',
+    description: 'En modulær Discord-bot som kan utvides med nye kommandoer og funksjonalitet. Bygget med fokus på fleksibilitet og konfigurerbarhet, slik at boten enkelt kan få nye oppgaver.',
+    technologies: ['JavaScript', 'Node.js', 'Discord API'],
+    sourceCodeUrl: '#',
   },
 ];
 
 export default function Projects() {
   return (
-    <section id="prosjekter" className="py-16 md:py-24"> {/* Kun vertikal padding */}
-      {/* Innholdet kan enten ha sin egen bakgrunnsboks som About, eller være direkte på section-bakgrunnen (som er body-bakgrunnen) */}
-      {/* For variasjon, la oss la prosjektkortene ligge direkte på section-bakgrunnen (som er body-bakgrunnen, bg-slate-100) */}
-      <div className="container mx-auto px-6 md:px-10">
-        <h2 className="section-title-custom">Mine Prosjekter</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-          {projectData.length > 0 ? (
-            projectData.map((project) => <ProjectCard key={project.id} {...project} />)
-          ) : (
-            <p className="text-center text-slate-500 col-span-full">Ingen prosjekter lagt til enda.</p>
-          )}
-        </div>
+    <section id="prosjekter" className="py-16 md:py-24 bg-blue-50 container mx-auto px-6 md:px-10 rounded-lg shadow-md my-10">
+      <h2 className="section-title-custom">Mine Prosjekter</h2>
+      <p className="text-center text-blue-700 mb-8 max-w-2xl mx-auto">
+        Dette er noen av prosjektene jeg har jobbet med for å utvikle mine ferdigheter. 
+        Jeg fokuserer på å bygge et solid fundament i backend-utvikling med C# og .NET.
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+        {projectData.length > 0 ? (
+          projectData.map((project) => <ProjectCard key={project.id} {...project} />)
+        ) : (
+          <p className="text-center text-blue-500 col-span-full">Ingen prosjekter lagt til enda.</p>
+        )}
       </div>
     </section>
   );
