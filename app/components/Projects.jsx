@@ -27,9 +27,9 @@ const projectData = [
 
 export default function Projects() {
   return (
-    <section id="prosjekter" className="py-16 md:py-24 bg-blue-50 container mx-auto px-6 md:px-10 rounded-lg shadow-md my-10">
+    <section id="prosjekter" className="section-container">
       <h2 className="section-title-custom">Mine Prosjekter</h2>
-      <p className="text-center text-blue-700 mb-8 max-w-2xl mx-auto">
+      <p className="text-center text-white mb-8 max-w-2xl mx-auto">
         Dette er noen av prosjektene jeg har jobbet med for å utvikle mine ferdigheter. 
         Jeg fokuserer på å bygge et solid fundament i backend-utvikling med C# og .NET.
       </p>

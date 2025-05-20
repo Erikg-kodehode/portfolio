@@ -9,39 +9,104 @@
   }
   
   body {
-    @apply bg-gradient-to-br from-blue-100 via-blue-50 to-white text-blue-900 antialiased min-h-screen;
+    @apply bg-gradient-to-br from-blue-100 via-blue-50 to-white text-blue-800 antialiased min-h-screen;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply text-blue-800 font-semibold;
+    @apply text-blue-700 font-semibold;
   }
 }
 
 @layer components {
   .section-title-custom {
-    @apply text-3xl font-bold text-center mb-10 pb-2 border-b-2 border-blue-500 inline-block relative left-1/2 -translate-x-1/2 text-blue-800;
+    @apply text-3xl font-bold text-center mb-8 pb-2 border-b-2 border-blue-300 inline-block relative left-1/2 -translate-x-1/2 text-white !important;
   }
   
   .blue-card {
-    @apply bg-gradient-to-br from-blue-100 to-white p-6 rounded-lg shadow-sm border border-blue-200 transition-all duration-300 hover:shadow-md hover:-translate-y-1;
+    @apply bg-gradient-to-br from-blue-100 to-white p-4 rounded-lg shadow-sm border border-blue-200 transition-all duration-300 hover:shadow-md hover:-translate-y-1;
   }
   
   .blue-button {
-    @apply px-4 py-2 bg-blue-600 text-white rounded-md transition-colors duration-200 hover:bg-blue-700;
+    @apply px-3 py-1.5 bg-blue-600 text-white rounded-md transition-colors duration-200 hover:bg-blue-700;
   }
   
   .section-container {
-    @apply py-16 md:py-24 bg-blue-50 container mx-auto px-6 md:px-10 rounded-lg shadow-md my-10;
+    @apply py-8 md:py-12 bg-gradient-to-br from-blue-600 to-blue-800 text-white container mx-auto px-6 md:px-10 rounded-lg shadow-md my-10;
+  }
+  
+  .section-container-light {
+    @apply py-8 md:py-12 bg-blue-50 container mx-auto px-6 md:px-10 rounded-lg shadow-md my-10;
   }
   
   .highlight-text {
-    @apply text-blue-600 font-medium;
+    @apply text-blue-200 font-semibold;
+  }
+
+  .section-container h1,
+  .section-container h2,
+  .section-container h3,
+  .section-container h4,
+  .section-container h5,
+  .section-container h6 {
+    @apply text-white !important;
+  }
+  
+  .section-container-light h1,
+  .section-container-light h2 {
+    @apply text-blue-800 !important;
+  }
+  
+  .section-container-light h3,
+  .section-container-light h4,
+  .section-container-light h5,
+  .section-container-light h6 {
+    @apply text-blue-700 !important;
+  }
+  
+  .section-text {
+    @apply text-blue-100 leading-relaxed;
+  }
+  
+  .section-light-text {
+    @apply text-blue-700;
+  }
+  
+  .card-container {
+    @apply bg-gradient-to-br from-blue-500 to-blue-700 text-white p-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col items-center;
+  }
+  
+  .primary-button {
+    @apply py-3 px-6 bg-blue-900 text-white rounded-md transition-colors hover:bg-blue-950 shadow-md;
+  }
+  
+  .secondary-button {
+    @apply py-3 px-6 bg-white text-blue-700 rounded-md border border-blue-200 transition-colors hover:bg-blue-50;
+  }
+  
+  .action-button {
+    @apply py-3 px-8 bg-blue-700 text-white rounded-md shadow-md hover:bg-blue-800 transition-colors;
+  }
+  
+  .profile-picture-container {
+    @apply md:w-2/5 p-8 flex justify-center items-center bg-blue-700 bg-opacity-50 h-full;
+  }
+  
+  .profile-picture-placeholder {
+    @apply relative h-64 w-64 rounded-full bg-blue-500 flex items-center justify-center;
+  }
+  
+  .placeholder-text {
+    @apply absolute inset-0 flex items-center justify-center text-white text-lg font-medium;
+  }
+  
+  .heading-white {
+    @apply text-white !important;
   }
 }
 
 /* Gradients */
 .hero-gradient {
-  @apply bg-gradient-to-br from-blue-200 via-blue-100 to-white;
+  @apply bg-gradient-to-br from-blue-400 via-blue-200 to-blue-100;
 }
 
 .blue-gradient-light {
@@ -62,5 +127,5 @@
 }
 
 .blue-list-item {
-  @apply px-3 py-2 bg-white bg-opacity-70 text-blue-800 rounded-md text-sm border-l-2 border-blue-400;
+  @apply px-2.5 py-1.5 bg-white bg-opacity-70 text-blue-700 rounded-md text-sm border-l-2 border-blue-400;
 }

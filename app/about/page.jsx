@@ -52,8 +52,8 @@ export default function AboutPage() {
         
         <div className="space-y-8">
           <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl p-8 text-white shadow-lg">
-            <h3 className="text-2xl font-semibold mb-4">Oppdagelsen av programmering</h3>
-            <p className="text-blue-100 mb-4 leading-relaxed">
+            <h3 className="text-2xl font-semibold mb-4 text-hvite-100">Oppdagelsen av programmering</h3>
+            <p className="text-hvite-100 mb-4 leading-relaxed">
               Min første opplevelse med koding vekket umiddelbart en fascinasjon. Å kunne skape noe 
               fra ingenting, bare med logisk tenkning og et tastatur, føltes magisk. Denne 
               tidlige fascinasjonen for problemløsning har formet min tilnærming til utvikling.

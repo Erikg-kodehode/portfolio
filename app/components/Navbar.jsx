@@ -25,7 +25,7 @@ export default function Navbar() {
             <a
               href={`#${item.id}`}
               onClick={(e) => handleScroll(e, item.id)}
-              className="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-100 transition-colors duration-150"
+              className="px-3 py-2 rounded-md text-sm font-medium text-slate-100 hover:text-white hover:bg-blue-500 transition-colors duration-150"
             >
               {item.label}
             </a>

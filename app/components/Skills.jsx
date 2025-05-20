@@ -23,9 +23,9 @@ export default function Skills() {
   };
 
   return (
-    <section id="ferdigheter" className="py-16 md:py-24 bg-blue-50 container mx-auto px-6 md:px-10 rounded-lg shadow-md my-10">
+    <section id="ferdigheter" className="section-container">
       <h2 className="section-title-custom">Ferdigheter under utvikling</h2>
-      <p className="text-center text-blue-700 mb-8 max-w-2xl mx-auto">
+      <p className="text-center text-white mb-8 max-w-2xl mx-auto">
         Som en utvikler tidlig i karrieren, fortsetter jeg å bygge på mitt fundament av ferdigheter. 
         Her er områdene jeg fokuserer på for øyeblikket:
       </p>
@@ -46,14 +46,14 @@ export default function Skills() {
           }
 
           return (
-            <article key={categoryKey} className="bg-gradient-to-br from-blue-100 to-white p-6 rounded-lg shadow-sm border border-blue-200">
-              <h3 className="text-xl font-semibold text-blue-700 mb-2">{categoryTitle}</h3>
-              <p className="text-blue-600 text-sm mb-4">{categoryDescription}</p>
+            <article key={categoryKey} className="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-lg shadow-md border border-blue-500">
+              <h3 className="text-xl font-semibold text-white mb-2">{categoryTitle}</h3>
+              <p className="text-white text-sm mb-4">{categoryDescription}</p>
               <ul className="space-y-2">
                 {skillsList.map((skill) => (
-                  <li key={skill.name} className="px-3 py-2 bg-white bg-opacity-70 text-blue-800 rounded-md text-sm border-l-2 border-blue-400 flex justify-between items-center">
+                  <li key={skill.name} className="px-3 py-2 bg-blue-800 bg-opacity-30 text-white rounded-md text-sm border-l-2 border-blue-300 flex justify-between items-center">
                     <span>{skill.name}</span>
-                    <span className="text-xs text-blue-500 font-light">{skill.level}</span>
+                    <span className="text-xs text-blue-200 font-light">{skill.level}</span>
                   </li>
                 ))}
               </ul>
