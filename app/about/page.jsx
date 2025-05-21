@@ -25,7 +25,7 @@ export default function AboutPage() {
           <div className="p-6 md:w-1/3 flex justify-center">
             <div className="relative w-56 h-56 overflow-hidden rounded-full border-4 border-blue-100 dark:border-blue-300 shadow-md bg-slate-200 dark:bg-slate-700 transition-colors duration-200">
               <Image
-                src="/assets/Erik-BNW.jpg"
+                src="/assets/Erik-bnw.jpg"
                 alt="Erik Gulliksen"
                 fill={true}
                 sizes="(max-width: 768px) 100vw, 224px"

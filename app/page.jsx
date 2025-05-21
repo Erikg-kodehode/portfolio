@@ -36,7 +36,7 @@ export default function HomePage() {
           <div className="p-6 md:w-2/5 flex justify-center">
             <div className="relative w-64 h-64 overflow-hidden rounded-full border-4 border-blue-100 dark:border-blue-300 shadow-md bg-slate-200 dark:bg-slate-700 transition-colors duration-200">
               <Image
-                src="/assets/Erik-BNW.jpg"
+                src="/assets/Erik-bnw.jpg"
                 alt="Erik Gulliksen"
                 fill={true}
                 sizes="(max-width: 768px) 100vw, 256px"
