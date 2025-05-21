@@ -1,31 +1,10 @@
 // app/skills/page.jsx
 import Link from 'next/link';
+import SkillLevelIndicator from '../components/SkillLevelIndicator';
 
 export const metadata = {
   title: 'Ferdigheter - Erik Gulliksen',
   description: 'Mine tekniske ferdigheter innen backend-utvikling med C# og .NET, samt frontend-teknologier og utviklingsverktøy.',
-};
-
-// SkillLevelIndicator component to display skill level as dots
-const SkillLevelIndicator = ({ level }) => {
-  const totalDots = 5;
-  const filledDots = level;
-  
-  return (
-    <div className="flex space-x-0.5">
-      {[...Array(totalDots)].map((_, i) => (
-        <span 
-          key={i} 
-          className={`inline-block w-1 h-1 rounded-full ${
-            i < filledDots 
-              ? 'bg-blue-500 dark:bg-blue-400' 
-              : 'bg-slate-200 dark:bg-slate-600'
-          }`}
-          aria-hidden="true"
-        />
-      ))}
-    </div>
-  );
 };
 
 export default function SkillsPage() {
@@ -113,7 +92,7 @@ export default function SkillsPage() {
       <div className="mt-6 text-center">
         <Link
           href="/contact" 
-          className="inline-block px-4 py-1.5 bg-blue-600 dark:bg-blue-700 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200 text-sm font-medium"
+          className="inline-block px-4 py-1.5 bg-blue-600 dark:bg-blue-700 text-white dark:text-green-white rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200 text-sm font-medium"
         >
           Ta kontakt for samarbeid
         </Link>

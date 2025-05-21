@@ -39,8 +39,8 @@ export default function AboutPage() {
           </div>
           
           <div className="p-6 md:p-8 md:w-2/3">
-            <h2 className="text-2xl font-bold text-white mb-4">Hvem er jeg?</h2>
-            <div className="space-y-3 text-blue-100 text-base">
+            <h2 className="text-2xl font-bold text-white dark:text-green-white mb-4">Hvem er jeg?</h2>
+            <div className="space-y-3 text-blue-100 dark:text-green-white text-base">
               <p>
                 Jeg er en utvikler med en brennende lidenskap for faget, formet av en unik bakgrunn som verdensmester innen robotprogrammering. 
                 Min fascinasjon for teknologi ble vekket tidlig, og denne erfaringen har dypt preget min tilnærming til programmering og kompleks problemløsning.
@@ -131,15 +131,15 @@ export default function AboutPage() {
               <ul className="space-y-1.5 text-slate-600 dark:text-slate-400 text-sm transition-colors duration-200">
                 <li className="flex items-start">
                   <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">•</span>
-                  <span>Mestre grunnleggende ASP.NET Core konsepter</span>
+                  <span className="dark:text-green-white">Mestre grunnleggende ASP.NET Core konsepter</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">•</span>
-                  <span>Bygge flere fullstendige backend-applikasjoner</span>
+                  <span className="dark:text-green-white">Bygge flere fullstendige backend-applikasjoner</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">•</span>
-                  <span>Utvide forståelsen av database-design og -optimalisering</span>
+                  <span className="dark:text-green-white">Utvide forståelsen av database-design og -optimalisering</span>
                 </li>
               </ul>
             </div>
@@ -151,15 +151,15 @@ export default function AboutPage() {
               <ul className="space-y-1.5 text-slate-600 dark:text-slate-400 text-sm transition-colors duration-200">
                 <li className="flex items-start">
                   <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">•</span>
-                  <span>Utforske avanserte C# og .NET-konsepter</span>
+                  <span className="dark:text-green-white">Utforske avanserte C# og .NET-konsepter</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">•</span>
-                  <span>Lære mer om mikrotjeneste-arkitektur</span>
+                  <span className="dark:text-green-white">Lære mer om mikrotjeneste-arkitektur</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">•</span>
-                  <span>Bidra til open-source prosjekter innen .NET økosystemet</span>
+                  <span className="dark:text-green-white">Bidra til open-source prosjekter innen .NET økosystemet</span>
                 </li>
               </ul>
             </div>
@@ -171,15 +171,15 @@ export default function AboutPage() {
               <ul className="space-y-1.5 text-slate-600 dark:text-slate-400 text-sm transition-colors duration-200">
                 <li className="flex items-start">
                   <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">•</span>
-                  <span>Spesialisere meg innen backend-arkitektur og systemdesign</span>
+                  <span className="dark:text-green-white">Spesialisere meg innen backend-arkitektur og systemdesign</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">•</span>
-                  <span>Utforske AI og maskinlæring med .NET</span>
+                  <span className="dark:text-green-white">Utforske AI og maskinlæring med .NET</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">•</span>
-                  <span>Bygge mer komplekse, distribuerte systemer</span>
+                  <span className="dark:text-green-white">Bygge mer komplekse, distribuerte systemer</span>
                 </li>
               </ul>
             </div>
@@ -198,13 +198,13 @@ export default function AboutPage() {
         <div className="flex flex-col md:flex-row justify-center space-y-3 md:space-y-0 md:space-x-3">
           <Link 
             href="/projects" 
-            className="block md:inline-block text-center px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200 text-sm font-medium"
+            className="block md:inline-block text-center px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white dark:text-green-white rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200 text-sm font-medium"
           >
             Se mine prosjekter
           </Link>
           <Link 
             href="/contact" 
-            className="block md:inline-block text-center px-4 py-2 bg-slate-600 dark:bg-slate-700 text-white rounded hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors duration-200 text-sm font-medium"
+            className="block md:inline-block text-center px-4 py-2 bg-slate-600 dark:bg-slate-700 text-white dark:text-green-white rounded hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors duration-200 text-sm font-medium"
           >
             Ta kontakt
           </Link>

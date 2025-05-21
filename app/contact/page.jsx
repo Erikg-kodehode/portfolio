@@ -18,23 +18,23 @@ export default function ContactPage() {
       </header>
       
       <div className="max-w-4xl mx-auto">
-        <section className="bg-gradient-to-br from-blue-400 to-blue-600 dark:from-blue-600 dark:to-blue-900 rounded-lg shadow-md mb-6 overflow-hidden transition-colors duration-200">
+        <section className="bg-gradient-to-br from-blue-400 to-blue-600 dark:from-blue-700 dark:to-blue-950 rounded-lg shadow-md mb-6 overflow-hidden transition-colors duration-200">
           <div className="p-5 md:p-6">
-            <h2 className="text-xl font-bold mb-3 text-center text-white">La oss snakke sammen</h2>
+            <h2 className="text-xl font-bold mb-3 text-center text-white dark:text-green-white">La oss snakke sammen</h2>
             
-            <p className="text-blue-100 mb-5 leading-relaxed text-center text-sm">
+            <p className="text-blue-100 dark:text-green-white mb-5 leading-relaxed text-center text-sm">
               Jeg er interessert i prosjektsamarbeid, læringsmuligheter eller 
               jobbmuligheter relatert til backend-utvikling med C# og .NET. 
               Har du en idé eller et prosjekt du vil diskutere? Jeg ser frem til å høre fra deg!
             </p>
             
             <div className="flex flex-col items-center mb-5">
-              <h3 className="text-lg font-semibold mb-3 text-white">Finn meg på GitHub</h3>
+              <h3 className="text-lg font-semibold mb-3 text-white dark:text-green-white">Finn meg på GitHub</h3>
               <a 
                 href="https://github.com/Erikg-kodehode"
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center text-blue-100 hover:text-white transition-all duration-300 bg-blue-500 bg-opacity-40 p-4 rounded-lg hover:bg-opacity-50 hover:shadow-md hover:-translate-y-0.5 transform"
+                className="flex items-center text-blue-100 hover:text-white dark:hover:text-green-white transition-all duration-300 bg-blue-500 bg-opacity-40 p-4 rounded-lg hover:bg-opacity-50 hover:shadow-md hover:-translate-y-0.5 transform"
               >
                 <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center mr-3 shadow-sm">
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -43,22 +43,22 @@ export default function ContactPage() {
                 </div>
                 <span className="text-base font-medium">GitHub Profil</span>
               </a>
-              <p className="mt-3 text-blue-100 text-center text-xs max-w-lg">
+              <p className="mt-3 text-blue-100 dark:text-green-white text-center text-xs max-w-lg">
                 Sjekk ut min GitHub-profil for å se kildekoden til prosjektene mine og følge min utvikling som programmerer.
               </p>
             </div>
             
-            <div className="bg-blue-500 bg-opacity-40 p-4 rounded-lg shadow-sm hover:shadow transition-shadow text-center">
+            <div className="bg-blue-500 dark:bg-blue-800 bg-opacity-40 dark:bg-opacity-30 p-4 rounded-lg shadow-sm hover:shadow transition-shadow text-center">
               <div className="flex justify-center mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
-              <p className="text-blue-100 text-sm mb-2">
+              <p className="text-blue-100 dark:text-green-white text-sm mb-2">
                 Star og/eller følg mine prosjekter på GitHub for å ta kontakt med meg direkte, 
                 eller for å se mer av det jeg jobber med.
               </p>
-              <p className="text-blue-100 text-xs">
+              <p className="text-blue-100 dark:text-green-white text-xs">
                 Du kan også bruke "Issues" på GitHub-prosjektene mine for å kommentere, 
                 foreslå forbedringer, eller rapportere feil.
               </p>
@@ -70,6 +70,21 @@ export default function ContactPage() {
           <div className="p-5">
             <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-3 transition-colors duration-200">Direkte Kontakt</h2>
             <div className="space-y-3">
+              {/* Contact Form Link */}
+              <div className="flex items-center mb-4 pb-4 border-b border-slate-200 dark:border-slate-700">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span className="text-sm text-slate-600 dark:text-slate-400 transition-colors duration-200">
+                  <Link 
+                    href="/contact/form"
+                    className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors duration-200"
+                  >
+                    Send melding via kontaktskjema →
+                  </Link>
+                </span>
+              </div>
+              
               {/* Email */}
               <div className="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -86,7 +101,7 @@ export default function ContactPage() {
                   <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
                 </svg>
                 <span className="text-sm text-slate-600 dark:text-slate-400 transition-colors duration-200">
-                  Discord: <span className="text-blue-600 dark:text-blue-400">Fjorfott</span>
+                  Discord: <a href="discord://users/Fjorfott" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors duration-200">Fjorfott</a>
                 </span>
               </div>
 
@@ -122,15 +137,13 @@ export default function ContactPage() {
           <div className="space-y-2 md:space-y-0 md:space-x-3 md:flex justify-center mb-4">
             <Link 
               href="/projects" 
-              className="block md:inline-block text-center px-4 py-1.5 bg-blue-600 dark:bg-blue-700 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200 text-sm font-medium"
-            >
+              className="block md:inline-block text-center px-4 py-1.5 bg-blue-600 dark:bg-blue-800 text-white dark:text-green-white rounded hover:bg-blue-700 dark:hover:bg-blue-700 transition-colors duration-200 text-sm font-medium">
               Se mine prosjekter
             </Link>
             
             <Link 
               href="/about" 
-              className="block md:inline-block text-center px-4 py-1.5 bg-blue-100 dark:bg-slate-700 text-blue-800 dark:text-blue-100 rounded hover:bg-blue-200 dark:hover:bg-slate-600 transition-colors duration-200 text-sm font-medium"
-            >
+              className="block md:inline-block text-center px-4 py-1.5 bg-blue-100 dark:bg-slate-800 text-blue-800 dark:text-green-white rounded hover:bg-blue-200 dark:hover:bg-slate-700 transition-colors duration-200 text-sm font-medium">
               Om meg
             </Link>
           </div>

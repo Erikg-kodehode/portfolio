@@ -36,7 +36,7 @@ export default function ProjectCard({ title, description, imageUrl, technologies
               href={liveDemoUrl} 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-150 font-medium"
+              className="px-3 py-1.5 text-xs bg-blue-600 text-white dark:text-green-white rounded hover:bg-blue-700 transition-colors duration-150 font-medium"
             >
               Live Demo
             </a>
@@ -46,7 +46,7 @@ export default function ProjectCard({ title, description, imageUrl, technologies
               href={sourceCodeUrl} 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="px-3 py-1.5 text-xs bg-slate-600 text-white rounded hover:bg-slate-700 transition-colors duration-150 font-medium"
+              className="px-3 py-1.5 text-xs bg-slate-600 text-white dark:text-green-white rounded hover:bg-slate-700 transition-colors duration-150 font-medium"
             >
               Kildekode
             </a>

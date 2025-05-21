@@ -10,6 +10,7 @@ module.exports = {
     extend: {
       colors: {
         'blue-25': '#f5f8ff',
+        'green-white': '#e6ffe6', // Subtle green-tinted white for dark mode
         'slate': {
           50: '#f8f9fb', // Softer white for light mode
           100: '#f1f3f8', // Less bright background

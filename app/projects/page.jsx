@@ -108,7 +108,7 @@ export default function ProjectsPage() {
                       href={project.sourceCodeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-3 py-1.5 text-xs bg-blue-600 dark:bg-blue-700 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200 font-medium"
+                      className="px-3 py-1.5 text-xs bg-blue-600 dark:bg-blue-700 text-white dark:text-green-white rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200 font-medium"
                     >
                       GitHub
                     </a>
@@ -118,7 +118,7 @@ export default function ProjectsPage() {
                       href={project.liveDemoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-3 py-1.5 text-xs bg-slate-600 dark:bg-slate-700 text-white rounded hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors duration-200 font-medium"
+                      className="px-3 py-1.5 text-xs bg-slate-600 dark:bg-slate-700 text-white dark:text-green-white rounded hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors duration-200 font-medium"
                     >
                       Live Demo
                     </a>

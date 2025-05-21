@@ -33,7 +33,7 @@ export default function Projects() {
     <section id="prosjekter" className="section-container">
       <header className="text-center mb-8">
         <h2 className="section-title-custom">Mine Prosjekter</h2>
-        <p className="text-white max-w-2xl mx-auto">
+        <p className="text-white dark:text-green-white max-w-2xl mx-auto"
           Dette er noen av prosjektene jeg har jobbet med for å utvikle mine ferdigheter. 
           Jeg fokuserer på å bygge et solid fundament i backend-utvikling med C# og .NET.
         </p>
