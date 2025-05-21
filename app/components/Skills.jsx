@@ -23,44 +23,55 @@ export default function Skills() {
   };
 
   return (
-    <section id="ferdigheter" className="section-container">
-      <h2 className="section-title-custom">Ferdigheter under utvikling</h2>
-      <p className="text-center text-white mb-8 max-w-2xl mx-auto">
-        Som en utvikler tidlig i karrieren, fortsetter jeg å bygge på mitt fundament av ferdigheter. 
-        Her er områdene jeg fokuserer på for øyeblikket:
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-        {Object.entries(skillsData).map(([categoryKey, skillsList]) => {
-          let categoryTitle;
-          let categoryDescription = "";
+    <section id="ferdigheter" className="max-w-5xl mx-auto px-4 py-2">
+      <h2 className="text-2xl font-bold text-blue-800 mb-3 text-center">Ferdigheter</h2>
+      
+      <article className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 max-w-3xl mx-auto">
+        <div className="p-5">
+          <h3 className="text-xl font-semibold text-slate-800 mb-2">Tekniske Kompetanser</h3>
+          <p className="text-slate-600 text-sm leading-relaxed mb-4">
+            Som en utvikler i startfasen av min karriere, fokuserer jeg på å bygge et solid fundament med følgende teknologier:
+          </p>
           
-          if (categoryKey === "backendDevelopment") {
-            categoryTitle = "Backend Utvikling";
-            categoryDescription = "Mitt hovedfokusområde med C# og .NET";
-          } else if (categoryKey === "frontendDevelopment") {
-            categoryTitle = "Frontend Utvikling";
-            categoryDescription = "Grunnleggende ferdigheter jeg fortsetter å utvikle";
-          } else if (categoryKey === "utviklingsverktoy") {
-            categoryTitle = "Utviklingsverktøy";
-            categoryDescription = "Verktøy jeg bruker i arbeidsflyten min";
-          }
-
-          return (
-            <article key={categoryKey} className="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-lg shadow-md border border-blue-500">
-              <h3 className="text-xl font-semibold text-white mb-2">{categoryTitle}</h3>
-              <p className="text-white text-sm mb-4">{categoryDescription}</p>
-              <ul className="space-y-2">
-                {skillsList.map((skill) => (
-                  <li key={skill.name} className="px-3 py-2 bg-blue-800 bg-opacity-30 text-white rounded-md text-sm border-l-2 border-blue-300 flex justify-between items-center">
-                    <span>{skill.name}</span>
-                    <span className="text-xs text-blue-200 font-light">{skill.level}</span>
-                  </li>
+          <div className="space-y-4">
+            <div>
+              <h4 className="text-sm font-semibold text-slate-800 mb-2">Backend Utvikling</h4>
+              <p className="text-slate-600 text-xs mb-2">Mitt hovedfokusområde med C# og .NET</p>
+              <div className="flex flex-wrap gap-1.5">
+                {skillsData.backendDevelopment.map((skill) => (
+                  <span key={skill.name} className="px-2 py-0.5 bg-slate-100 text-slate-700 text-xs rounded-full">
+                    {skill.name}
+                  </span>
                 ))}
-              </ul>
-            </article>
-          );
-        })}
-      </div>
+              </div>
+            </div>
+            
+            <div className="pt-3 border-t border-slate-200">
+              <h4 className="text-sm font-semibold text-slate-800 mb-2">Frontend Utvikling</h4>
+              <p className="text-slate-600 text-xs mb-2">Grunnleggende ferdigheter jeg fortsetter å utvikle</p>
+              <div className="flex flex-wrap gap-1.5">
+                {skillsData.frontendDevelopment.map((skill) => (
+                  <span key={skill.name} className="px-2 py-0.5 bg-slate-100 text-slate-700 text-xs rounded-full">
+                    {skill.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+            
+            <div className="pt-3 border-t border-slate-200">
+              <h4 className="text-sm font-semibold text-slate-800 mb-2">Utviklingsverktøy</h4>
+              <p className="text-slate-600 text-xs mb-2">Verktøy jeg bruker i arbeidsflyten min</p>
+              <div className="flex flex-wrap gap-1.5">
+                {skillsData.utviklingsverktoy.map((skill) => (
+                  <span key={skill.name} className="px-2 py-0.5 bg-slate-100 text-slate-700 text-xs rounded-full">
+                    {skill.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
     </section>
   );
 }

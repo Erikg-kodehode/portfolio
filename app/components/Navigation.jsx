@@ -1,4 +1,3 @@
-// app/components/Navigation.jsx
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -23,26 +22,26 @@ export default function Navigation() {
           Erik Gulliksen
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex space-x-6">
+        <ul className="hidden md:flex gap-6">
           {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              href={link.path}
-              className={`transition-colors duration-200 hover:text-blue-600 ${
-                pathname === link.path ? 'text-blue-600 font-medium' : 'text-blue-800'
-              }`}
-            >
-              {link.name}
-            </Link>
+            <li key={link.path}>
+              <Link
+                href={link.path}
+                className={`transition-colors duration-200 hover:text-blue-600 ${
+                  pathname === link.path ? 'text-blue-600 font-medium' : 'text-blue-800'
+                }`}
+              >
+                {link.name}
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
 
-        {/* Mobile Menu Button */}
         <button
           className="md:hidden text-blue-800 focus:outline-none"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-label={isMenuOpen ? 'Lukk meny' : 'Åpne meny'}
+          aria-expanded={isMenuOpen}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {isMenuOpen ? (
@@ -54,24 +53,24 @@ export default function Navigation() {
         </button>
       </nav>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white px-6 py-4 shadow-md">
-          <div className="flex flex-col space-y-4">
+        <nav className="md:hidden bg-white px-6 py-4 shadow-md" aria-label="Mobil meny">
+          <ul className="flex flex-col gap-4">
             {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                href={link.path}
-                className={`transition-colors duration-200 hover:text-blue-600 ${
-                  pathname === link.path ? 'text-blue-600 font-medium' : 'text-blue-800'
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {link.name}
-              </Link>
+              <li key={link.path}>
+                <Link
+                  href={link.path}
+                  className={`transition-colors duration-200 hover:text-blue-600 ${
+                    pathname === link.path ? 'text-blue-600 font-medium' : 'text-blue-800'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+        </nav>
       )}
     </header>
   );
