@@ -18,8 +18,8 @@ const SkillLevelIndicator = ({ level }) => {
           key={i} 
           className={`inline-block w-1 h-1 rounded-full ${
             i < filledDots 
-              ? 'bg-blue-500' 
-              : 'bg-slate-200'
+              ? 'bg-blue-500 dark:bg-blue-400' 
+              : 'bg-slate-200 dark:bg-slate-600'
           }`}
           aria-hidden="true"
         />
@@ -70,8 +70,8 @@ export default function SkillsPage() {
   return (
     <div className="container mx-auto px-4 py-6 max-w-5xl">
       <header className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-blue-800 mb-2">Mine Ferdigheter</h1>
-        <p className="text-base text-blue-700 max-w-2xl mx-auto leading-snug">
+        <h1 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-2 transition-colors duration-200">Mine Ferdigheter</h1>
+        <p className="text-base text-blue-700 dark:text-blue-400 max-w-2xl mx-auto leading-snug transition-colors duration-200">
           Som utvikler tidlig i karrieren fokuserer jeg på å bygge et solid fundament av 
           ferdigheter, med spesiell vekt på backend-utvikling med C# og .NET.
         </p>
@@ -79,28 +79,28 @@ export default function SkillsPage() {
 
       <div className="space-y-4">
         {skillCategories.map((category) => (
-          <article key={category.id} className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <article key={category.id} className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div className="p-4">
-              <h2 className="text-lg font-semibold text-slate-800 mb-1.5">{category.title}</h2>
-              <p className="text-slate-600 text-xs leading-relaxed mb-3">{category.description}</p>
+              <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-1.5 transition-colors duration-200">{category.title}</h2>
+              <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed mb-3 transition-colors duration-200">{category.description}</p>
               
               <div>
                 <div className="flex flex-wrap gap-1 mb-2">
                   {category.skills.map((skill) => (
-                    <span key={skill.name} className="px-2 py-0.5 bg-slate-50 text-slate-700 text-xs rounded-full">
+                    <span key={skill.name} className="px-2 py-0.5 bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded-full transition-colors duration-200">
                       {skill.name}
                     </span>
                   ))}
                 </div>
                 
-                <div className="space-y-1.5 pt-2 border-t border-slate-50">
+                <div className="space-y-1.5 pt-2 border-t border-slate-50 dark:border-slate-700 transition-colors duration-200">
                   {category.skills.map((skill) => (
                     <div key={skill.name} className="flex flex-wrap items-center text-xs">
                       <div className="flex items-center space-x-1.5 min-w-[110px]">
-                        <span className="font-medium text-slate-700">{skill.name}</span>
+                        <span className="font-medium text-slate-700 dark:text-slate-300 transition-colors duration-200">{skill.name}</span>
                         <SkillLevelIndicator level={skill.level} />
                       </div>
-                      <span className="text-slate-500 ml-auto text-[10px]">{skill.description}</span>
+                      <span className="text-slate-500 dark:text-slate-400 ml-auto text-[10px] transition-colors duration-200">{skill.description}</span>
                     </div>
                   ))}
                 </div>
@@ -113,7 +113,7 @@ export default function SkillsPage() {
       <div className="mt-6 text-center">
         <Link
           href="/contact" 
-          className="inline-block px-4 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium"
+          className="inline-block px-4 py-1.5 bg-blue-600 dark:bg-blue-700 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200 text-sm font-medium"
         >
           Ta kontakt for samarbeid
         </Link>

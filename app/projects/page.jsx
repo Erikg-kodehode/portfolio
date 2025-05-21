@@ -57,8 +57,8 @@ export default function ProjectsPage() {
   return (
     <div className="container mx-auto px-4 py-6 max-w-5xl">
       <header className="mb-8 text-center">
-        <h1 className="text-2xl font-bold text-blue-800 mb-3">Mine Prosjekter</h1>
-        <p className="text-base text-blue-700 max-w-2xl mx-auto">
+        <h1 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-3 transition-colors duration-200">Mine Prosjekter</h1>
+        <p className="text-base text-blue-700 dark:text-blue-400 max-w-2xl mx-auto transition-colors duration-200">
           Her er en samling av prosjekter jeg har jobbet med. Hvert prosjekt representerer 
           ulike aspekter av min reise som utvikler.
         </p>
@@ -66,7 +66,7 @@ export default function ProjectsPage() {
 
       <div className="space-y-8">
         {projects.map((project, index) => (
-          <article key={index} className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+          <article key={index} className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
             <div className="grid md:grid-cols-3 gap-0">
               <div className="md:col-span-1 relative aspect-[4/3] md:aspect-auto w-full h-full">
                 <ProjectImage
@@ -75,15 +75,15 @@ export default function ProjectsPage() {
                 />
               </div>
               <div className="md:col-span-2 p-5 flex flex-col">
-                <h2 className="text-xl font-semibold text-slate-800 mb-2">{project.title}</h2>
-                <p className="text-slate-600 text-sm leading-relaxed mb-4">{project.description}</p>
+                <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 transition-colors duration-200">{project.title}</h2>
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4 transition-colors duration-200">{project.description}</p>
                 
                 {project.technologies?.length > 0 && (
                   <div className="mb-4">
-                    <h3 className="text-sm font-semibold text-slate-700 mb-2">Teknologier</h3>
+                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 transition-colors duration-200">Teknologier</h3>
                     <div className="flex flex-wrap gap-1.5">
                       {project.technologies.map((tech) => (
-                        <span key={tech} className="px-2 py-0.5 bg-slate-100 text-slate-700 text-xs rounded-full">
+                        <span key={tech} className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded-full transition-colors duration-200">
                           {tech}
                         </span>
                       ))}
@@ -93,8 +93,8 @@ export default function ProjectsPage() {
                 
                 {project.features?.length > 0 && (
                   <div className="mb-4">
-                    <h3 className="text-sm font-semibold text-slate-700 mb-2">Hovedfunksjoner</h3>
-                    <ul className="text-xs text-slate-600 space-y-1 list-disc pl-4">
+                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 transition-colors duration-200">Hovedfunksjoner</h3>
+                    <ul className="text-xs text-slate-600 dark:text-slate-400 space-y-1 list-disc pl-4 transition-colors duration-200">
                       {project.features.slice(0, 3).map((feature, i) => (
                         <li key={i}>{feature}</li>
                       ))}
@@ -102,13 +102,13 @@ export default function ProjectsPage() {
                   </div>
                 )}
                 
-                <div className="flex gap-2 mt-auto pt-3 border-t border-slate-200">
+                <div className="flex gap-2 mt-auto pt-3 border-t border-slate-200 dark:border-slate-700 transition-colors duration-200">
                   {project.sourceCodeUrl && (
                     <a
                       href={project.sourceCodeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-150 font-medium"
+                      className="px-3 py-1.5 text-xs bg-blue-600 dark:bg-blue-700 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200 font-medium"
                     >
                       GitHub
                     </a>
@@ -118,7 +118,7 @@ export default function ProjectsPage() {
                       href={project.liveDemoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-3 py-1.5 text-xs bg-slate-600 text-white rounded hover:bg-slate-700 transition-colors duration-150 font-medium"
+                      className="px-3 py-1.5 text-xs bg-slate-600 dark:bg-slate-700 text-white rounded hover:bg-slate-700 dark:hover:bg-slate-600 transition-colors duration-200 font-medium"
                     >
                       Live Demo
                     </a>

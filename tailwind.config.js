@@ -5,8 +5,16 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: 'class', // Enable dark mode with class strategy
   theme: {
     extend: {
+      colors: {
+        'blue-25': '#f5f8ff',
+      },
+      backgroundColor: {
+        'dark-gradient-start': '#1a1f2e',
+        'dark-gradient-end': '#111827',
+      },
       container: {
         center: true,
         padding: {
