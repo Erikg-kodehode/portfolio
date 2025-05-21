@@ -20,7 +20,7 @@ export default function AboutPage() {
       </header>
 
       {/* Profile Section with Image */}
-      <section className="mb-8 bg-gradient-to-br from-blue-400 to-blue-600 dark:from-blue-600 dark:to-blue-900 rounded-lg shadow-md overflow-hidden transition-colors duration-200">
+      <section className="mb-8 bg-gradient-to-br from-blue-300 to-blue-500 dark:from-blue-600 dark:to-blue-900 rounded-lg shadow-md overflow-hidden transition-colors duration-200">
         <div className="flex flex-col md:flex-row items-center">
           <div className="p-6 md:w-1/3 flex justify-center">
             <div className="relative w-56 h-56 overflow-hidden rounded-full border-4 border-blue-100 dark:border-blue-300 shadow-md bg-slate-200 dark:bg-slate-700 transition-colors duration-200">
@@ -29,7 +29,7 @@ export default function AboutPage() {
                 alt="Erik Gulliksen"
                 fill={true}
                 sizes="(max-width: 768px) 100vw, 224px"
-                style={{ objectFit: 'cover' }}
+                style={{ objectFit: 'cover', objectPosition: '0 -15px' }}
                 priority={true}
                 quality={90}
                 loading="eager"
@@ -55,7 +55,7 @@ export default function AboutPage() {
       </section>
 
       {/* Robotics Background */}
-      <section className="mb-8 bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+      <section className="mb-8 bg-slate-50 dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
         <div className="p-6">
           <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3 transition-colors duration-200">Robotprogrammering: Min tidlige suksess</h2>
           <div className="space-y-3 text-slate-600 dark:text-slate-400 text-sm transition-colors duration-200">
@@ -82,7 +82,7 @@ export default function AboutPage() {
         <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-4 text-center transition-colors duration-200">Min utviklerreise</h2>
         
         <div className="space-y-4">
-          <article className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <article className="bg-slate-50 dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div className="p-5">
               <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 transition-colors duration-200">Fra roboter til programvareutvikling</h3>
               <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed transition-colors duration-200">
@@ -94,7 +94,7 @@ export default function AboutPage() {
             </div>
           </article>
           
-          <article className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <article className="bg-slate-50 dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div className="p-5">
               <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 transition-colors duration-200">Backend-utvikling og systemarkitektur</h3>
               <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed transition-colors duration-200">
@@ -106,7 +106,7 @@ export default function AboutPage() {
             </div>
           </article>
           
-          <article className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <article className="bg-slate-50 dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div className="p-5">
               <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 transition-colors duration-200">Mitt fokus i dag</h3>
               <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed transition-colors duration-200">
@@ -125,7 +125,7 @@ export default function AboutPage() {
         <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-4 text-center transition-colors duration-200">Mine mål fremover</h2>
         
         <div className="grid md:grid-cols-3 gap-4">
-          <article className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <article className="bg-slate-50 dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div className="p-5">
               <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 transition-colors duration-200">Kortsiktige mål</h3>
               <ul className="space-y-1.5 text-slate-600 dark:text-slate-400 text-sm transition-colors duration-200">
@@ -145,7 +145,7 @@ export default function AboutPage() {
             </div>
           </article>
           
-          <article className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <article className="bg-slate-50 dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div className="p-5">
               <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 transition-colors duration-200">Mellomlangsiktige mål</h3>
               <ul className="space-y-1.5 text-slate-600 dark:text-slate-400 text-sm transition-colors duration-200">
@@ -165,7 +165,7 @@ export default function AboutPage() {
             </div>
           </article>
           
-          <article className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <article className="bg-slate-50 dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div className="p-5">
               <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 transition-colors duration-200">Langsiktige mål</h3>
               <ul className="space-y-1.5 text-slate-600 dark:text-slate-400 text-sm transition-colors duration-200">

@@ -20,7 +20,7 @@ export default function ProjectsPage() {
         'Interaktivt tastatur for bokstavvalg'
       ],
       sourceCodeUrl: 'https://github.com/Erikg-kodehode/Hangman',
-      liveDemoUrl: 'https://erikg-kodehode.github.io/Hangman/'
+      liveDemoUrl: 'https://hangman-eight-sable.vercel.app/'
     },
     {
       title: 'Innsjekking Discord Bot',
@@ -66,7 +66,7 @@ export default function ProjectsPage() {
 
       <div className="space-y-8">
         {projects.map((project, index) => (
-          <article key={index} className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+          <article key={index} className="bg-slate-50 dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
             <div className="grid md:grid-cols-3 gap-0">
               <div className="md:col-span-1 relative aspect-[4/3] md:aspect-auto w-full h-full">
                 <ProjectImage

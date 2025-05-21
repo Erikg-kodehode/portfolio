@@ -10,6 +10,10 @@ module.exports = {
     extend: {
       colors: {
         'blue-25': '#f5f8ff',
+        'slate': {
+          50: '#f8f9fb', // Softer white for light mode
+          100: '#f1f3f8', // Less bright background
+        },
       },
       backgroundColor: {
         'dark-gradient-start': '#1a1f2e',
