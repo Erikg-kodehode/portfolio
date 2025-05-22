@@ -12,7 +12,7 @@ export default function SkillsPage() {
     {
       id: 'backend',
       title: 'Backend Utvikling',
-      description: 'Mit hovedfokus er backend-utvikling med C# og .NET økosystemet.',
+      description: 'Mitt hovedfokus er backend-utvikling med C# og .NET økosystemet.',
       skills: [
         { name: 'C#', level: 3, description: 'Konsollapplikasjoner og backend-logikk' },
         { name: '.NET', level: 3, description: '.NET rammeverket og økosystem' },
