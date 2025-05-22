@@ -34,7 +34,7 @@ export default function DiscordLink({
     // If app doesn't open within 100ms, fall back to web
     setTimeout(() => {
       window.location.href = webUrl;
-    }, 100);
+    }, 2000);
   };
   
   return (
