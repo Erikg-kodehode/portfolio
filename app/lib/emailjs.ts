@@ -1,4 +1,13 @@
-export const sendEmail = async (templateParams) => {
+// Define TypeScript interface for email template parameters
+export interface EmailTemplateParams {
+  from_name: string;
+  reply_to: string;
+  subject: string;
+  message: string;
+  to_name: string;
+}
+
+export const sendEmail = async (templateParams: EmailTemplateParams) => {
   try {
     // Dynamically import EmailJS only when needed
     const emailjsModule = await import('@emailjs/browser');
@@ -20,3 +29,4 @@ export const sendEmail = async (templateParams) => {
     throw error;
   }
 };
+

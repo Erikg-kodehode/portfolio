@@ -1,6 +1,49 @@
 'use client';
 import Link from 'next/link';
-import ContactForm from '../../components/ContactForm';
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
+
+// Dynamically import the Norwegian ContactForm component
+const ContactFormNo = dynamic(() => import('../../../components/ContactFormNo'), {
+  loading: () => <FormLoadingState />,
+  ssr: false, // Disable server-side rendering for this component
+});
+
+// Loading state component
+function FormLoadingState() {
+  return (
+    <div className="space-y-4">
+      {/* Name field skeleton */}
+      <div>
+        <div className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 w-12 h-4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+        <div className="w-full h-10 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm bg-slate-100 dark:bg-slate-700 animate-pulse"></div>
+      </div>
+
+      {/* Email field skeleton */}
+      <div>
+        <div className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 w-14 h-4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+        <div className="w-full h-10 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm bg-slate-100 dark:bg-slate-700 animate-pulse"></div>
+      </div>
+
+      {/* Subject field skeleton */}
+      <div>
+        <div className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 w-12 h-4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+        <div className="w-full h-10 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm bg-slate-100 dark:bg-slate-700 animate-pulse"></div>
+      </div>
+
+      {/* Message field skeleton */}
+      <div>
+        <div className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 w-16 h-4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+        <div className="w-full h-32 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm bg-slate-100 dark:bg-slate-700 animate-pulse"></div>
+      </div>
+
+      {/* Button skeleton */}
+      <div>
+        <div className="w-full h-10 bg-blue-600 dark:bg-blue-700 rounded animate-pulse"></div>
+      </div>
+    </div>
+  );
+}
 
 export default function ContactFormPage() {
   return (
@@ -13,7 +56,9 @@ export default function ContactFormPage() {
       </header>
 
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
-        <ContactForm />
+        <Suspense fallback={<FormLoadingState />}>
+          <ContactFormNo />
+        </Suspense>
       </div>
 
       <div className="mt-6 text-center">
