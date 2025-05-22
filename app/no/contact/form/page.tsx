@@ -1,10 +1,6 @@
+'use client';
 import Link from 'next/link';
 import ContactForm from '../../components/ContactForm';
-
-export const metadata = {
-  title: 'Send Melding - Erik Gulliksen',
-  description: 'Send meg en melding direkte via kontaktskjemaet.',
-};
 
 export default function ContactFormPage() {
   return (
