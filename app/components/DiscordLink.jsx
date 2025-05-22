@@ -22,10 +22,12 @@ export default function DiscordLink({
 }) {
   const defaultClass = "hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 flex items-center gap-1";
   const defaultSpanClass = "hidden sm:inline";
+  const discordUserId = "149498441838362625";
+  const discordUrl = `https://discord.com/users/${discordUserId}`;
   
   return (
     <Link 
-      href="https://discord.com/users/1328290920105381980"
+      href={discordUrl}
       target="_blank"
       rel="noopener noreferrer"
       className={className || defaultClass}
