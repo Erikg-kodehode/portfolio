@@ -25,7 +25,10 @@ export default function Footer() {
               <FaGithub className="text-lg" />
               <span className="hidden sm:inline">GitHub</span>
             </Link>
-            <DiscordLink />
+            <DiscordLink 
+              className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 flex items-center gap-1"
+              spanClassName="hidden sm:inline"
+            />
             <Link 
               href="/contact" 
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"

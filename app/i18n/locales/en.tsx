@@ -1,4 +1,4 @@
-import type { Translations } from './translations';
+import type { Translations } from './translations.d';
 
 const en: Translations = {
   nav: {

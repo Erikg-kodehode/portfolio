@@ -9,8 +9,6 @@ export default function BombermanProject() {
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           <div className="bg-blue-700 dark:bg-blue-900 bg-opacity-50 dark:bg-opacity-30 p-6 rounded-lg">
             <p className="text-blue-100 dark:text-green-white mb-4 leading-relaxed">
-ing-relaxed">
-relaxed">
               En JavaScript-implementasjon av det klassiske Bomberman-spillet. 
               Spillet inkluderer grunnleggende Bomberman-mekanikk som bombing, 
               veggødeleggelse og fiendekollisjon.

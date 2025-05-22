@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 // Dynamically import the English ContactForm component
 const ContactFormEn = dynamic(() => import('../../../components/ContactFormEn'), {
   loading: () => <FormLoadingState />,
-  ssr: false,
+  ssr: false, // Disable server-side rendering for this component
 });
 
 // Loading state component

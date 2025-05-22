@@ -1,5 +1,5 @@
 // Define TypeScript interface for email template parameters
-export interface EmailTemplateParams {
+export interface EmailTemplateParams extends Record<string, unknown> {
   from_name: string;
   reply_to: string;
   subject: string;

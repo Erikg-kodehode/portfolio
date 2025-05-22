@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from '../../i18n/context';
 
-export default function AboutPage(): JSX.Element {
+export default function AboutPage() {
   const pathname = usePathname();
   const isEnglish = pathname?.startsWith('/en');
   const t = useTranslations();

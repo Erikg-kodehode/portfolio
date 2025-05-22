@@ -112,7 +112,8 @@ export interface Translations {
     labels: {
       technologies: string;
       keyFeatures: string;
-    liveDemo: string;
+      liveDemo: string;
+    };
   };
   skills: {
     title: string;
@@ -121,9 +122,29 @@ export interface Translations {
       backend: {
         title: string;
         description: string;
+        skills: Array<{ name: string; level: number; description: string }>;
+      };
+      frontend: {
+        title: string;
+        description: string;
+        skills: Array<{ name: string; level: number; description: string }>;
+      };
+      tools: {
+        title: string;
+        description: string;
+        skills: Array<{ name: string; level: number; description: string }>;
       };
     };
   };
-}
+  contact: {
+    title: string;
+    description: string;
+    form: {
+      name: string;
+      email: string;
+      message: string;
+      send: string;
+    }
+  };
 }
 

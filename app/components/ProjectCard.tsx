@@ -1,7 +1,7 @@
 // app/components/ProjectCard.jsx
 import ProjectImage from './ProjectImage';
 
-export default function ProjectCard({ title, description, imageUrl, technologies, liveDemoUrl, sourceCodeUrl }) {
+export default function ProjectCard({ title, description, imageUrl, technologies, liveDemoUrl = '#', sourceCodeUrl }) {
   return (
     <article className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1 group h-full">
       {imageUrl && (
