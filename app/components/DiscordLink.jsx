@@ -2,28 +2,37 @@
 import { FaDiscord } from 'react-icons/fa';
 import Link from 'next/link';
 
-export default function DiscordLink() {
-  const handleDiscordClick = (e) => {
-    e.preventDefault();
-    try {
-      window.location.href = 'discord://discordapp.com/users/Fjorfott';
-      setTimeout(() => {
-        window.location.href = 'discord:Fjorfott';
-      }, 100);
-    } catch (err) {
-      window.location.href = 'https://discord.com/users/Fjorfott';
-    }
-  };
-
+/**
+ * DiscordLink Component
+ * 
+ * @param {Object} props - Component props
+ * @param {string} [props.className] - Optional CSS class for the Link element
+ * @param {string} [props.spanClassName] - Optional CSS class for the username span
+ * @param {boolean} [props.showIcon=true] - Whether to show the Discord icon
+ * @param {boolean} [props.showUsername=true] - Whether to show the username text
+ * @param {string} [props.usernameText="Fjorfott"] - Custom text to display as username
+ * @returns {JSX.Element} Rendered component
+ */
+export default function DiscordLink({ 
+  className, 
+  spanClassName,
+  showIcon = true,
+  showUsername = true,
+  usernameText = "Fjorfott"
+}) {
+  const defaultClass = "hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 flex items-center gap-1";
+  const defaultSpanClass = "hidden sm:inline";
+  
   return (
     <Link 
-      href="discord://discordapp.com/users/Fjorfott"
-      onClick={handleDiscordClick}
-      className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 flex items-center gap-1"
+      href="https://discord.com/users/1328290920105381980"
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className || defaultClass}
       aria-label="Discord Profile"
     >
-      <FaDiscord className="text-lg" />
-      <span className="hidden sm:inline">Fjorfott</span>
+      {showIcon && <FaDiscord className="text-lg" />}
+      {showUsername && <span className={spanClassName || defaultSpanClass}>{usernameText}</span>}
     </Link>
   );
 }
