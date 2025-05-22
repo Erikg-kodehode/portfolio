@@ -1,4 +1,3 @@
-// app/about/page.jsx
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -10,7 +9,6 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
-      {/* Header */}
       <header className="mb-8 text-center">
         <h1 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-3 transition-colors duration-200">Om Meg</h1>
         <p className="text-lg text-blue-700 dark:text-blue-400 max-w-2xl mx-auto transition-colors duration-200">
@@ -19,7 +17,6 @@ export default function AboutPage() {
         </p>
       </header>
 
-      {/* Profile Section with Image */}
       <section className="mb-8 bg-gradient-to-br from-blue-300 to-blue-500 dark:from-blue-600 dark:to-blue-900 rounded-lg shadow-md overflow-hidden transition-colors duration-200">
         <div className="flex flex-col md:flex-row items-center">
           <div className="p-6 md:w-1/3 flex justify-center">
@@ -54,7 +51,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Robotics Background */}
       <section className="mb-8 bg-slate-50 dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
         <div className="p-6">
           <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3 transition-colors duration-200">Robotprogrammering: Min tidlige suksess</h2>
@@ -77,7 +73,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Development Journey */}
       <section className="mb-8">
         <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-4 text-center transition-colors duration-200">Min utviklerreise</h2>
         
@@ -120,7 +115,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Goals Section */}
       <section className="mb-8">
         <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-4 text-center transition-colors duration-200">Mine mål fremover</h2>
         
@@ -187,7 +181,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Contact Section */}
       <section className="text-center mb-8">
         <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-4 transition-colors duration-200">La oss kode sammen</h2>
         <p className="text-blue-700 dark:text-blue-400 max-w-2xl mx-auto mb-6 text-sm transition-colors duration-200">

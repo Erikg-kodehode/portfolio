@@ -3,15 +3,8 @@ import { FaDiscord } from 'react-icons/fa';
 import Link from 'next/link';
 
 /**
- * DiscordLink Component
- * 
- * @param {Object} props - Component props
- * @param {string} [props.className] - Optional CSS class for the Link element
- * @param {string} [props.spanClassName] - Optional CSS class for the username span
- * @param {boolean} [props.showIcon=true] - Whether to show the Discord icon
- * @param {boolean} [props.showUsername=true] - Whether to show the username text
- * @param {string} [props.usernameText="Fjorfott"] - Custom text to display as username
- * @returns {JSX.Element} Rendered component
+ * Discord profile link component that prioritizes opening the Discord app.
+ * Falls back to web profile if app is not installed.
  */
 export default function DiscordLink({ 
   className, 
@@ -28,10 +21,9 @@ export default function DiscordLink({
   
   const handleClick = (e) => {
     e.preventDefault();
-    // Try to open Discord app first
     window.location.href = appUrl;
     
-    // If app doesn't open within 100ms, fall back to web
+    // Fall back to web if app doesn't open within 2s
     setTimeout(() => {
       window.location.href = webUrl;
     }, 2000);
