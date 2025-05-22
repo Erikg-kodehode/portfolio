@@ -23,13 +23,24 @@ export default function DiscordLink({
   const defaultClass = "hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 flex items-center gap-1";
   const defaultSpanClass = "hidden sm:inline";
   const discordUserId = "149498441838362625";
-  const discordUrl = `https://discord.com/users/${discordUserId}`;
+  const appUrl = `discord://discord.com/users/${discordUserId}`;
+  const webUrl = `https://discord.com/users/${discordUserId}`;
+  
+  const handleClick = (e) => {
+    e.preventDefault();
+    // Try to open Discord app first
+    window.location.href = appUrl;
+    
+    // If app doesn't open within 100ms, fall back to web
+    setTimeout(() => {
+      window.location.href = webUrl;
+    }, 100);
+  };
   
   return (
     <Link 
-      href={discordUrl}
-      target="_blank"
-      rel="noopener noreferrer"
+      href={appUrl}
+      onClick={handleClick}
       className={className || defaultClass}
       aria-label="Discord Profile"
     >
