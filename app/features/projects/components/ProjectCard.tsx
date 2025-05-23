@@ -24,7 +24,45 @@ export default function ProjectCard({
   liveDemoUrl,
   sourceCodeUrl
 }: ProjectCardProps) {
+  // Add debug logging
+  console.log(`ProjectCard rendering for ${title}:`, {
+    hasSourceCode: Boolean(sourceCodeUrl),
+    sourceCodeUrl,
+    hasLiveDemo: Boolean(liveDemoUrl),
+    liveDemoUrl
+  });
+
   const [isVisible, setIsVisible] = useState(false);
+  const [dimensions, setDimensions] = useState({ article: null, content: null, buttons: null });
+
+  // Debug: Log container dimensions
+  useEffect(() => {
+    const articleEl = document.getElementById(`project-${title.replace(/\s+/g, "-").toLowerCase()}`);
+    const contentEl = articleEl?.querySelector('.content-wrapper');
+    const buttonsEl = articleEl?.querySelector('.buttons-wrapper');
+
+    if (articleEl && contentEl && buttonsEl) {
+      const dims = {
+        article: {
+          height: articleEl.offsetHeight,
+          scroll: articleEl.scrollHeight,
+          client: articleEl.clientHeight
+        },
+        content: {
+          height: contentEl.offsetHeight,
+          scroll: contentEl.scrollHeight,
+          client: contentEl.clientHeight
+        },
+        buttons: {
+          height: buttonsEl.offsetHeight,
+          scroll: buttonsEl.scrollHeight,
+          client: buttonsEl.clientHeight
+        }
+      };
+      console.log(`Dimensions for ${title}:`, dims);
+      setDimensions(dims);
+    }
+  }, [title, isVisible]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -53,10 +91,14 @@ export default function ProjectCard({
     <article 
       id={`project-${title.replace(/\s+/g, "-").toLowerCase()}`}
       className={`
-        bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg
-        shadow-theme hover:shadow-lg overflow-hidden
-        transition-all duration-300 group
+        bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-2xl
+        border border-slate-200/20 dark:border-slate-700/20
+        shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)]
+        transition-all duration-500 ease-out group
         hover:-translate-y-1
+        transform-gpu will-change-transform 
+        relative flex flex-col
+        min-h-[600px] max-h-[800px]
         ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
       `}
     >
@@ -72,54 +114,94 @@ export default function ProjectCard({
         />
       </ErrorBoundary>
       
-      <div className="p-6">
-        <h2 className="text-xl font-semibold text-blue-800 dark:text-blue-300 mb-3 transition-colors duration-200">
+      <div className="
+        content-wrapper
+        p-3 flex flex-col flex-grow
+        min-h-[200px]
+      ">
+        <h2 className="text-lg font-bold text-blue-900 dark:text-blue-200 mb-1 transition-colors duration-300 tracking-tight leading-snug group-hover:text-blue-800 dark:group-hover:text-blue-100">
           {title}
         </h2>
-        <p className="text-blue-700 dark:text-blue-400 mb-4 text-sm transition-colors duration-200">
-          {description}
-        </p>
+        <div className="flex-grow mb-4">
+          <p className="text-blue-800/70 dark:text-blue-300/70 text-sm leading-relaxed mb-3 transition-colors duration-300 line-clamp-3 text-balance">
+            {description}
+          </p>
 
-        <div className="space-y-4">
-          <div>
-            <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-2 transition-colors duration-200">
+          <div className="mb-1.5">
+            <h3 className="text-xs font-semibold uppercase text-blue-900/60 dark:text-blue-200/60 mb-1 transition-colors duration-300">
               Technologies
             </h3>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1">
               {technologies.map((tech) => (
                 <span
                   key={tech}
-                  className="px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900/30 
-                    text-blue-800 dark:text-blue-300 rounded-full transition-colors duration-200"
+                  className="px-1.5 py-[0.15rem] text-[10px] leading-relaxed font-medium bg-blue-50/50 dark:bg-blue-900/20
+                    text-blue-700 dark:text-blue-300 rounded border border-blue-100/50 dark:border-blue-800/30
+                    transition-colors duration-200"
                 >
                   {tech}
                 </span>
               ))}
             </div>
           </div>
+        </div>
 
-          <div className="flex gap-3 pt-2">
-            {sourceCodeUrl && (
-              <a 
-                href={sourceCodeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-700 dark:text-blue-400 text-sm hover:underline transition-colors duration-200"
-              >
-                GitHub
-              </a>
-            )}
-            {liveDemoUrl && (
-              <a 
-                href={liveDemoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-700 dark:text-blue-400 text-sm hover:underline transition-colors duration-200"
-              >
-                Live Demo
-              </a>
-            )}
-          </div>
+        <div 
+          className="
+            buttons-wrapper
+            flex justify-start gap-3 p-4 mt-auto
+            border-t border-slate-200 dark:border-slate-700
+            relative z-20
+          "
+          onMouseEnter={() => console.log(`Buttons container for ${title} - mouse enter`)}
+        >
+          {sourceCodeUrl && (
+            <a 
+              href={sourceCodeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                console.log('GitHub button clicked:', { url: sourceCodeUrl });
+                // Don't prevent default - let the link work normally
+              }}
+              className="
+                min-w-[120px] px-4 py-2 text-sm font-medium 
+                border-2 border-blue-400 dark:border-blue-600
+                bg-white dark:bg-slate-800
+                text-blue-700 dark:text-blue-300 
+                rounded-md hover:bg-blue-50/80 dark:hover:bg-blue-900/30
+                transition-all duration-200 
+                hover:border-blue-500 dark:hover:border-blue-500 
+                hover:scale-[1.02]
+                shadow-md hover:shadow-lg 
+                flex items-center justify-center
+                z-30
+              "
+            >
+              GitHub
+            </a>
+          )}
+          {liveDemoUrl && (
+            <a 
+              href={liveDemoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="
+                min-w-[120px] px-4 py-2 text-sm font-medium 
+                bg-blue-600 dark:bg-blue-500 
+                border-2 border-blue-700 dark:border-blue-400
+                text-white rounded-md 
+                hover:bg-blue-700 dark:hover:bg-blue-600
+                transition-all duration-200 
+                shadow-md hover:shadow-lg 
+                hover:scale-[1.02]
+                flex items-center justify-center
+                z-30
+              "
+            >
+              Live Demo
+            </a>
+          )}
         </div>
       </div>
     </article>

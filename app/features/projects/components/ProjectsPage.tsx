@@ -9,27 +9,29 @@ export default function ProjectsPage() {
   const isEnglish = pathname?.startsWith("/en");
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-5xl">
-      <header className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-2 transition-colors duration-200">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 max-w-7xl">
+      <header className="mb-12 text-center">
+        <h1 className="text-3xl font-bold text-blue-900 dark:text-blue-200 mb-4 transition-colors duration-300">
           {t.projects.title}
         </h1>
-        <p className="text-base text-blue-700 dark:text-blue-400 max-w-2xl mx-auto leading-snug transition-colors duration-200">
+        <p className="text-lg text-blue-800/70 dark:text-blue-300/70 max-w-2xl mx-auto leading-relaxed transition-colors duration-300">
           {t.projects.intro}
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
         {/* Hangman Project */}
         <ProjectCard
           title={t.projects.projects.hangman.title}
           description={t.projects.projects.hangman.description}
-          imageUrl="/assets/hangman.png"
+          imageUrl="/assets/Hangman.jpeg"
           imageAlt={isEnglish ? "Hangman game screenshot" : "Skjermbilde av Hangman spill"}
           priority={true}
           technologies={t.projects.projects.hangman.technologies}
-          sourceCodeUrl="https://github.com/Erikg-dev"
-          liveDemoUrl="#"
+          // Repository URL for Hangman project
+          sourceCodeUrl="https://github.com/Erikg-kodehode/Hangman"
+          // TODO: Replace with your actual live demo URL
+          liveDemoUrl="https://hangman-game-beta.vercel.app"
         />
 
         {/* Discord Bot Project */}
@@ -39,17 +41,17 @@ export default function ProjectsPage() {
           imageUrl="/assets/Bot.jpeg"
           imageAlt={isEnglish ? "Discord bot screenshot" : "Skjermbilde av Discord bot"}
           technologies={t.projects.projects.discordBot.technologies}
-          sourceCodeUrl="https://github.com/Erikg-dev"
+          sourceCodeUrl="https://github.com/Erikg-kodehode/Signup-bot"
         />
 
         {/* Bomberman Project */}
         <ProjectCard
           title={t.projects.projects.bomberman.title}
           description={t.projects.projects.bomberman.description}
-          imageUrl="/assets/bomberman.png"
+          imageUrl="/assets/Bomberman.jpeg"
           imageAlt={isEnglish ? "Bomberman game screenshot" : "Skjermbilde av Bomberman spill"}
           technologies={t.projects.projects.bomberman.technologies}
-          sourceCodeUrl="https://github.com/Erikg-dev"
+          sourceCodeUrl="https://github.com/Erikg-kodehode/Bomberman"
         />
       </div>
     </div>

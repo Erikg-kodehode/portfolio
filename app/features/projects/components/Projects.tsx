@@ -117,24 +117,59 @@ interface Project {
   title: string;
   description: string;
   technologies: string[];
-  sourceCodeUrl: string;
-  liveDemoUrl: string;
+  sourceCodeUrl?: string;
+  liveDemoUrl?: string;
   image: ProjectImage;
 }
 
 const projectData: Project[] = [
   {
+    id: "0",
+    title: "Hangman Spill",
+    description: "En implementasjon av det klassiske Hangman spillet | An implementation of the classic Hangman game",
+    technologies: ["React", "TypeScript", "Tailwind CSS"],
+    sourceCodeUrl: "https://github.com/Erikg-kodehode/Hangman",
+    liveDemoUrl: "https://hangman-game-beta.vercel.app",
+    image: {
+      url: "/assets/Hangman.jpeg",
+      alt: {
+        no: "Skjermbilde av Hangman spill",
+        en: "Hangman game screenshot"
+      },
+      width: 1200,
+      height: 900,
+      aspectRatio: "4/3"
+    }
+  },
+  {
     id: "1",
     title: "Discord Bot",
-    description: "En Discord bot bygget med Node.js og Discord API",
+    description: "En Discord bot bygget med Node.js og Discord API | A Discord bot built with Node.js and Discord API",
     technologies: ["JavaScript", "Node.js", "Discord API"],
-    sourceCodeUrl: "#",
-    liveDemoUrl: "#",
+    sourceCodeUrl: "https://github.com/Erikg-kodehode/Signup-bot",
+    // liveDemoUrl is omitted since there's no live demo
     image: {
       url: "/assets/Bot.jpeg",
       alt: {
         no: "Skjermbilde av Discord bot i aksjon",
         en: "Screenshot of Discord bot in action"
+      },
+      width: 1200,
+      height: 900,
+      aspectRatio: "4/3"
+    }
+  },
+  {
+    id: "2",
+    title: "Bomberman Backend Engine",
+    description: "En backend motor for Bomberman spill implementasjon | A backend engine for Bomberman game implementation",
+    technologies: ["TypeScript", "Node.js", "Express"],
+    sourceCodeUrl: "https://github.com/Erikg-kodehode/Bomberman",
+    image: {
+      url: "/assets/Bomberman.jpeg",
+      alt: {
+        no: "Bomberman spillmotor diagram",
+        en: "Bomberman engine diagram"
       },
       width: 1200,
       height: 900,
@@ -154,8 +189,10 @@ interface ProjectCardPropsWithoutImage extends Omit<Project, 'image'> {
 
 function mapProjectToCardProps(project: Project, lang: string, isPriority: boolean): ProjectCardPropsWithoutImage {
   const { image, ...rest } = project;
-  return {
+  // Explicitly map sourceCodeUrl to ensure it's preserved
+  const mappedProps = {
     ...rest,
+    sourceCodeUrl: project.sourceCodeUrl, // Explicitly preserve the URL
     imageUrl: image.url,
     imageAlt: image.alt[lang as keyof typeof image.alt] || image.alt.en, // Fallback to English
     imageWidth: image.width ?? FALLBACK_DIMENSIONS.width,
@@ -163,6 +200,14 @@ function mapProjectToCardProps(project: Project, lang: string, isPriority: boole
     imageAspectRatio: image.aspectRatio ?? FALLBACK_DIMENSIONS.aspectRatio,
     priority: isPriority
   };
+  
+  // Debug log the mapped props
+  console.log('Mapped props for', project.title, {
+    originalUrl: project.sourceCodeUrl,
+    mappedUrl: mappedProps.sourceCodeUrl
+  });
+  
+  return mappedProps;
 }
 
 export default function Projects() {
@@ -175,14 +220,16 @@ export default function Projects() {
   const currentLang = pathname?.startsWith('/en') ? 'en' : 'no';
 
   useEffect(() => {
-    // Simulate data loading with a minimum delay to prevent flash
+    // Simulate data loading with a minimum delay
     const loadProjects = async () => {
       const minDelay = new Promise(resolve => setTimeout(resolve, 500));
       
       try {
         // In the future, this could be an actual API call
         await minDelay;
+        console.log('Loading projects:', projectData); // Debug: Check initial data
         setProjects(projectData);
+        console.log('Projects loaded successfully'); // Debug: Confirm state update
       } catch (error) {
         console.error('Failed to load projects:', error);
         setProjects([]);
@@ -197,7 +244,12 @@ export default function Projects() {
   return (
     <section 
       id={sectionId} 
-      className="section-container"
+      className="
+        section-container
+        border-4 border-pink-300 dark:border-pink-700
+        bg-pink-50/30 dark:bg-pink-900/10
+        p-8 rounded-2xl
+      "
       aria-labelledby={titleId}
     >
       <header className="text-center mb-8">
@@ -210,7 +262,7 @@ export default function Projects() {
       {isLoading ? (
         // Loading skeleton grid
         <div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8 md:gap-10"
           aria-hidden="true"
         >
           {[1, 2, 3].map((i) => (
@@ -221,14 +273,33 @@ export default function Projects() {
         </div>
       ) : projects.length > 0 ? (
         <ul 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10"
+          className="
+            grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 
+            gap-8 md:gap-10
+            min-h-[800px]
+            border-4 border-purple-300 dark:border-purple-700
+            bg-purple-50/30 dark:bg-purple-900/10
+            p-4 rounded-xl
+          "
           aria-label={currentLang === 'no' ? 'Liste over prosjekter' : 'List of projects'}
         >
-          {projects.map((project: Project) => (
-            <li 
-              key={project.id}
-              className="min-h-[24rem]" // Minimum height to prevent layout shift
-            >
+          {projects.map((project: Project) => {
+            console.log('Rendering project:', project.title, { 
+              sourceCodeUrl: project.sourceCodeUrl,
+              mappedProps: mapProjectToCardProps(project, currentLang, parseInt(project.id) <= 3)
+            }); // Debug: Check project props
+            return (
+              <li 
+                key={project.id}
+                className="
+                  min-h-[600px] max-h-[800px]
+                  border-4 border-orange-300 dark:border-orange-700
+                  bg-orange-50/30 dark:bg-orange-900/10
+                  rounded-xl overflow-visible
+                  relative
+                  flex
+                "
+              >
               <ErrorBoundary
                 fallback={({ error, resetError }) => (
                   <FailedProjectCard
@@ -251,7 +322,7 @@ export default function Projects() {
                 />
               </ErrorBoundary>
             </li>
-          ))}
+          )})}
         </ul>
       ) : (
         <div className="text-center space-y-4">
