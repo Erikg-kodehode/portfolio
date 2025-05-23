@@ -116,22 +116,24 @@ export default function ProjectCard({
       
       <div className="
         content-wrapper
-        p-3 flex flex-col flex-grow
-        min-h-[200px]
+        p-4 flex flex-col
+        min-h-[250px]
       ">
-        <h2 className="text-lg font-bold text-blue-900 dark:text-blue-200 mb-1 transition-colors duration-300 tracking-tight leading-snug group-hover:text-blue-800 dark:group-hover:text-blue-100">
+        <h2 className="text-lg font-bold text-blue-900 dark:text-blue-200 mb-3 transition-colors duration-300 tracking-tight leading-snug group-hover:text-blue-800 dark:group-hover:text-blue-100">
           {title}
         </h2>
-        <div className="flex-grow mb-4">
-          <p className="text-blue-800/70 dark:text-blue-300/70 text-sm leading-relaxed mb-3 transition-colors duration-300 line-clamp-3 text-balance">
-            {description}
-          </p>
-
-          <div className="mb-1.5">
-            <h3 className="text-xs font-semibold uppercase text-blue-900/60 dark:text-blue-200/60 mb-1 transition-colors duration-300">
+        <div className="flex flex-col h-full">
+          <div className="flex-1">
+            <p className="text-blue-800/70 dark:text-blue-300/70 text-sm leading-relaxed mb-8 transition-colors duration-300 line-clamp-4 text-balance">
+              {description}
+            </p>
+          </div>
+          
+          <div className="mb-4">
+            <h3 className="text-xs font-semibold uppercase text-blue-900/60 dark:text-blue-200/60 mb-2 transition-colors duration-300">
               Technologies
             </h3>
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-2">
               {technologies.map((tech) => (
                 <span
                   key={tech}
