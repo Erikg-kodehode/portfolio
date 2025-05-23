@@ -191,8 +191,8 @@ const no: Translations = {
           { name: 'HTML', level: 2, description: 'Nettsidestrukturering' },
           { name: 'CSS', level: 2, description: 'Styling og layout' },
           { name: 'JavaScript', level: 1, description: 'Nettleserprogrammering' },
-          { name: 'React', level: 1, description: 'Komponentutvikling' },
-          { name: 'Next.js', level: 1, description: 'Denne porteføljen' },
+          { name: 'React', level: 2, description: 'Komponentutvikling og tilstandshåndtering' },
+          { name: 'Next.js', level: 2, description: 'Full-stack React-applikasjoner' },
           { name: 'Tailwind CSS', level: 1, description: 'Effektiv styling' }
         ]
       },

@@ -191,8 +191,8 @@ const en: Translations = {
           { name: 'HTML', level: 2, description: 'Webpage structuring' },
           { name: 'CSS', level: 2, description: 'Styling and layout' },
           { name: 'JavaScript', level: 1, description: 'Browser programming' },
-          { name: 'React', level: 1, description: 'Component development' },
-          { name: 'Next.js', level: 1, description: 'This portfolio' },
+          { name: 'React', level: 2, description: 'Component development and state management' },
+          { name: 'Next.js', level: 2, description: 'Full-stack React applications' },
           { name: 'Tailwind CSS', level: 1, description: 'Efficient styling' }
         ]
       },

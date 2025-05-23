@@ -1,0 +1,390 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Additional custom styles below */
+@keyframes nodePulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+:root {
+  /* Theme transitions */
+  --theme-transition-duration: 300ms;
+  --theme-transition-timing: ease;
+  --theme-transition: all var(--theme-transition-duration) var(--theme-transition-timing);
+  
+  /* Shadow colors */
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-color-darker: rgba(0, 0, 0, 0.2);
+  
+  /* Theme colors */
+  --color-primary: rgb(59, 130, 246);
+  --color-secondary: rgb(96, 165, 250);
+  --color-accent: rgb(34, 197, 94);
+  
+  /* Text colors */
+  --text-primary: rgb(30, 41, 59);
+  --text-secondary: rgb(71, 85, 105);
+  --text-muted: rgb(148, 163, 184);
+  
+  /* Light theme circuit board colors - increased visibility */
+  --circuit-color: rgba(59, 130, 246, 0.35);
+  --circuit-glow: rgba(59, 130, 246, 0.45);
+  --node-color: rgba(59, 130, 246, 0.4);
+  --node-glow: rgba(59, 130, 246, 0.5);
+  --trace-color: rgba(59, 130, 246, 0.38);
+  --gate-color: rgba(59, 130, 246, 0.32);
+  --data-pulse-color: rgba(59, 130, 246, 0.55);
+  --matrix-color: rgba(59, 130, 246, 0.3);
+  --binary-color: rgba(59, 130, 246, 0.28);
+  --tech-pattern: rgba(59, 130, 246, 0.25);
+  --hex-color: rgba(59, 130, 246, 0.35);
+  --circuit-pattern: rgba(59, 130, 246, 0.2);
+  
+  /* Light theme background */
+  --bg-primary: rgb(243, 244, 246);
+  --bg-secondary: rgb(229, 231, 235);
+  --bg-accent: rgb(243, 244, 246);
+  --circuit-color-dark: rgba(56, 189, 248, 0.8);
+  --circuit-glow-dark: rgba(56, 189, 248, 0.4);
+  
+  /* Syntax highlighting colors - Light theme */
+  --syntax-keyword: #d946ef;
+  --syntax-function: #059669;
+  --syntax-string: #92400e;
+  --syntax-number: #6d28d9;
+  --syntax-comment: #64748b;
+  --syntax-operator: #be185d;
+  --syntax-variable: #1e293b;
+  --syntax-type: #0284c7;
+}
+
+.dark {
+  /* Theme-specific display properties */
+  --theme-opacity: 0.9;
+  --theme-blend-mode: screen;
+  
+  /* Shadow colors for dark mode */
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --shadow-color-darker: rgba(0, 0, 0, 0.4);
+  
+  /* Dark theme colors */
+  --color-primary: rgb(96, 165, 250);
+  --color-secondary: rgb(147, 197, 253);
+  --color-accent: rgb(34, 197, 94);
+  
+  /* Dark theme text colors */
+  --text-primary: rgb(241, 245, 249);
+  --text-secondary: rgb(203, 213, 225);
+  --text-muted: rgb(148, 163, 184);
+  
+  /* Syntax highlighting colors - Dark theme */
+  --syntax-keyword: #ff79c6;
+  --syntax-function: #50fa7b;
+  --syntax-string: #f1fa8c;
+  --syntax-number: #bd93f9;
+  --syntax-comment: #6272a4;
+  --syntax-operator: #ff79c6;
+  --syntax-variable: #f8f8f2;
+  --syntax-type: #8be9fd;
+  
+  /* Dark theme circuit board colors - maximum visibility */
+  --circuit-color: rgba(56, 189, 248, 0.75);
+  --circuit-glow: rgba(56, 189, 248, 0.85);
+  --node-color: rgba(56, 189, 248, 0.8);
+  --node-glow: rgba(16, 185, 129, 0.9);
+  --trace-color: rgba(56, 189, 248, 0.75);
+  --gate-color: rgba(16, 185, 129, 0.7);
+  --data-pulse-color: rgba(16, 185, 129, 0.85);
+  --matrix-color: rgba(56, 189, 248, 0.6);
+  --binary-color: rgba(56, 189, 248, 0.55);
+  --tech-pattern: rgba(56, 189, 248, 0.5);
+  --hex-color: rgba(56, 189, 248, 0.65);
+  --circuit-pattern: rgba(56, 189, 248, 0.45);
+  
+  /* Dark theme background */
+  --bg-primary: rgb(17, 24, 39);
+  --bg-secondary: rgb(31, 41, 55);
+  --bg-accent: rgb(51, 65, 85);
+}
+
+@keyframes pulseOpacity {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0.9; }
+}
+
+.circuit-board-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--bg-primary);
+  transition: background-color 0.3s ease;
+  transform: translateZ(0);
+  overflow: hidden;
+  will-change: transform;
+}
+
+/* PCB circuit pattern effect */
+.circuit-board-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: 
+    /* Main traces */
+    linear-gradient(90deg, transparent 49px, var(--trace-color) 49px, var(--trace-color) 50px, transparent 50px),
+    linear-gradient(0deg, transparent 49px, var(--trace-color) 49px, var(--trace-color) 50px, transparent 50px),
+    /* Connection pads */
+    radial-gradient(circle at 50px 50px, var(--node-color) 2px, var(--circuit-color) 3px, transparent 4px);
+  background-size: 100px 100px;
+  opacity: 0.8;
+  transform: translateZ(0);
+}
+
+/* Circuit components */
+.circuit-board-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    /* IC packages */
+    repeating-linear-gradient(90deg, transparent 0, transparent 60px, var(--gate-color) 60px, var(--gate-color) 90px),
+    repeating-linear-gradient(0deg, transparent 0, transparent 60px, var(--gate-color) 60px, var(--gate-color) 90px),
+    /* Component outlines */
+    repeating-linear-gradient(45deg, transparent 0, transparent 40px, var(--circuit-color) 40px, var(--circuit-color) 41px);
+  background-size: 120px 120px;
+  opacity: 0.7;
+  transform: translateZ(0);
+}
+
+/* Circuit node connection points */
+.circuit-node {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--node-color);
+  box-shadow: 0 0 4px var(--node-glow);
+  z-index: 0;
+  opacity: 0.85;
+  animation: nodePulse 3s ease-in-out infinite;
+  transform: translateZ(0);
+}
+
+/* Circuit trace lines */
+.circuit-node::after {
+  content: "";
+  position: absolute;
+  width: 120px;
+  height: 4px;
+  background-color: var(--trace-color);
+  top: 50%;
+  left: 50%;
+  transform-origin: left center;
+  transform: rotate(calc(var(--angle, 45deg))) translateZ(0);
+  opacity: 0.85;
+  z-index: -1;
+  box-shadow: 0 0 3px var(--circuit-glow);
+}
+
+.circuit-node:nth-child(1) {
+  top: 15%;
+  left: 10%;
+  animation-delay: 0s;
+}
+.circuit-node:nth-child(1)::after {
+  --angle: 45deg;
+}
+
+.circuit-node:nth-child(2) {
+  top: 35%;
+  left: 85%;
+  animation-delay: 0.4s;
+}
+.circuit-node:nth-child(2)::after {
+  --angle: 225deg;
+}
+
+.circuit-node:nth-child(3) {
+  top: 65%;
+  left: 25%;
+  animation-delay: 0.8s;
+}
+.circuit-node:nth-child(3)::after {
+  --angle: 135deg;
+}
+
+.circuit-node:nth-child(4) {
+  top: 85%;
+  left: 70%;
+  animation-delay: 1.2s;
+}
+.circuit-node:nth-child(4)::after {
+  --angle: 315deg;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    height: 100%;
+  }
+  
+  body {
+    @apply bg-gradient-to-br 
+    from-gray-100 via-gray-50 to-white 
+    dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 
+    text-slate-800 dark:text-slate-100 
+    antialiased transition-all duration-300;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    perspective: 1px;
+  }
+
+  #__next {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+  }
+
+  main {
+    position: relative;
+    z-index: 10;
+    flex: 1;
+    transform: translateZ(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) rotate(-20deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@layer components {
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+  /* Text color utilities for better contrast */
+  .text-content {
+    @apply text-slate-800 dark:text-slate-100 transition-colors duration-300;
+  }
+
+  .text-content-secondary {
+    @apply text-slate-600 dark:text-slate-300 transition-colors duration-300;
+  }
+
+  .text-content-muted {
+    @apply text-slate-500 dark:text-slate-400 transition-colors duration-300;
+  }
+
+  /* Interactive element transitions */
+  .interactive {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  /* Enhanced shadows for dark mode */
+  .shadow-theme {
+    @apply shadow-[0_4px_6px_-1px_var(--shadow-color)] 
+    dark:shadow-[0_4px_6px_-1px_var(--shadow-color-darker)] 
+    transition-shadow duration-300;
+  }
+
+  .hero-container {
+    @apply bg-gradient-to-br from-white/95 to-blue-100/95 
+    dark:from-slate-800/90 dark:to-slate-900/95
+    rounded-lg shadow-md overflow-hidden 
+    transition-colors duration-200;
+  }
+
+  .section-container {
+    @apply py-8 md:py-12 
+    bg-gradient-to-br from-blue-200 to-blue-400 
+    dark:from-slate-800 dark:to-slate-900 
+    text-blue-900 dark:text-slate-100 
+    container mx-auto px-6 md:px-10 rounded-lg shadow-md my-10 
+    transition-colors duration-200;
+  }
+  
+  .section-container-light {
+    @apply py-8 md:py-12 
+    bg-gradient-to-br from-blue-50 to-blue-100 
+    dark:from-slate-800 dark:to-slate-900 
+    text-blue-800 dark:text-slate-200
+    container mx-auto px-6 md:px-10 rounded-lg shadow-md my-10 
+    transition-colors duration-200;
+  }
+
+  .section-title {
+    @apply text-3xl font-bold mb-8 pb-3 border-b-2 inline-block;
+  }
+
+  .card {
+    @apply bg-gradient-to-br from-blue-100 to-blue-300 
+    text-blue-900 dark:from-slate-800 dark:to-slate-900 
+    dark:text-slate-100 
+    p-8 rounded-lg shadow-md hover:shadow-lg 
+    transition-all duration-300 hover:-translate-y-1 
+    flex flex-col items-center;
+  }
+
+  .btn {
+    @apply py-3 px-6 rounded-md transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-blue-600 text-white dark:text-green-white hover:bg-blue-700;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-white text-blue-600 hover:bg-blue-50 border border-blue-200;
+  }
+
+  .profile-picture {
+    @apply relative h-64 w-64 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden;
+  }
+
+  .project-card {
+    @apply bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300;
+  }
+
+  .project-image-container {
+    @apply relative w-full h-48 overflow-hidden;
+  }
+
+  .project-image {
+    @apply w-full h-full object-cover object-center;
+  }
+
+  .project-content {
+    @apply p-6;
+  }
+
+  .project-title {
+    @apply text-xl font-semibold text-blue-900 dark:text-slate-100 mb-2;
+  }
+
+  .project-description {
+    @apply text-slate-700 dark:text-slate-300 mb-4;
+  }
+
+  .project-links {
+    @apply flex gap-4 mt-auto;
+  }
+}

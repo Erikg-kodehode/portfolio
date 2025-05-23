@@ -1,31 +1,110 @@
-import './globals.css';
-import { Inter } from 'next/font/google';
-import Navigation from './components/Navigation';
-import Footer from './components/Footer';
-import { Providers } from './providers';
+import "@/styles/globals.css";
+import React, { type ReactNode, Suspense } from "react";
+import { Inter } from "next/font/google";
+import dynamic from "next/dynamic";
+import type { Metadata } from "next";
+import type { ReactElement } from "react";
+import { headers } from "next/headers";
+
+import { Navigation, Footer } from "@/features/layout";
+import { Providers } from "@/providers";
+import { ErrorBoundary, CircuitBoard } from "@/components/shared";
+import { getLocaleFromPath } from "@/i18n";
+import { TranslationsProvider } from "@/i18n/context";
+import * as enTranslations from "@/i18n/locales/en";
+import * as noTranslations from "@/i18n/locales/no";
+
+// Optimize FloatingCode import with proper loading boundaries
+const FloatingCode = dynamic(
+  () => import("@/components/shared/FloatingCode").then(mod => mod.default),
+  {
+    ssr: false,
+    loading: () => <div className="hidden" />,
+    suspense: true,
+  }
+);
 
 const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap'
+  subsets: ["latin"],
+  display: "swap"
 });
 
-export const metadata = {
-  title: 'Erik Gulliksen - Portfolio',
-  description: 'Backend developer portfolio'
+// Use a different name for the runtime config
+export const runtimeConfig = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Erik Gulliksen - Portfolio",
+  description: "Backend developer portfolio"
 };
 
-export default function RootLayout({ children }) {
-  const fontClass = inter?.className ?? '';
+function getLanguageFromPath(pathname: string): string {
+  try {
+    return getLocaleFromPath(pathname);
+  } catch (error) {
+    console.error("Failed to detect language:", error);
+    return "no"; // Default to Norwegian if detection fails
+  }
+}
+
+// Main content wrapper with error boundary
+function MainContent({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex flex-col relative isolate min-h-screen">
+      <Navigation className="flex-shrink-0 sticky top-0 z-50" />
+      <main className="flex-1 w-full max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-5 sm:py-6 relative z-[10]">
+        <ErrorBoundary>
+          {children}
+        </ErrorBoundary>
+      </main>
+      <Footer className="flex-shrink-0" />
+    </div>
+  );
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}): ReactElement {
+  const headersList = headers();
+  const pathname = headersList.get("x-invoke-path") || "";
+  const lang = getLanguageFromPath(pathname);
+  const fontClass = inter?.className ?? "";
+  
+  // Get initial translations based on path
+  const initialTranslations = lang === "en" ? enTranslations.default : noTranslations.default;
   
   return (
-    <html lang="no" className={fontClass} suppressHydrationWarning>
-      <body className="bg-gradient-to-br from-blue-50 via-blue-25 to-white dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-blue-900 dark:text-green-white antialiased min-h-screen flex flex-col transition-colors duration-200">
+    <html lang={lang} className={`${fontClass} scroll-smooth`} suppressHydrationWarning>
+      <body 
+        className="
+          w-full
+          min-h-screen
+          bg-gradient-to-br from-blue-50 via-blue-100 to-white
+          dark:from-slate-950 dark:via-slate-900 dark:to-slate-800
+          text-blue-900 dark:text-blue-100
+          antialiased
+          transition-all duration-500 ease-in-out
+          relative
+          overflow-x-hidden
+          overflow-y-scroll
+        ">
         <Providers>
-          <Navigation />
-          <main className="flex-grow w-full max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-5 sm:py-6">
-            {children}
-          </main>
-          <Footer />
+          <TranslationsProvider translations={initialTranslations}>
+            <ErrorBoundary>
+              <CircuitBoard />
+            </ErrorBoundary>
+
+            <Suspense fallback={null}>
+              <ErrorBoundary>
+                <FloatingCode />
+              </ErrorBoundary>
+            </Suspense>
+
+            <MainContent>
+              {children}
+            </MainContent>
+          </TranslationsProvider>
         </Providers>
       </body>
     </html>

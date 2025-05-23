@@ -10,6 +10,11 @@ const nextConfig = {
       fs: false,
     };
 
+    // Ensure proper resolution of React components
+    config.resolve.extensions = [
+      '.tsx', '.ts', '.js', '.jsx', '.json', ...config.resolve.extensions || []
+    ];
+
     // Ensure proper handling of ESM/CommonJS
     config.module = {
       ...config.module,
@@ -20,6 +25,16 @@ const nextConfig = {
           type: 'javascript/auto',
           resolve: {
             fullySpecified: false,
+          },
+        },
+        {
+          test: /\.(tsx|ts|js|jsx)$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['next/babel'],
+            },
           },
         },
       ],
