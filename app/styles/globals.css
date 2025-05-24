@@ -2,235 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Additional custom styles below */
-@keyframes nodePulse {
-  0%, 100% { 
-    transform: scale(1);
-    opacity: 0.7;
-  }
-  50% { 
-    transform: scale(1.05);
-    opacity: 0.9;
-  }
-}
-
-:root {
-  /* Theme transitions */
-  --theme-transition-duration: 300ms;
-  --theme-transition-timing: ease;
-  --theme-transition: all var(--theme-transition-duration) var(--theme-transition-timing);
-  
-  /* Shadow colors */
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --shadow-color-darker: rgba(0, 0, 0, 0.2);
-  
-  /* Theme colors */
-  --color-primary: rgb(59, 130, 246);
-  --color-secondary: rgb(96, 165, 250);
-  --color-accent: rgb(34, 197, 94);
-  
-  /* Text colors */
-  --text-primary: rgb(30, 41, 59);
-  --text-secondary: rgb(71, 85, 105);
-  --text-muted: rgb(148, 163, 184);
-  
-  /* Light theme circuit board colors - increased visibility */
-  --circuit-color: rgba(59, 130, 246, 0.35);
-  --circuit-glow: rgba(59, 130, 246, 0.45);
-  --node-color: rgba(59, 130, 246, 0.4);
-  --node-glow: rgba(59, 130, 246, 0.5);
-  --trace-color: rgba(59, 130, 246, 0.38);
-  --gate-color: rgba(59, 130, 246, 0.32);
-  --data-pulse-color: rgba(59, 130, 246, 0.55);
-  --matrix-color: rgba(59, 130, 246, 0.3);
-  --binary-color: rgba(59, 130, 246, 0.28);
-  --tech-pattern: rgba(59, 130, 246, 0.25);
-  --hex-color: rgba(59, 130, 246, 0.35);
-  --circuit-pattern: rgba(59, 130, 246, 0.2);
-  
-  /* Light theme background */
-  --bg-primary: rgb(243, 244, 246);
-  --bg-secondary: rgb(229, 231, 235);
-  --bg-accent: rgb(243, 244, 246);
-  --circuit-color-dark: rgba(56, 189, 248, 0.8);
-  --circuit-glow-dark: rgba(56, 189, 248, 0.4);
-  
-  /* Syntax highlighting colors - Light theme */
-  --syntax-keyword: #d946ef;
-  --syntax-function: #059669;
-  --syntax-string: #92400e;
-  --syntax-number: #6d28d9;
-  --syntax-comment: #64748b;
-  --syntax-operator: #be185d;
-  --syntax-variable: #1e293b;
-  --syntax-type: #0284c7;
-}
-
-.dark {
-  /* Theme-specific display properties */
-  --theme-opacity: 0.9;
-  --theme-blend-mode: screen;
-  
-  /* Shadow colors for dark mode */
-  --shadow-color: rgba(0, 0, 0, 0.3);
-  --shadow-color-darker: rgba(0, 0, 0, 0.4);
-  
-  /* Dark theme colors */
-  --color-primary: rgb(96, 165, 250);
-  --color-secondary: rgb(147, 197, 253);
-  --color-accent: rgb(34, 197, 94);
-  
-  /* Dark theme text colors */
-  --text-primary: rgb(241, 245, 249);
-  --text-secondary: rgb(203, 213, 225);
-  --text-muted: rgb(148, 163, 184);
-  
-  /* Syntax highlighting colors - Dark theme */
-  --syntax-keyword: #ff79c6;
-  --syntax-function: #50fa7b;
-  --syntax-string: #f1fa8c;
-  --syntax-number: #bd93f9;
-  --syntax-comment: #6272a4;
-  --syntax-operator: #ff79c6;
-  --syntax-variable: #f8f8f2;
-  --syntax-type: #8be9fd;
-  
-  /* Dark theme circuit board colors - maximum visibility */
-  --circuit-color: rgba(56, 189, 248, 0.75);
-  --circuit-glow: rgba(56, 189, 248, 0.85);
-  --node-color: rgba(56, 189, 248, 0.8);
-  --node-glow: rgba(16, 185, 129, 0.9);
-  --trace-color: rgba(56, 189, 248, 0.75);
-  --gate-color: rgba(16, 185, 129, 0.7);
-  --data-pulse-color: rgba(16, 185, 129, 0.85);
-  --matrix-color: rgba(56, 189, 248, 0.6);
-  --binary-color: rgba(56, 189, 248, 0.55);
-  --tech-pattern: rgba(56, 189, 248, 0.5);
-  --hex-color: rgba(56, 189, 248, 0.65);
-  --circuit-pattern: rgba(56, 189, 248, 0.45);
-  
-  /* Dark theme background */
-  --bg-primary: rgb(17, 24, 39);
-  --bg-secondary: rgb(31, 41, 55);
-  --bg-accent: rgb(51, 65, 85);
-}
-
-@keyframes pulseOpacity {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 0.9; }
-}
-
-.circuit-board-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-color: var(--bg-primary);
-  transition: background-color 0.3s ease;
-  transform: translateZ(0);
-  overflow: hidden;
-  will-change: transform;
-}
-
-/* PCB circuit pattern effect */
-.circuit-board-bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: 
-    /* Main traces */
-    linear-gradient(90deg, transparent 49px, var(--trace-color) 49px, var(--trace-color) 50px, transparent 50px),
-    linear-gradient(0deg, transparent 49px, var(--trace-color) 49px, var(--trace-color) 50px, transparent 50px),
-    /* Connection pads */
-    radial-gradient(circle at 50px 50px, var(--node-color) 2px, var(--circuit-color) 3px, transparent 4px);
-  background-size: 100px 100px;
-  opacity: 0.8;
-  transform: translateZ(0);
-}
-
-/* Circuit components */
-.circuit-board-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    /* IC packages */
-    repeating-linear-gradient(90deg, transparent 0, transparent 60px, var(--gate-color) 60px, var(--gate-color) 90px),
-    repeating-linear-gradient(0deg, transparent 0, transparent 60px, var(--gate-color) 60px, var(--gate-color) 90px),
-    /* Component outlines */
-    repeating-linear-gradient(45deg, transparent 0, transparent 40px, var(--circuit-color) 40px, var(--circuit-color) 41px);
-  background-size: 120px 120px;
-  opacity: 0.7;
-  transform: translateZ(0);
-}
-
-/* Circuit node connection points */
-.circuit-node {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: var(--node-color);
-  box-shadow: 0 0 4px var(--node-glow);
-  z-index: 0;
-  opacity: 0.85;
-  animation: nodePulse 3s ease-in-out infinite;
-  transform: translateZ(0);
-}
-
-/* Circuit trace lines */
-.circuit-node::after {
-  content: "";
-  position: absolute;
-  width: 120px;
-  height: 4px;
-  background-color: var(--trace-color);
-  top: 50%;
-  left: 50%;
-  transform-origin: left center;
-  transform: rotate(calc(var(--angle, 45deg))) translateZ(0);
-  opacity: 0.85;
-  z-index: -1;
-  box-shadow: 0 0 3px var(--circuit-glow);
-}
-
-.circuit-node:nth-child(1) {
-  top: 15%;
-  left: 10%;
-  animation-delay: 0s;
-}
-.circuit-node:nth-child(1)::after {
-  --angle: 45deg;
-}
-
-.circuit-node:nth-child(2) {
-  top: 35%;
-  left: 85%;
-  animation-delay: 0.4s;
-}
-.circuit-node:nth-child(2)::after {
-  --angle: 225deg;
-}
-
-.circuit-node:nth-child(3) {
-  top: 65%;
-  left: 25%;
-  animation-delay: 0.8s;
-}
-.circuit-node:nth-child(3)::after {
-  --angle: 135deg;
-}
-
-.circuit-node:nth-child(4) {
-  top: 85%;
-  left: 70%;
-  animation-delay: 1.2s;
-}
-.circuit-node:nth-child(4)::after {
-  --angle: 315deg;
-}
-
+/* Theme variables and base styles */
 @layer base {
+  :root {
+    /* Theme Colors */
+    --background: 255, 255, 255;
+    --background-dark: 241, 245, 249;
+    --text: 15, 23, 42;
+    --text-dark: 148, 163, 184;
+    
+    /* Circuit Colors - Light Theme */
+    --circuit-primary: 59, 130, 246;
+    --circuit-glow: 56, 189, 248;
+    --circuit-node: 34, 211, 238;
+    --circuit-trace: 8, 145, 178;
+    --circuit-board: 22, 163, 74; /* Green for circuit board */
+    --data-packet: 255, 255, 255; /* White for data packets */
+    --circuit-color: rgba(var(--circuit-primary), 0.7);
+    --board-color: rgba(var(--circuit-board), 0.08); /* Even more subtle */
+    --data-color: rgba(var(--data-packet), 0.95); /* Increased for visibility */
+    
+    /* Circuit Element Colors */
+    --node-color: rgba(var(--circuit-node), 0.8);
+    --node-glow: rgba(var(--circuit-node), 0.5);
+    --trace-color: rgba(var(--circuit-trace), 0.75); /* More visible highways */
+    --gate-color: rgba(var(--circuit-primary), 0.25);
+    --spark-color: rgba(var(--circuit-glow), 0.7);
+    --spark-glow: rgba(var(--circuit-glow), 0.9);
+    
+    /* Animation Timings */
+    --transition-slow: 500ms;
+    --transition-normal: 300ms;
+    --spark-duration: 2s; /* Slower animation */
+    --node-pulse-duration: 3s;
+  }
+
+  .dark {
+    /* Dark Theme Colors */
+    --background: 15, 23, 42;
+    --background-dark: 2, 6, 23;
+    --text: 241, 245, 249;
+    --text-dark: 148, 163, 184;
+    
+    /* Circuit Colors - Dark Theme */
+    --circuit-primary: 96, 165, 250;
+    --circuit-glow: 56, 189, 248;
+    --circuit-node: 6, 182, 212;
+    --circuit-trace: 14, 116, 144;
+    --circuit-board: 34, 197, 94; /* Brighter green for dark mode */
+    
+    /* Circuit Element Colors */
+    --node-color: rgba(var(--circuit-node), 0.9);
+    --node-glow: rgba(var(--circuit-node), 0.7);
+    --trace-color: rgba(var(--circuit-trace), 0.65);
+    --board-color: rgba(var(--circuit-board), 0.15);
+    --data-color: rgba(var(--data-packet), 0.95);
+    --spark-color: rgba(var(--circuit-glow), 0.85);
+    --spark-glow: rgba(var(--circuit-glow), 1);
+  }
+
+  /* Base HTML elements */
   html {
     scroll-behavior: smooth;
     height: 100%;
@@ -255,14 +86,309 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    z-index: 1;
+    z-index: 20; /* Higher than circuit board */
   }
 
   main {
     position: relative;
-    z-index: 10;
+    z-index: 30; /* Higher than __next */
     flex: 1;
     transform: translateZ(0);
+  }
+}
+
+/* Circuit Board Container */
+.circuit-board-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 1; /* Ensure visibility */
+  pointer-events: none;
+  overflow: hidden;
+  transform: translateZ(0);
+  will-change: transform;
+  mix-blend-mode: screen;
+  transition: all var(--transition-normal) ease-in-out;
+}
+
+.circuit-board-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0; /* Base layer */
+  background-image:
+    /* Green circuit board pattern */
+    repeating-linear-gradient(90deg, transparent 0, transparent 19px, var(--board-color) 19px, var(--board-color) 20px),
+    repeating-linear-gradient(0deg, transparent 0, transparent 19px, var(--board-color) 19px, var(--board-color) 20px),
+    /* Wide blue data highways - slightly wider and more visible */
+    linear-gradient(90deg, transparent 38px, var(--trace-color) 38px, var(--trace-color) 62px, transparent 62px),
+    linear-gradient(0deg, transparent 38px, var(--trace-color) 38px, var(--trace-color) 62px, transparent 62px);
+  background-size: 40px 40px, 40px 40px, 100px 100px, 100px 100px;
+  opacity: 0.95;
+  transform: translateZ(0);
+  mix-blend-mode: screen;
+}
+
+/* Remove the second grid pattern */
+.circuit-board-bg::after {
+  display: none;
+}
+
+/* Data packet animations */
+.data-packets-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2; /* Above nodes */
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.data-packet {
+  position: absolute;
+  width: 6px; /* Slightly larger */
+  height: 6px;
+  background-color: var(--data-color);
+  border-radius: 50%;
+  opacity: 0;
+  z-index: 4; /* Above data-packets-layer */
+  transform-origin: center;
+  box-shadow: 
+    0 0 20px var(--data-color),
+    0 0 40px var(--data-color),
+    0 0 60px var(--data-color);
+  filter: brightness(3) contrast(2); /* Increased brightness */
+  animation: dataFlow var(--animation-duration, 2s) linear var(--delay, 0ms) infinite;
+  mix-blend-mode: screen;
+}
+
+/* Dark theme enhancement */
+.dark .data-packet {
+  filter: brightness(3.5) contrast(2.2);
+  box-shadow: 
+    0 0 25px var(--data-color),
+    0 0 50px var(--data-color),
+    0 0 75px var(--data-color);
+}
+
+@keyframes dataFlow {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) translate(0, 0);
+  }
+  15%, 85% { /* Longer visible duration */
+    opacity: 1; /* Full opacity */
+    transform: scale(1.2) translate(
+      var(--flow-x, var(--flow-distance, 0)),
+      var(--flow-y, 0)
+    );
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.6) translate(
+      calc(var(--flow-x, var(--flow-distance, 0)) * 2),
+      calc(var(--flow-y, 0) * 2)
+    );
+  }
+}
+
+/* Spark Container and Particles */
+.spark-container {
+  position: absolute;
+  inset: 0;
+  z-index: 4; /* Above data packets */
+  pointer-events: none;
+  overflow: hidden;
+  mix-blend-mode: screen;
+}
+
+.spark-particle {
+  --base-size: 6px; /* Increased size */
+  position: absolute;
+  width: calc(var(--base-size) * var(--spark-scale));
+  height: calc(var(--base-size) * var(--spark-scale));
+  border-radius: 50%;
+  opacity: 0;
+  z-index: 5;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  
+  /* Enhanced laser beam effect */
+  background-color: var(--spark-color);
+  box-shadow: 
+    0 0 calc(20px * var(--intensity)) var(--spark-glow),
+    0 0 calc(40px * var(--intensity)) var(--spark-glow);
+  filter: brightness(3) contrast(2);
+  
+  /* Laser trail effect */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -200px; /* Much longer trail */
+    right: -50px; /* Extended ahead */
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--spark-color) 50%,
+      var(--spark-glow) 100%
+    );
+    transform: translateY(-50%);
+    filter: blur(2px);
+    opacity: 0.8;
+    box-shadow: 
+      0 0 calc(8px * var(--intensity)) var(--spark-glow),
+      0 0 calc(16px * var(--intensity)) var(--spark-glow);
+  }
+  
+  /* Spark trail effect */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    border-radius: inherit;
+    filter: blur(3px);
+    opacity: 0.6;
+    transform: scale(1.8);
+  }
+  
+  /* Improved animation properties */
+  animation: 
+    sparkMove var(--spark-duration) cubic-bezier(0.4, 0, 0.6, 1) var(--delay) forwards;
+}
+
+/* Dark Theme Enhancements */
+.dark .spark-particle {
+  filter: brightness(3.5) contrast(2.5);
+  box-shadow: 
+    0 0 calc(20px * var(--intensity)) var(--spark-glow),
+    0 0 calc(40px * var(--intensity)) var(--spark-glow);
+  
+  &::before {
+    opacity: 0.9;
+    box-shadow: 
+      0 0 calc(12px * var(--intensity)) var(--spark-glow),
+      0 0 calc(24px * var(--intensity)) var(--spark-glow);
+  }
+  
+  &::after {
+    filter: blur(4px) brightness(1.4);
+    opacity: 0.7;
+    transform: scale(2);
+  }
+}
+
+/* Circuit Node Styles */
+.circuit-node {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--node-color);
+  box-shadow: 0 0 6px var(--node-glow);
+  z-index: 1; /* Above circuit board */
+  opacity: 0.9;
+  pointer-events: none;
+  transition: all var(--transition-normal) ease-in-out;
+  animation: nodePulse var(--node-pulse-duration) ease-in-out infinite;
+}
+
+.circuit-node::after {
+  content: "";
+  position: absolute;
+  width: 120px;
+  height: 2px;
+  background-color: var(--trace-color);
+  top: 50%;
+  left: 50%;
+  transform-origin: left center;
+  transform: rotate(var(--angle)) translateZ(0);
+  opacity: 0.7;
+  z-index: 2;
+  box-shadow: 
+    0 0 4px var(--node-glow),
+    0 0 8px var(--node-glow);
+  transition: all var(--transition-normal) ease-in-out;
+}
+
+/* Circuit Node Positions */
+.circuit-node:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+.circuit-node:nth-child(1)::after { --angle: 45deg; }
+
+.circuit-node:nth-child(2) { top: 35%; left: 85%; animation-delay: 0.4s; }
+.circuit-node:nth-child(2)::after { --angle: 225deg; }
+
+.circuit-node:nth-child(3) { top: 65%; left: 25%; animation-delay: 0.8s; }
+.circuit-node:nth-child(3)::after { --angle: 135deg; }
+
+.circuit-node:nth-child(4) { top: 85%; left: 70%; animation-delay: 1.2s; }
+.circuit-node:nth-child(4)::after { --angle: 315deg; }
+
+.circuit-node:nth-child(5) { top: 25%; left: 45%; animation-delay: 1.6s; }
+.circuit-node:nth-child(5)::after { --angle: 90deg; }
+
+.circuit-node:nth-child(6) { top: 75%; left: 55%; animation-delay: 2.0s; }
+.circuit-node:nth-child(6)::after { --angle: 270deg; }
+
+.circuit-node:nth-child(7) { top: 50%; left: 15%; animation-delay: 2.4s; }
+.circuit-node:nth-child(7)::after { --angle: 180deg; }
+
+.circuit-node:nth-child(8) { top: 50%; left: 85%; animation-delay: 2.8s; }
+.circuit-node:nth-child(8)::after { --angle: 0deg; }
+
+/* Animations */
+@keyframes nodePulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes sparkMove {
+  0% {
+    opacity: 0;
+    transform: translate(var(--start-x), var(--start-y)) scale(var(--spark-scale));
+  }
+  20%, 80% { /* Longer visible duration */
+    opacity: calc(1 * var(--intensity));
+  }
+  45%, 55% { /* Pause briefly at midpoint */
+    transform: translate(var(--control-x), var(--control-y)) scale(calc(var(--spark-scale) * 1.8));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--end-x), var(--end-y)) scale(var(--spark-scale));
+  }
+}
+
+@keyframes sparkGlow {
+  0%, 100% {
+    filter: brightness(1) blur(1px);
+  }
+  50% {
+    filter: brightness(calc(1.5 * var(--intensity))) blur(2px);
+  }
+}
+
+@keyframes sparkTrail {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  25% {
+    transform: scale(1.5);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
   }
 }
 
@@ -277,11 +403,20 @@
   }
 }
 
+/* Reduced motion preference support */
+@media (prefers-reduced-motion: reduce) {
+  .spark-particle {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Components */
 @layer components {
   .animate-fade-in {
     animation: fadeIn 0.3s ease-out forwards;
   }
-  /* Text color utilities for better contrast */
+
   .text-content {
     @apply text-slate-800 dark:text-slate-100 transition-colors duration-300;
   }
@@ -294,12 +429,10 @@
     @apply text-slate-500 dark:text-slate-400 transition-colors duration-300;
   }
 
-  /* Interactive element transitions */
   .interactive {
     @apply transition-all duration-300 ease-in-out;
   }
 
-  /* Enhanced shadows for dark mode */
   .shadow-theme {
     @apply shadow-[0_4px_6px_-1px_var(--shadow-color)] 
     dark:shadow-[0_4px_6px_-1px_var(--shadow-color-darker)] 
@@ -331,10 +464,6 @@
     transition-colors duration-200;
   }
 
-  .section-title {
-    @apply text-3xl font-bold mb-8 pb-3 border-b-2 inline-block;
-  }
-
   .card {
     @apply bg-gradient-to-br from-blue-100 to-blue-300 
     text-blue-900 dark:from-slate-800 dark:to-slate-900 
@@ -349,15 +478,11 @@
   }
 
   .btn-primary {
-    @apply btn bg-blue-600 text-white dark:text-green-white hover:bg-blue-700;
+    @apply btn bg-blue-600 text-white hover:bg-blue-700;
   }
   
   .btn-secondary {
     @apply btn bg-white text-blue-600 hover:bg-blue-50 border border-blue-200;
-  }
-
-  .profile-picture {
-    @apply relative h-64 w-64 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden;
   }
 
   .project-card {
