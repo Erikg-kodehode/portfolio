@@ -16,9 +16,9 @@ export default function Card({
   onClick
 }: CardProps) {
   const variants = {
-    default: 'bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm shadow-md',
-    elevated: 'bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-lg',
-    outlined: 'bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200 dark:border-slate-700'
+    default: 'bg-slate-100/10 dark:bg-slate-900/50 backdrop-blur-sm shadow-md',
+    elevated: 'bg-slate-100/20 dark:bg-slate-900/70 backdrop-blur-md shadow-lg',
+    outlined: 'bg-slate-100/5 dark:bg-slate-900/30 backdrop-blur-sm border border-slate-200/20 dark:border-slate-700/20'
   };
 
   const paddings = {

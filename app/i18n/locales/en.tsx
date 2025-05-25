@@ -1,3 +1,20 @@
+export const contactTranslations = {
+  title: 'Contact',
+  description: "Let's connect! Feel free to reach out for opportunities, collaborations, or just to say hello.",
+  form: {
+    name: 'Name',
+    email: 'Email',
+    subject: 'Subject',
+    message: 'Message',
+    submit: {
+      idle: 'Send Message',
+      submitting: 'Sending...',
+    },
+    success: 'Message sent successfully! I will get back to you soon.',
+    error: 'Failed to send message. Please try again later.',
+  },
+};
+
 import type { Translations } from './translations.d';
 
 const en: Translations = {
@@ -76,25 +93,29 @@ const en: Translations = {
       shortTerm: {
         title: 'Short-term Goals',
         items: [
-          'Master fundamental ASP.NET Core concepts',
-          'Build more complete backend applications',
-          'Expand understanding of database design and optimization'
+          'Master core concepts in ASP.NET Core, including middleware, dependency injection, and routing',
+          'Build and deploy complete backend applications with C# and Entity Framework',
+          'Improve knowledge of database design, normalization, and writing optimized queries',
+          'Learn basic Docker to build images and run your .NET applications in containers'
         ]
       },
       mediumTerm: {
         title: 'Medium-term Goals',
         items: [
-          'Explore advanced C# and .NET concepts',
-          'Learn more about microservice architecture',
-          'Contribute to open-source projects within the .NET ecosystem'
+          'Dive into advanced C#/.NET concepts like asynchronous programming, multithreading, and performance optimization',
+          'Implement an application based on microservice architecture, including service communication (e.g., via REST or gRPC)',
+          'Gain practical experience with Kubernetes (K8s) to deploy and manage container-based applications',
+          'Understand fundamental networking principles for distributed systems, such as DNS, load balancing, and API Gateways',
+          'Actively contribute to an open-source project in the .NET ecosystem'
         ]
       },
       longTerm: {
         title: 'Long-term Goals',
         items: [
-          'Specialize in backend architecture and system design',
-          'Explore AI and machine learning with .NET',
-          'Build more complex, distributed systems'
+          'Specialize in advanced system design and architectural patterns like CQRS and Event Sourcing',
+          'Design and lead the development of complex, distributed systems with high scalability and reliability requirements',
+          'Explore and apply AI and machine learning with ML.NET to solve real-world problems',
+          'Master cloud architecture and advanced network configuration to build robust solutions in the cloud (e.g., Azure, AWS)'
         ]
       }
     },
@@ -215,8 +236,18 @@ const en: Translations = {
     form: {
       name: 'Name',
       email: 'Email',
+      subject: 'Subject',
       message: 'Message',
-      send: 'Send Message'
+      submit: {
+        idle: 'Send Message',
+        submitting: 'Sending...'
+      },
+      success: 'Message sent successfully! I\'ll get back to you soon.',
+      error: 'Failed to send message. Please try again.'
+    },
+    social: {
+      github: 'GitHub Profile',
+      discord: 'Discord Community'
     }
   }
 };

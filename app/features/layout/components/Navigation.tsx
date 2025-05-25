@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useMemo } from 'react';
 import { ThemeToggle, LanguageSwitcher } from '@/components/ui';
@@ -22,7 +23,6 @@ export default function Navigation({ className = '' }: NavigationProps) {
   
   const isEnglish = pathname?.startsWith('/en');
   
-  // Memoize nav links to prevent unnecessary recalculations
   const navLinks = useMemo(() => [
     { name: t.nav.home, path: isEnglish ? '/en' : '/' },
     { name: t.nav.about, path: `${isEnglish ? '/en' : ''}/about` },
@@ -31,13 +31,9 @@ export default function Navigation({ className = '' }: NavigationProps) {
     { name: t.nav.contact, path: `${isEnglish ? '/en' : ''}/contact` },
   ], [isEnglish, t.nav]);
 
-  // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // Type guard to ensure target is an Element
       if (!(event.target instanceof Element)) return;
-      
-      // Now TypeScript knows target is an Element and has closest()
       if (isMenuOpen && !event.target.closest('nav')) {
         setIsMenuOpen(false);
       }
@@ -47,14 +43,13 @@ export default function Navigation({ className = '' }: NavigationProps) {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [isMenuOpen]);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
 
   return (
     <header 
-      key={isEnglish ? 'en' : 'no'} // Add key to prevent layout shifts during language switch
+      key={isEnglish ? 'en' : 'no'}
       className={`sticky top-0 z-50 
         bg-white/90 dark:bg-slate-800/90 
         backdrop-blur-md shadow-theme 
@@ -65,13 +60,45 @@ export default function Navigation({ className = '' }: NavigationProps) {
       <nav className="container mx-auto px-6 flex justify-between items-center">
         <Link 
           href={isEnglish ? '/en' : '/'} 
-          className="text-xl font-bold text-content hover:text-blue-600 dark:hover:text-blue-300 
-            transform transition-all duration-300 hover:scale-[1.02]"
+          className="flex items-center group relative"
         >
-          Erik Gulliksen
+          <div className="relative flex items-center justify-center w-12 h-12 md:w-14 md:h-14
+            rounded-full bg-white/50 dark:bg-slate-700/50 
+            shadow-lg dark:shadow-slate-900/20
+            overflow-hidden
+            transform-gpu transition-all duration-300 ease-out
+            before:absolute before:inset-0 before:rounded-full
+            before:border-2 before:border-blue-200 dark:before:border-blue-800
+            before:transition-all before:duration-300
+            after:absolute after:inset-0 after:rounded-full
+            after:border-2 after:border-transparent
+            after:transition-all after:duration-300
+            group-hover:before:border-blue-400 dark:group-hover:before:border-blue-600
+            group-hover:after:border-blue-300 dark:group-hover:after:border-blue-700
+            group-hover:after:scale-110
+            group-hover:shadow-xl"
+          >
+            <div className="relative w-10 h-10 md:w-12 md:h-12 transform-gpu transition-all duration-300 ease-out group-hover:scale-[1.05]">
+              <Image
+                src="/assets/Logo.jpg"
+                alt="Erik Gulliksen Logo"
+                className="object-cover w-full h-full rounded-full select-none 
+                  transition-all duration-300
+                  group-hover:brightness-105 group-hover:contrast-105"
+                width={64}
+                height={64}
+                priority
+                quality={95}
+              />
+              <div className="absolute inset-0 rounded-full shadow-inner pointer-events-none
+                bg-gradient-to-tr from-transparent via-transparent to-white/10 dark:to-white/5
+                opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              />
+              <span className="sr-only">{t.nav.home}</span>
+            </div>
+          </div>
         </Link>
 
-        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-6">
           <ul className="flex gap-6" role="list">
             {navLinks.map((link) => (
@@ -102,7 +129,6 @@ export default function Navigation({ className = '' }: NavigationProps) {
           </div>
         </div>
 
-        {/* Mobile Navigation Controls */}
         <div className="md:hidden flex items-center gap-3">
           <LanguageSwitcher />
           <ThemeToggle />
@@ -126,7 +152,6 @@ export default function Navigation({ className = '' }: NavigationProps) {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
       <nav 
         className={`md:hidden fixed inset-x-0 top-[72px] 
           bg-white/95 dark:bg-slate-800/95 
@@ -173,4 +198,3 @@ export default function Navigation({ className = '' }: NavigationProps) {
     </header>
   );
 }
-

@@ -38,18 +38,12 @@ export default function LanguageSwitcher() {
     setIsLoading(true);
     startLanguageChange();
     startChange();
-    const targetPath = getTargetPath();
     
-    // Capture current scroll position
-    const scrollPos = window.scrollY;
-    
-  startTransition(() => {
-      // Use router.push with correct options for Next.js 14
-      router.push(targetPath, { scroll: false });
+    startTransition(() => {
+      router.push(getTargetPath(), { scroll: false });
       
-      // End loading state after a short delay for smooth transition
+      // End loading state after transition
       setTimeout(() => {
-        window.scrollTo(0, scrollPos);
         setIsLoading(false);
         endLanguageChange();
         endChange();

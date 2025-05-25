@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { FaGithub } from 'react-icons/fa';
+import { FaGithub, FaAddressCard } from 'react-icons/fa';
 import { DiscordLink } from '@/components/ui';
 interface FooterProps {
   className?: string;
@@ -32,11 +32,13 @@ export default function Footer({ className = '' }: FooterProps) {
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 flex items-center gap-1"
               spanClassName="hidden sm:inline"
             />
-            <Link 
-              href="/contact" 
-              className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+            <Link
+              href="/contact"
+              className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 flex items-center gap-1"
+              aria-label="Contact"
             >
-              Contact
+              <FaAddressCard className="text-lg" />
+              <span className="hidden sm:inline">Contact</span>
             </Link>
           </div>
         </div>

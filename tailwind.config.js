@@ -9,17 +9,21 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
-      colors: {
-        'blue-25': '#f5f8ff',
-        'green-white': '#e6ffe6', // Subtle green-tinted white for dark mode
-        'slate': {
-          50: '#f8f9fb', // Softer white for light mode
-          100: '#f1f3f8', // Less bright background
+      animation: {
+        fadeIn: 'fadeIn 0.5s ease-in-out',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
         },
       },
-      backgroundColor: {
-        'dark-gradient-start': '#1a1f2e',
-        'dark-gradient-end': '#111827',
+      colors: {
+        'blue-25': '#f5f8ff',
+        'slate': {
+          50: '#f8f9fb',
+          100: '#f1f3f8',
+        },
       },
       container: {
         center: true,

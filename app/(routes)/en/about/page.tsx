@@ -3,6 +3,7 @@ import { useTranslations } from '@/i18n';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { PageTitle } from '@/features/layout';
 
 
 export default function EnglishAboutPage() {
@@ -12,14 +13,11 @@ export default function EnglishAboutPage() {
   
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
-      <header className="mb-8 text-center">
-        <h1 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-2 transition-colors duration-200">
-          {t.about.title}
-        </h1>
-        <p className="text-base text-blue-700 dark:text-blue-400 dark:text-blue-400 max-w-2xl mx-auto leading-snug transition-colors duration-200">
-          {t.about.subtitle}
-        </p>
-      </header>
+      <PageTitle
+        title={t.about.title}
+        subtitle={t.about.subtitle}
+        align="center"
+      />
 
       <section className="mb-8 hero-container backdrop-blur-sm">
         <div className="flex flex-col md:flex-row items-center">
@@ -118,7 +116,7 @@ export default function EnglishAboutPage() {
               <ul className="space-y-1.5 text-blue-700 dark:text-blue-400 text-sm transition-colors duration-200">
                 {t.about.goals.shortTerm.items.map((item, index) => (
                   <li key={index} className="flex items-start">
-                    <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">•</span>
+                    <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">â€¢</span>
                     <span className="text-blue-700 dark:text-blue-400">{item}</span>
                   </li>
                 ))}
@@ -134,7 +132,7 @@ export default function EnglishAboutPage() {
               <ul className="space-y-1.5 text-blue-700 dark:text-blue-400 text-sm transition-colors duration-200">
                 {t.about.goals.mediumTerm.items.map((item, index) => (
                   <li key={index} className="flex items-start">
-                    <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">•</span>
+                    <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">â€¢</span>
                     <span className="text-blue-700 dark:text-blue-400">{item}</span>
                   </li>
                 ))}
@@ -150,7 +148,7 @@ export default function EnglishAboutPage() {
               <ul className="space-y-1.5 text-blue-700 dark:text-blue-400 text-sm transition-colors duration-200">
                 {t.about.goals.longTerm.items.map((item, index) => (
                   <li key={index} className="flex items-start">
-                    <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">•</span>
+                    <span className="text-blue-500 dark:text-blue-400 mr-2 transition-colors duration-200">â€¢</span>
                     <span className="text-blue-700 dark:text-blue-400">{item}</span>
                   </li>
                 ))}

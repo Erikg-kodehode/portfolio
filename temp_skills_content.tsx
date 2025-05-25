@@ -1,11 +1,3 @@
-'use client';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { SkillLevelIndicator } from '@/features/skills/components';
-import { useTranslations } from '@/i18n';
-import { PageTitle } from '@/features/layout';
-import { useLoading } from '@/components/providers/LoadingProvider';
-
 export default function SkillsPage() {
   const t = useTranslations();
   const pathname = usePathname();
@@ -13,7 +5,6 @@ export default function SkillsPage() {
   const isEnglish = pathname?.startsWith('/en');
 
   // Show loading state while language is changing
-  if (isLanguageChanging || !t?.skills) {
     return (
       <div className="container mx-auto px-4 py-6 max-w-5xl">
         <div className="animate-pulse">
@@ -98,4 +89,3 @@ export default function SkillsPage() {
       </div>
     </div>
   );
-}

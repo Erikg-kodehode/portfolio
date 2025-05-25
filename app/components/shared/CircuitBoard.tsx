@@ -56,44 +56,33 @@ function SparkParticle({ startNode, endNode, delay, size = 1, intensity = 1 }: S
   const start = CIRCUIT_NODES[startNode];
   const end = CIRCUIT_NODES[endNode];
 
-  // Calculate the midpoint for the quadratic bezier curve
+  // Calculate coordinates
   const startX = parseFloat(start.left);
   const startY = parseFloat(start.top);
   const endX = parseFloat(end.left);
   const endY = parseFloat(end.top);
   
-  // Create a curved path by offsetting the control point
-  const midX = (startX + endX) / 2;
-  const midY = (startY + endY) / 2;
-  const angle = Math.atan2(endY - startY, endX - startX);
-  const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
-  
-  // Offset the control point perpendicular to the path
-  const offset = distance * 0.2; // 20% of the path length
-  const controlX = midX + Math.cos(angle + Math.PI/2) * offset;
-  const controlY = midY + Math.sin(angle + Math.PI/2) * offset;
-
-  const style = {
-    '--start-x': start.left,
-    '--start-y': start.top,
-    '--end-x': end.left,
-    '--end-y': end.top,
-    '--control-x': `${controlX}%`,
-    '--control-y': `${controlY}%`,
-    '--spark-scale': size.toString(),
-    '--intensity': intensity.toString(),
-    '--path-length': `${distance}%`,
-    '--delay': `${delay}ms`,
-  } as React.CSSProperties;
+  // Create SVG path
+  const pathId = `spark-path-${startNode}-${endNode}`;
+  const d = `M ${startX} ${startY} L ${endX} ${endY}`;
 
   return (
-    <div 
-      className="spark-particle" 
-      style={style}
-      onAnimationEnd={(e) => {
-        e.currentTarget.remove();
-      }}
-    />
+    <>
+      <path id={pathId} d={d} className="stroke-transparent" />
+      <circle 
+        r="3"
+        className="fill-cyan-300 drop-shadow-[0_0_3px_#00e5ff]"
+      >
+        <animateMotion
+          dur={`${delay}ms`}
+          begin="0s"
+          fill="freeze"
+          rotate="auto"
+        >
+          <mpath href={`#${pathId}`} />
+        </animateMotion>
+      </circle>
+    </>
   );
 }
 
@@ -215,16 +204,64 @@ const generateSpark = useCallback(() => {
 
   return (
     <div className="circuit-board-bg">
-      {/* Logic gate shapes layer */}
+      <svg className="absolute inset-0 w-full h-full">
+        <defs>
+          {/* Define paths for sparks */}
+          {CIRCUIT_NODES.map((start, i) => 
+            CIRCUIT_NODES.map((end, j) => {
+              if (i === j) return null;
+              const startX = parseFloat(start.left);
+              const startY = parseFloat(start.top);
+              const endX = parseFloat(end.left);
+              const endY = parseFloat(end.top);
+              return (
+                <path
+                  key={`path-${i}-${j}`}
+                  id={`path-${i}-${j}`}
+                  d={`M ${startX} ${startY} L ${endX} ${endY}`}
+                  className="stroke-transparent"
+                />
+              );
+            })
+          )}
+        </defs>
+
+        {/* Visible paths */}
+        <g className="stroke-cyan-500/20">
+          {CIRCUIT_NODES.map((start, i) => 
+            CIRCUIT_NODES.map((end, j) => {
+              if (i === j) return null;
+              return (
+                <use
+                  key={`visible-path-${i}-${j}`}
+                  href={`#path-${i}-${j}`}
+                  strokeWidth="1"
+                />
+              );
+            })
+          )}
+        </g>
+
+        {/* Active sparks */}
+        <g>
+          {sparks.map(spark => (
+            <SparkParticle
+              key={spark.id}
+              startNode={spark.startNode}
+              endNode={spark.endNode}
+              delay={spark.delay}
+              size={spark.size}
+              intensity={spark.intensity}
+            />
+          ))}
+        </g>
+      </svg>
+
+      {/* Circuit board pattern layer */}
       <div className="gate-layer">
-        {/* AND/OR/NOT Gate shapes are rendered via CSS ::before and ::after */}
+        {/* Circuit patterns rendered via CSS */}
       </div>
       
-      {/* Data flow pulse effect layer */}
-      <div className="pulse-layer z-[2]">
-        {/* Data flow animations and circuit patterns are rendered via CSS */}
-      </div>
-
       {/* Data packets layer */}
       <div className="data-packets-layer">
         {dataPackets.map(packet => (

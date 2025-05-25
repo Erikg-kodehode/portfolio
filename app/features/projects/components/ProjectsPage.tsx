@@ -1,6 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "@/i18n";
+import { PageTitle } from "@/features/layout";
 import ProjectCard from "./ProjectCard";
 
 export default function ProjectsPage() {
@@ -10,14 +11,11 @@ export default function ProjectsPage() {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 max-w-7xl">
-      <header className="mb-12 text-center">
-        <h1 className="text-3xl font-bold text-blue-900 dark:text-blue-200 mb-4 transition-colors duration-300">
-          {t.projects.title}
-        </h1>
-        <p className="text-lg text-blue-800/70 dark:text-blue-300/70 max-w-2xl mx-auto leading-relaxed transition-colors duration-300">
-          {t.projects.intro}
-        </p>
-      </header>
+      <PageTitle
+        title={t.projects.title}
+        subtitle={t.projects.intro}
+        align="center"
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
         {/* Hangman Project */}
@@ -30,8 +28,7 @@ export default function ProjectsPage() {
           technologies={t.projects.projects.hangman.technologies}
           // Repository URL for Hangman project
           sourceCodeUrl="https://github.com/Erikg-kodehode/Hangman"
-          // TODO: Replace with your actual live demo URL
-          liveDemoUrl="https://hangman-game-beta.vercel.app"
+          liveDemoUrl="https://hangman-eight-sable.vercel.app"
         />
 
         {/* Discord Bot Project */}

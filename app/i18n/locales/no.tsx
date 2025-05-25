@@ -1,3 +1,20 @@
+export const contactTranslations = {
+  title: 'Kontakt',
+  description: 'La oss holde kontakten! Ta gjerne kontakt for muligheter, samarbeid, eller bare for å si hei.',
+  form: {
+    name: 'Navn',
+    email: 'E-post',
+    subject: 'Emne',
+    message: 'Melding',
+    submit: {
+      idle: 'Send Melding',
+      submitting: 'Sender...',
+    },
+    success: 'Meldingen ble sendt! Jeg vil svare deg så snart som mulig.',
+    error: 'Kunne ikke sende melding. Vennligst prøv igjen senere.',
+  },
+};
+
 import type { Translations } from './translations.d';
 
 const no: Translations = {
@@ -76,25 +93,29 @@ const no: Translations = {
       shortTerm: {
         title: 'Kortsiktige mål',
         items: [
-          'Mestre grunnleggende ASP.NET Core konsepter',
-          'Bygge flere fullstendige backend-applikasjoner',
-          'Utvide forståelsen av database-design og -optimalisering'
+          'Mestre kjernekonseptene i ASP.NET Core, inkludert middleware, dependency injection, og routing',
+          'Bygge og deployere flere komplette backend-applikasjoner med C# og Entity Framework',
+          'Forbedre kunnskapen om database-design, normalisering og skrive optimaliserte queries',
+          'Lære grunnleggende Docker for å bygge images og kjøre .NET-applikasjonene dine i containere'
         ]
       },
       mediumTerm: {
         title: 'Mellomlangsiktige mål',
         items: [
-          'Utforske avanserte C# og .NET-konsepter',
-          'Lære mer om mikrotjeneste-arkitektur',
-          'Bidra til open-source prosjekter innen .NET økosystemet'
+          'Dykke ned i avanserte C#/.NET-konsepter som asynkron programmering, multithreading, og ytelsesoptimalisering',
+          'Implementere en applikasjon basert på mikrotjeneste-arkitektur, inkludert kommunikasjon mellom tjenester (f.eks. via REST eller gRPC)',
+          'Få praktisk erfaring med Kubernetes (K8s) for å deploye og administrere container-baserte applikasjoner',
+          'Forstå grunnleggende nettverksprinsipper for distribuerte systemer, som DNS, load balancing og API Gateways',
+          'Bidra aktivt til et open-source prosjekt i .NET-økosystemet'
         ]
       },
       longTerm: {
         title: 'Langsiktige mål',
         items: [
-          'Spesialisere meg innen backend-arkitektur og systemdesign',
-          'Utforske AI og maskinlæring med .NET',
-          'Bygge mer komplekse, distribuerte systemer'
+          'Spesialisere deg innen avansert systemdesign og arkitekturmønstre som CQRS og Event Sourcing',
+          'Designe og lede utviklingen av komplekse, distribuerte systemer med høye krav til skalerbarhet og pålitelighet',
+          'Utforske og anvende AI og maskinlæring med ML.NET for å løse reelle problemer',
+          'Mestre sky-arkitektur og avansert nettverkskonfigurasjon for å bygge robuste løsninger i skyen (f.eks. Azure, AWS)'
         ]
       }
     },
@@ -215,8 +236,18 @@ const no: Translations = {
     form: {
       name: 'Navn',
       email: 'E-post',
+      subject: 'Emne',
       message: 'Melding',
-      send: 'Send Melding'
+      submit: {
+        idle: 'Send Melding',
+        submitting: 'Sender...'
+      },
+      success: 'Melding sendt! Jeg tar kontakt snart.',
+      error: 'Kunne ikke sende melding. Vennligst prøv igjen.'
+    },
+    social: {
+      github: 'GitHub Profil',
+      discord: 'Discord Fellesskap'
     }
   }
 };

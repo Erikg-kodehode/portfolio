@@ -1,29 +1,18 @@
 import "@/styles/globals.css";
-import React, { type ReactNode, Suspense } from "react";
+import React, { type ReactNode } from "react";
 import { Inter } from "next/font/google";
-import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 import type { ReactElement } from "react";
 import { headers } from "next/headers";
 
 import { Navigation, Footer } from "@/features/layout";
 import { Providers } from "@/providers";
-import { ErrorBoundary, CircuitBoard } from "@/components/shared";
-import CircuitBackground from "@/components/shared/CircuitBackground";
+import { ErrorBoundary } from "@/components/shared";
 import { getLocaleFromPath } from "@/i18n";
 import { TranslationsProvider } from "@/i18n/context";
 import * as enTranslations from "@/i18n/locales/en";
 import * as noTranslations from "@/i18n/locales/no";
 
-// Optimize FloatingCode import with proper loading boundaries
-const FloatingCode = dynamic(
-  () => import("@/components/shared/FloatingCode").then(mod => mod.default),
-  {
-    ssr: false,
-    loading: () => <div className="hidden" />,
-    suspense: true,
-  }
-);
 
 const inter = Inter({
   subsets: ["latin"],
@@ -93,23 +82,10 @@ export default function RootLayout({
         <Providers>
           <TranslationsProvider translations={initialTranslations}>
             <ErrorBoundary>
-              {/* Add key to ensure proper remounting on language change */}
-              <CircuitBoard 
-                key={`circuit-${lang}`} 
-                language={lang}
-              />
-              <CircuitBackground nodeSelector=".circuit-node" />
+              <MainContent>
+                {children}
+              </MainContent>
             </ErrorBoundary>
-
-            <Suspense fallback={null}>
-              <ErrorBoundary>
-                <FloatingCode />
-              </ErrorBoundary>
-            </Suspense>
-
-            <MainContent>
-              {children}
-            </MainContent>
           </TranslationsProvider>
         </Providers>
       </body>

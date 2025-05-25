@@ -129,7 +129,7 @@ const projectData: Project[] = [
     description: "En implementasjon av det klassiske Hangman spillet | An implementation of the classic Hangman game",
     technologies: ["React", "TypeScript", "Tailwind CSS"],
     sourceCodeUrl: "https://github.com/Erikg-kodehode/Hangman",
-    liveDemoUrl: "https://hangman-game-beta.vercel.app",
+    liveDemoUrl: "https://hangman-eight-sable.vercel.app",
     image: {
       url: "/assets/Hangman.jpeg",
       alt: {

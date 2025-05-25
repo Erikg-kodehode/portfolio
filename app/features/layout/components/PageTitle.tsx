@@ -18,14 +18,27 @@ export default function PageTitle({
   };
 
   return (
-    <header className={`mb-8 ${alignmentClasses[align]} ${className}`}>
+    <header className={`
+      mb-8 
+      ${alignmentClasses[align]} 
+      ${className}
+      p-6 md:p-8
+      bg-slate-100/10 dark:bg-slate-900/50 
+      backdrop-blur-sm 
+      rounded-lg 
+      shadow-theme
+      transition-all duration-300 
+      hover:shadow-lg
+      hover:-translate-y-1
+      border border-blue-100/20 dark:border-blue-300/20
+    `}>
       <h1 className="
         text-4xl sm:text-5xl 
         font-bold 
-        text-blue-900 dark:text-blue-100 
         mb-4
-        bg-gradient-to-r from-blue-900 to-blue-700 dark:from-blue-300 dark:to-blue-100
-        bg-clip-text text-transparent
+        bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-400 dark:to-blue-200
+        bg-clip-text 
+        text-transparent
         transition-colors duration-200
       ">
         {title}
@@ -33,8 +46,11 @@ export default function PageTitle({
       {subtitle && (
         <p className="
           text-lg sm:text-xl 
-          text-slate-600 dark:text-slate-400
+          text-blue-700/90 dark:text-blue-400
           transition-colors duration-200
+          max-w-2xl 
+          mx-auto
+          leading-relaxed
         ">
           {subtitle}
         </p>
