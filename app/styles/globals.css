@@ -86,12 +86,12 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    z-index: 20; /* Higher than circuit board */
+    z-index: 30; /* Increased to ensure content is above all animations */
   }
 
   main {
     position: relative;
-    z-index: 30; /* Higher than __next */
+    z-index: 40; /* Higher than __next */
     flex: 1;
     transform: translateZ(0);
   }
@@ -101,7 +101,7 @@
 .circuit-board-bg {
   position: fixed;
   inset: 0;
-  z-index: 1; /* Ensure visibility */
+  z-index: 5; /* Base layer */
   pointer-events: none;
   overflow: hidden;
   transform: translateZ(0);
@@ -114,7 +114,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 0; /* Base layer */
+  z-index: 6; /* Above base layer */
   background-image:
     /* Green circuit board pattern */
     repeating-linear-gradient(90deg, transparent 0, transparent 19px, var(--board-color) 19px, var(--board-color) 20px),
@@ -137,7 +137,7 @@
 .data-packets-layer {
   position: absolute;
   inset: 0;
-  z-index: 2; /* Above nodes */
+  z-index: 7; /* Above circuit patterns */
   pointer-events: none;
   overflow: hidden;
 }
@@ -194,7 +194,7 @@
 .spark-container {
   position: absolute;
   inset: 0;
-  z-index: 4; /* Above data packets */
+  z-index: 9; /* Above circuit nodes */
   pointer-events: none;
   overflow: hidden;
   mix-blend-mode: screen;
@@ -289,7 +289,7 @@
   border-radius: 50%;
   background-color: var(--node-color);
   box-shadow: 0 0 6px var(--node-glow);
-  z-index: 1; /* Above circuit board */
+  z-index: 8; /* Above data packets layer */
   opacity: 0.9;
   pointer-events: none;
   transition: all var(--transition-normal) ease-in-out;
@@ -312,6 +312,32 @@
     0 0 4px var(--node-glow),
     0 0 8px var(--node-glow);
   transition: all var(--transition-normal) ease-in-out;
+}
+
+/* Circuit Background SVG Animations */
+.circuit-background {
+  position: fixed;
+  inset: 0;
+  z-index: 15; /* Above circuit board elements, below content */
+  mix-blend-mode: screen;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.circuit-background svg {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.circuit-background circle {
+  mix-blend-mode: screen;
+  filter: brightness(2.5) contrast(2); /* Increased brightness */
+  box-shadow: 0 0 15px var(--spark-glow); /* Enhanced glow */
+}
+
+.dark .circuit-background circle {
+  filter: brightness(3) contrast(2.2); /* Enhanced for dark mode */
+  box-shadow: 0 0 20px var(--spark-glow); /* Enhanced glow */
 }
 
 /* Circuit Node Positions */

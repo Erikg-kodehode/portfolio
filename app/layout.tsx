@@ -9,6 +9,7 @@ import { headers } from "next/headers";
 import { Navigation, Footer } from "@/features/layout";
 import { Providers } from "@/providers";
 import { ErrorBoundary, CircuitBoard } from "@/components/shared";
+import CircuitBackground from "@/components/shared/CircuitBackground";
 import { getLocaleFromPath } from "@/i18n";
 import { TranslationsProvider } from "@/i18n/context";
 import * as enTranslations from "@/i18n/locales/en";
@@ -33,7 +34,7 @@ const inter = Inter({
 export const runtimeConfig = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Erik Gulliksen - Portfolio",
+  title: "Gulliksen - Portfolio",
   description: "Backend developer portfolio"
 };
 
@@ -51,7 +52,7 @@ function MainContent({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-col relative isolate min-h-screen">
       <Navigation className="flex-shrink-0 sticky top-0 z-50" />
-      <main className="flex-1 w-full max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-5 sm:py-6 relative z-[10]">
+      <main className="flex-1 w-full max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-5 sm:py-6 relative z-[40]">
         <ErrorBoundary>
           {children}
         </ErrorBoundary>
@@ -92,7 +93,12 @@ export default function RootLayout({
         <Providers>
           <TranslationsProvider translations={initialTranslations}>
             <ErrorBoundary>
-              <CircuitBoard />
+              {/* Add key to ensure proper remounting on language change */}
+              <CircuitBoard 
+                key={`circuit-${lang}`} 
+                language={lang}
+              />
+              <CircuitBackground nodeSelector=".circuit-node" />
             </ErrorBoundary>
 
             <Suspense fallback={null}>
