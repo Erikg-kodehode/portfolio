@@ -1,17 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './features/**/*.{js,ts,jsx,tsx,mdx}',
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
+          content: [
+            './app/**/*.{js,ts,jsx,tsx,mdx}',
+            './components/**/*.{js,ts,jsx,tsx,mdx}',
+            './features/**/*.{js,ts,jsx,tsx,mdx}'
+          ],
   darkMode: 'class',
   theme: {
     extend: {
-      boxShadow: {
-        'glow-sm': '0 0 4px rgba(59, 130, 246, 0.5)',
-      },
+              boxShadow: {
+                'glow-sm': '0 0 4px rgba(59, 130, 246, 0.5)',
+                'theme': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                'theme-dark': '0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.12)'
+              },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-out forwards',
         'skill-dot': 'skillDot 0.3s ease-out forwards',
