@@ -1,7 +1,27 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useId, useRef } from 'react';
+import React, { 
+  useState, 
+  useEffect, 
+  useCallback, 
+  useId, 
+  useRef,
+  useMemo 
+} from 'react';
 import type { FC } from 'react';
+
+// Debounce utility function
+const debounce = (func: Function, wait: number) => {
+  let timeout: NodeJS.Timeout;
+  return function executedFunction(...args: any[]) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
 
 // Seeded random number generator for stable device positioning
 class SeededRandom {
@@ -99,18 +119,16 @@ interface FlowParticle {
 
 // Layout constants
 const CARD_MAX_SIZE = 100;
-const NUM_CARDS = 20;
+const NUM_CARDS = 12;        // Further reduced for better performance
 const MIN_DISTANCE = 160;
 const CURVE_INTENSITY = 0.15;
 const MIN_CONNECTIONS = 2;
 const MAX_CONNECTIONS = 3;
 
-// Animation constants
+// Animation constants - optimized for performance
 const PARTICLE_SIZE = 2.0;
-const ANIMATION_SPEED = 0.0025;
-const NUM_PARTICLES = 2;
-const PATH_OFFSET = 0.08;
-const ACTIVE_PATHS = 12;
+const ANIMATION_SPEED = 0.001;  // Slower for smoother animation
+const ACTIVE_PATHS = 6;      // Further reduced for performance
 const GRID_DIVISIONS = 8;
 const EDGE_PADDING = 0.12;
 
@@ -308,6 +326,21 @@ const defaultDimensions: Dimensions = {
   seed: calculateSeed(1024, 768)
 };
 
+// Add RAF batching for better performance
+const batchedRAF = (callback: FrameRequestCallback) => {
+  let ticking = false;
+  
+  return () => {
+    if (!ticking) {
+      requestAnimationFrame((t) => {
+        callback(t);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
+};
+
 const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
   const [mounted, setMounted] = useState(false);
   const [dimensions, setDimensions] = useState<Dimensions>(defaultDimensions);
@@ -315,19 +348,26 @@ const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
   const [connections, setConnections] = useState<Connection[]>([]);
   const [particles, setParticles] = useState<FlowParticle[]>([]);
   const uniqueId = useId();
-  const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const previousDimensionsRef = useRef<Dimensions>(defaultDimensions);
 
-  const updateDimensions = useCallback(() => {
+  // Move network generation before dimensions update
+  const generateNetwork = useCallback(() => {
     if (!mounted) return;
+    
+    requestIdleCallback(() => {
+      const newCards = generateCards(dimensions.width, dimensions.scrollHeight, dimensions.seed);
+      const newConnections = generateConnections(newCards, dimensions.seed);
 
-    // Clear any pending update
-    if (updateTimeoutRef.current) {
-      clearTimeout(updateTimeoutRef.current);
-    }
+      setCards(newCards);
+      setConnections(newConnections);
+    });
+  }, [dimensions, mounted]);
 
-    // Debounce the update
-    updateTimeoutRef.current = setTimeout(() => {
+  // Handle dimension updates
+  const updateDimensions = useCallback(
+    debounce(() => {
+      if (!mounted) return;
+
       const width = window.innerWidth;
       const height = window.innerHeight;
       const scrollHeight = Math.max(
@@ -344,35 +384,18 @@ const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
       };
       const prevDims = previousDimensionsRef.current;
 
-      // Only update if dimensions changed significantly (more than 10%)
+      // Only update on significant changes (more than 15%)
       const widthChange = Math.abs(newDimensions.width - prevDims.width) / prevDims.width;
       const heightChange = Math.abs(newDimensions.scrollHeight - prevDims.scrollHeight) / prevDims.scrollHeight;
-      
-      // Add hysteresis: require bigger change to trigger update, smaller change to maintain current state
-      const triggerThreshold = 0.10; // 10% change required to trigger update
-      const maintainThreshold = 0.08; // 8% change required to maintain current state
-      
-      const currentlyChanging = widthChange > maintainThreshold || heightChange > maintainThreshold;
-      const significantChange = widthChange > triggerThreshold || heightChange > triggerThreshold;
 
-      // Only update if we have a significant change or are continuing a current change
-      if (significantChange || (currentlyChanging && newDimensions.seed !== prevDims.seed)) {
+      if (widthChange > 0.15 || heightChange > 0.15) {
         setDimensions(newDimensions);
         previousDimensionsRef.current = newDimensions;
       }
-    }, 250); // 250ms debounce
-  }, [mounted]);
+    }, 300), // Increased debounce to 300ms for better performance
+    [mounted]
+  );
 
-  const generateNetwork = useCallback(() => {
-    if (!mounted) return;
-    
-    // Use the stable seed from dimensions
-    const newCards = generateCards(dimensions.width, dimensions.scrollHeight, dimensions.seed);
-    const newConnections = generateConnections(newCards, dimensions.seed);
-
-    setCards(newCards);
-    setConnections(newConnections);
-  }, [dimensions, mounted]);
 
   // Initialize mounted state and dimensions
   useEffect(() => {
@@ -421,38 +444,30 @@ const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
       prevProgress: 0
     }));
 
-    const animate = (timestamp: number) => {
-      const newParticles: FlowParticle[] = [];
+    const animate = batchedRAF((timestamp: number) => {
+      if (!mounted) return;
       
-      // Update multiple active paths
-      activePaths.forEach((path, pathIndex) => {
+      const newParticles = new Array(ACTIVE_PATHS).fill(null).map((_, pathIndex) => {
+        const path = activePaths[pathIndex];
         const baseProgress = (timestamp * ANIMATION_SPEED + (pathIndex * 0.3)) % 1;
         
-        // When particles complete their path, move to a new random connection
         if (baseProgress < path.prevProgress) {
-          // Use deterministic pattern for connection selection
           path.index = (path.index + Math.floor(connections.length / ACTIVE_PATHS)) % connections.length;
         }
         path.prevProgress = baseProgress;
 
-        const connection = connections[path.index];
-        
-        // Create multiple particles per path
-        for (let i = 0; i < NUM_PARTICLES; i++) {
-          const particleProgress = (baseProgress + (i * PATH_OFFSET)) % 1;
-          newParticles.push({
-            id: `particle-${uniqueId}-${path.index}-${pathIndex}-${i}`,
-            connection,
-            progress: particleProgress,
-            reverse: false,
-            size: PARTICLE_SIZE * (1 - (i * 0.1)) // Slightly decrease size for trailing particles
-          });
-        }
+        return {
+          id: `particle-${uniqueId}-${path.index}-${pathIndex}-0`,
+          connection: connections[path.index],
+          progress: baseProgress,
+          reverse: false,
+          size: PARTICLE_SIZE
+        };
       });
 
       setParticles(newParticles);
       animationFrameId = requestAnimationFrame(animate);
-    };
+    });
 
     animationFrameId = requestAnimationFrame(animate);
 
@@ -464,8 +479,8 @@ const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
     };
   }, [connections, uniqueId]);
 
-  // Don't render particles during server-side rendering
-  const particleElements = mounted ? particles.map(particle => {
+  // Separate particle component for better performance
+  const ParticleEffect = useCallback(({ particle }: { particle: FlowParticle }) => {
     const pathElement = document.getElementById(particle.connection.id);
     if (!pathElement || !(pathElement instanceof SVGPathElement)) return null;
     
@@ -488,61 +503,55 @@ const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
     } catch (error) {
       return null;
     }
-  }) : null;
+  }, []); // No external dependencies needed
+
+  // Memoize particle elements with individual components
+  const particleElements = useMemo(() => {
+    if (!mounted) return null;
+    return particles.map(particle => (
+      <ParticleEffect key={particle.id} particle={particle} />
+    ));
+  }, [mounted, particles, ParticleEffect]); // All required dependencies
 
   return (
     <div 
       className={`fixed inset-0 pointer-events-none ${className}`}
       style={{ 
         minHeight: dimensions.scrollHeight,
-        height: '100%'
+        height: '100%',
+        transform: 'translate3d(0,0,0)',  // Force hardware acceleration
+        backfaceVisibility: 'hidden',     // Prevent flickering
+        perspective: 1000,                // Improve performance
+        willChange: 'transform'           // Hint to browser
       }}
     >
       <div className="absolute inset-0 bg-gray-900/5" />
       <svg 
         className="w-full" 
-        style={{ 
-          height: '100%',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          minHeight: dimensions.scrollHeight
-        }}
+          style={{ 
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            minHeight: dimensions.scrollHeight,
+            transform: 'translate3d(0,0,0)',
+            backfaceVisibility: 'hidden',
+            willChange: 'transform',
+            imageRendering: 'pixelated'
+          }}
       >
         <defs>
           <filter id="glow">
-            <feGaussianBlur stdDeviation="2.0" />
+            <feGaussianBlur stdDeviation="1.5" />
             <feComposite in="SourceGraphic" operator="over" />
-            <feColorMatrix type="matrix" 
-              values="0 0 0 0 0.1
-                      0 0 0 0 0.85
-                      0 0 0 0 0.45
-                      0 0 0 0.7 0"
-            />
           </filter>
           <filter id="card-glow">
-            <feGaussianBlur stdDeviation="2.2" />
+            <feGaussianBlur stdDeviation="1.8" />
             <feComposite in="SourceGraphic" operator="over" />
-            <feColorMatrix type="matrix" 
-              values="0 0 0 0 0.5
-                      0 0 0 0 0.5
-                      0 0 0 0 0.5
-                      0 0 0 0.25 0"
-            />
           </filter>
           <filter id="particle-glow">
-            <feGaussianBlur stdDeviation="2.2" result="mainBlur" />
-            <feColorMatrix in="mainBlur" type="matrix" 
-              values="0 0 0 0 0.1
-                      0 0 0 0 0.98
-                      0 0 0 0 0.58
-                      0 0 0 1 0"
-              result="coloredBlur"
-            />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
+            <feGaussianBlur stdDeviation="1.2" />
+            <feComposite in="SourceGraphic" operator="over" />
           </filter>
           {connections.map(conn => (
             <path key={conn.id} id={conn.id} d={conn.path} />
