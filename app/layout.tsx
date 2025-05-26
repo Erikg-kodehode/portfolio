@@ -10,8 +10,6 @@ import { Providers } from "@/providers";
 import { ErrorBoundary } from "@/components/shared";
 import { getLocaleFromPath } from "@/i18n";
 import { TranslationsProvider } from "@/i18n/context";
-import * as enTranslations from "@/i18n/locales/en";
-import * as noTranslations from "@/i18n/locales/no";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -44,9 +42,6 @@ export default function RootLayout({
   const lang = getLanguageFromPath(pathname);
   const fontClass = inter?.className ?? "";
   
-  // Get initial translations based on path
-  const initialTranslations = lang === "en" ? enTranslations.default : noTranslations.default;
-  
   return (
     <html lang={lang} className={`${fontClass} scroll-smooth`} suppressHydrationWarning>
       <body 
@@ -63,7 +58,7 @@ export default function RootLayout({
           overflow-y-scroll
         ">
         <Providers>
-          <TranslationsProvider translations={initialTranslations}>
+          <TranslationsProvider>
             <ErrorBoundary>
               <MainContent>
                 {children}

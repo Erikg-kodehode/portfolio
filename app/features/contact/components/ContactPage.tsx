@@ -1,5 +1,4 @@
-﻿'use client';
-import Link from 'next/link';
+'use client';
 import { useTranslations } from '@/i18n';
 import { usePathname } from 'next/navigation';
 import { Container, Section, PageTitle } from '@/features/layout/components';

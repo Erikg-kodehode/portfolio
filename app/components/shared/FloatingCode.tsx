@@ -143,7 +143,7 @@ const FloatingSnippet: React.FC<FloatingSnippetProps> = ({ snippet, isActive, on
 
 
 const FloatingCode: React.FC = () => {
-  const { theme } = useTheme();
+  useTheme(); // Keep theme context subscription
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handleAnimationComplete = useCallback(() => {

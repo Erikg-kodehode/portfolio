@@ -23,10 +23,8 @@ const TranslationsContext = createContext<TranslationsContextType>({
 });
 
 export function TranslationsProvider({
-  translations,
   children,
 }: {
-  translations: Translations;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();

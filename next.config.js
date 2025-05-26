@@ -1,13 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    optimizeCss: true  // Keep CSS optimization enabled
+  // Force clean build to avoid caching issues
+  generateBuildId: async () => {
+    return 'clean-build-' + Date.now();
   },
   webpack: (config, { isServer }) => {
-    // Add fallback configuration
+    // Add fallback configuration and explicitly exclude MongoDB
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
+      mongodb: false,  // Explicitly declare no mongodb
+      mongoose: false, // Explicitly declare no mongoose
     };
 
     // Ensure proper resolution of React components

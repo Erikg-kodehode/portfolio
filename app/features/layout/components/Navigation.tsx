@@ -7,11 +7,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { ThemeToggle, LanguageSwitcher } from '@/components/ui';
 import { useTranslations } from '@/i18n';
 
-interface NavLink {
-  name: string;
-  path: string;
-}
-
 interface NavigationProps {
   className?: string;
 }

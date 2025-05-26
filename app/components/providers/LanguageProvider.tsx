@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useContext, useState, useCallback, ReactNode } from "react";
-import { usePathname } from "next/navigation";
 
 interface LanguageContextType {
   isChanging: boolean;
@@ -17,7 +16,6 @@ const LanguageContext = createContext<LanguageContextType>({
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [isChanging, setIsChanging] = useState(false);
-  const pathname = usePathname();
 
   const startChange = useCallback(() => {
     setIsChanging(true);

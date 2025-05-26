@@ -8,11 +8,11 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
-  anchorRef?: RefObject<HTMLElement>;
-  title?: string;  // Add title prop
+  anchorRef?: RefObject<HTMLElement | HTMLButtonElement | null>;
+  title?: string;
 }
 
-export default function Modal({ isOpen, onClose, children, title }: ModalProps) {
+export default function Modal({ isOpen, onClose, children, title, anchorRef }: ModalProps) {
   const [mounted, setMounted] = useState(false);
   const [portalTarget, setPortalTarget] = useState<Element | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -73,7 +73,9 @@ export default function Modal({ isOpen, onClose, children, title }: ModalProps) 
               bottom: '6rem',
               right: '6rem',
               zIndex: 100,
-              transformOrigin: 'calc(100% + 1.5rem) calc(100% + 1.5rem)',
+              transformOrigin: anchorRef?.current ? 
+                `calc(100% + 1.5rem) calc(100% + 1.5rem)` : 
+                'calc(100% + 1.5rem) calc(100% + 1.5rem)',
               willChange: 'transform, opacity'
             }}
             className="w-[22rem] max-h-[80vh] overflow-y-auto rounded-lg shadow-xl 

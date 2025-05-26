@@ -98,7 +98,6 @@ interface FlowParticle {
 }
 
 // Layout constants
-const CARD_MIN_SIZE = 60;
 const CARD_MAX_SIZE = 100;
 const NUM_CARDS = 20;
 const MIN_DISTANCE = 160;
@@ -110,7 +109,6 @@ const MAX_CONNECTIONS = 3;
 const PARTICLE_SIZE = 2.0;
 const ANIMATION_SPEED = 0.0025;
 const NUM_PARTICLES = 2;
-const PARTICLE_SPACING = 0.15;
 const PATH_OFFSET = 0.08;
 const ACTIVE_PATHS = 12;
 const GRID_DIVISIONS = 8;
@@ -119,12 +117,9 @@ const EDGE_PADDING = 0.12;
 const generateCards = (width: number, height: number, seed: number = 12345): NetworkDevice[] => {
   const random = new SeededRandom(seed);
   const cards: NetworkDevice[] = [];
-  const effectiveWidth = width * (1 - 2 * EDGE_PADDING);
   const effectiveHeight = height * (1 - 2 * EDGE_PADDING);
-  const cellWidth = effectiveWidth / GRID_DIVISIONS;
   const cellHeight = effectiveHeight / GRID_DIVISIONS;
   const cardsPerCell = Math.ceil(NUM_CARDS / (GRID_DIVISIONS * GRID_DIVISIONS));
-  let attempts = 0;
   const maxAttempts = 200;
 
   // Ensure we place devices in lower half with better distribution
@@ -211,7 +206,6 @@ const generateCards = (width: number, height: number, seed: number = 12345): Net
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             // Add diagonal check for better spacing
-            const minDiagonalDistance = Math.sqrt(MIN_DISTANCE * MIN_DISTANCE * 2);
             const isDiagonallyFar = Math.abs(dx) > MIN_DISTANCE * 0.7 && 
                                    Math.abs(dy) > MIN_DISTANCE * 0.7;
             
@@ -265,8 +259,7 @@ const generateConnections = (cards: NetworkDevice[], seed: number = 12345): Conn
       // Create smoother curved path with multiple control points
       const dx = endX - startX;
       const dy = endY - startY;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      
+
       // Calculate control points for smoother curve
       const cp1x = startX + dx * 0.25 - dy * CURVE_INTENSITY;
       const cp1y = startY + dy * 0.25 + dx * CURVE_INTENSITY;
@@ -488,7 +481,7 @@ const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
           cx={point.x}
           cy={point.y}
           r={particle.size}
-          className="fill-emerald-600/85 dark:fill-emerald-500/75"
+          className="fill-emerald-600/70 dark:fill-emerald-500/60"
           filter="url(#particle-glow)"
         />
       );
@@ -505,7 +498,7 @@ const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
         height: '100%'
       }}
     >
-      <div className="absolute inset-0 bg-gray-900/10" />
+      <div className="absolute inset-0 bg-gray-900/5" />
       <svg 
         className="w-full" 
         style={{ 
@@ -562,7 +555,7 @@ const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
             <g transform={`translate(${card.x}, ${card.y}) scale(${card.width/40})`}>
               <path
                 d={devicePaths[card.type]}
-                className="fill-none stroke-emerald-600/100 dark:stroke-emerald-500/100"
+                className="fill-none stroke-emerald-600/60 dark:stroke-emerald-500/60"
                 strokeWidth="5.5"
                 filter="url(#card-glow)"
                 strokeLinecap="round"
@@ -577,7 +570,7 @@ const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
           <path
             key={conn.id}
             d={conn.path}
-            className="stroke-emerald-600/40 dark:stroke-emerald-500/40"
+            className="stroke-emerald-600/25 dark:stroke-emerald-500/25"
             strokeWidth="2.0"
             fill="none"
             filter="url(#glow)"

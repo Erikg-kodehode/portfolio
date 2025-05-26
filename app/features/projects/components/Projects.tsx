@@ -11,13 +11,12 @@ const FALLBACK_DIMENSIONS = {
 } as const;
 
 interface FailedProjectCardProps {
-  title?: string;
-  error: Error;
+  title: string;
   onRetry: () => void;
   lang: string;
 }
 
-function FailedProjectCard({ title, error, onRetry, lang }: FailedProjectCardProps) {
+function FailedProjectCard({ title, onRetry, lang }: FailedProjectCardProps) {
   return (
     <article className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden flex flex-col h-full p-4">
       <div className="flex flex-col items-center justify-center text-center h-full gap-4">
@@ -301,12 +300,10 @@ export default function Projects() {
                 "
               >
               <ErrorBoundary
-                fallback={({ error, resetError }) => (
+                fallback={({ resetError }) => (
                   <FailedProjectCard
                     title={project.title}
-                    error={error}
                     onRetry={() => {
-                      console.error(`Failed to render project card: ${project.title}`, error);
                       resetError();
                     }}
                     lang={currentLang}

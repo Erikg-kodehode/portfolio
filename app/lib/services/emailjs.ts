@@ -1,5 +1,3 @@
-import emailjs from '@emailjs/browser';
-
 // Define TypeScript interface for email template parameters
 export interface EmailTemplateParams {
   from_name: string;
@@ -11,6 +9,14 @@ export interface EmailTemplateParams {
 }
 
 export async function sendEmail(templateParams: EmailTemplateParams) {
+  const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+  const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+  const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
+  if (!serviceId || !templateId || !publicKey) {
+    throw new Error('Required EmailJS configuration is missing');
+  }
+
   try {
     // Dynamically import EmailJS only when needed
     const emailjsModule = await import('@emailjs/browser');
@@ -18,12 +24,12 @@ export async function sendEmail(templateParams: EmailTemplateParams) {
     
     // Initialize EmailJS with your public key only when needed
     emailjs.init({
-      publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
+      publicKey,
     });
     
     const result = await emailjs.send(
-      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
-      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+      serviceId,
+      templateId,
       templateParams as unknown as Record<string, unknown>
     );
     return result;

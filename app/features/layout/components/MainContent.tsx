@@ -11,7 +11,7 @@ import { usePathname } from 'next/navigation';
 
 export default function MainContent({ children }: { children: ReactNode }) {
   const [isContactOpen, setIsContactOpen] = useState(false);
-  const mailButtonRef = useRef<HTMLButtonElement>(null);
+const mailButtonRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   const isEnglish = pathname?.startsWith('/en');
 

@@ -14,19 +14,6 @@ interface FormData {
   message: string;
 }
 
-interface Labels {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  submit: {
-    idle: string;
-    submitting: string;
-  };
-  success: string;
-  error: string;
-}
-
 interface ValidationState {
   name: boolean;
   email: boolean;
@@ -36,13 +23,6 @@ interface ValidationState {
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
 
-
-const inputBaseClasses = "w-full px-4 py-3 border bg-slate-50/5 dark:bg-slate-950/50 border-slate-200/30 dark:border-slate-700/30 rounded-lg shadow-sm transition-all duration-300";
-const inputClasses = `${inputBaseClasses} text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500
-  focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent
-  hover:border-blue-300 dark:hover:border-blue-600`;
-const labelClasses = "flex items-center text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors duration-200";
-const iconClasses = "mr-2 text-slate-400 dark:text-slate-500 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors duration-200";
 
 export default function ContactForm() {
   const pathname = usePathname();
@@ -136,30 +116,6 @@ export default function ContactForm() {
       setStatus('error');
     }
   };
-  const formVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut"
-      }
-    }
-  };
-
-  const inputVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: { 
-      opacity: 1, 
-      x: 0,
-      transition: {
-        duration: 0.3,
-        ease: "easeOut"
-      }
-    }
-  };
-
   const getValidationMessage = (field: keyof FormData): string => {
     if (!touched[field] || isValid[field]) return '';
     
