@@ -3,6 +3,7 @@ import { useTranslations } from '@/i18n';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { PageTitle } from '@/features/layout';
 
 
@@ -19,13 +20,30 @@ export default function EnglishAboutPage() {
         align="center"
       />
 
-      <section className="mb-8 hero-container backdrop-blur-sm">
-        <div className="flex flex-col md:flex-row items-center">
-          <div className="p-6 md:w-1/3 flex justify-center">
+      <motion.section 
+        className="mb-8 hero-container backdrop-blur-sm relative overflow-hidden"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        {/* Background patterns */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -left-4 -top-4 w-24 h-24 rounded-full bg-blue-200/20 dark:bg-blue-900/20 blur-sm" />
+          <div className="absolute -right-4 -bottom-4 w-32 h-32 rounded-full bg-green-200/20 dark:bg-green-900/20 blur-sm" />
+          <div className="absolute left-1/2 top-1/3 w-16 h-16 rounded-full bg-yellow-200/20 dark:bg-yellow-900/20 blur-sm" />
+        </div>
+
+        <div className="flex flex-col md:flex-row items-center relative">
+          <motion.div 
+            className="p-6 md:w-1/3 flex justify-center"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
             <div className="relative w-56 h-56 overflow-hidden rounded-full 
               border-4 border-blue-100/80 dark:border-blue-300/80 
               shadow-theme bg-slate-200/90 dark:bg-slate-700/90 
-              transition-all duration-300">
+              transition-all duration-300 hover:scale-105">
               <Image
                 src="/assets/Erik-bnw.jpg"
                 alt="Erik Gulliksen"
@@ -38,19 +56,28 @@ export default function EnglishAboutPage() {
                 className="rounded-full"
               />
             </div>
-          </div>
-          
-          <div className="p-6 md:p-8 md:w-2/3">
+          </motion.div>
+          <motion.div 
+            className="p-6 md:p-8 md:w-2/3"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
             <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-2 transition-colors duration-200">{t.about.whoAmI.title}</h2>
             <div className="space-y-3 text-blue-700 dark:text-blue-400 text-base">
               <p>{t.about.whoAmI.description1}</p>
               <p>{t.about.whoAmI.description2}</p>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
-      <section className="mb-8 bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg shadow-theme hover:shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-1">
+      <motion.section 
+        className="mb-8 bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg shadow-theme hover:shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-1"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.5 }}
+      >
         <div className="p-6">
           <h2 className="text-xl font-semibold text-blue-800 dark:text-blue-300 mb-2 transition-colors duration-200">{t.about.robotics.title}</h2>
           <div className="space-y-3 text-blue-700 dark:text-blue-400 text-sm transition-colors duration-200">
@@ -63,52 +90,82 @@ export default function EnglishAboutPage() {
             </ul>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section className="mb-8">
+      <motion.section 
+        className="mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+      >
         <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-4 text-center transition-colors duration-200">{t.about.journey.title}</h2>
         
         <div className="space-y-4">
-          <article className="bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg 
+          <motion.article 
+            className="bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg 
             shadow-theme hover:shadow-lg overflow-hidden 
-            transition-all duration-300 hover:-translate-y-1">
+            transition-all duration-300 hover:-translate-y-1"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+          >
             <div className="p-5">
               <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-300 mb-2 transition-colors duration-200">{t.about.journey.sections.fromRobots.title}</h3>
               <p className="text-blue-700 dark:text-blue-400 text-sm transition-colors duration-200 leading-relaxed">
                 {t.about.journey.sections.fromRobots.description}
               </p>
             </div>
-          </article>
+          </motion.article>
           
-          <article className="bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg shadow-theme hover:shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-1">
+          <motion.article
+            className="bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg shadow-theme hover:shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-1"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
             <div className="p-5">
               <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-300 mb-2 transition-colors duration-200">{t.about.journey.sections.backend.title}</h3>
               <p className="text-blue-700 dark:text-blue-400 text-sm transition-colors duration-200 leading-relaxed">
                 {t.about.journey.sections.backend.description}
               </p>
             </div>
-          </article>
+          </motion.article>
           
-          <article className="bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg shadow-theme hover:shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-1">
+          <motion.article
+            className="bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg shadow-theme hover:shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-1"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
+          >
             <div className="p-5">
               <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-300 mb-2 transition-colors duration-200">{t.about.journey.sections.currentFocus.title}</h3>
               <p className="text-blue-700 dark:text-blue-400 text-sm transition-colors duration-200 leading-relaxed">
                 {t.about.journey.sections.currentFocus.description}
               </p>
             </div>
-          </article>
+          </motion.article>
         </div>
-      </section>
+      </motion.section>
 
-      <section className="mb-8">
+      <motion.section 
+        className="mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.8 }}
+      >
         <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-4 text-center transition-colors duration-200">
           {t.about.goals.title}
         </h2>
         
         <div className="grid md:grid-cols-3 gap-4">
-          <article className="bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg 
+          <motion.article 
+            className="bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg 
             shadow-theme hover:shadow-lg overflow-hidden 
-            transition-all duration-300 hover:-translate-y-1">
+            transition-all duration-300 hover:-translate-y-1"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
+          >
             <div className="p-5">
               <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-300 mb-2 transition-colors duration-200">
                 {t.about.goals.shortTerm.title}
@@ -122,9 +179,14 @@ export default function EnglishAboutPage() {
                 ))}
               </ul>
             </div>
-          </article>
+          </motion.article>
           
-          <article className="bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg shadow-theme hover:shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-1">
+          <motion.article
+            className="bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg shadow-theme hover:shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-1"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
+          >
             <div className="p-5">
               <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-300 mb-2 transition-colors duration-200">
                 {t.about.goals.mediumTerm.title}
@@ -138,9 +200,14 @@ export default function EnglishAboutPage() {
                 ))}
               </ul>
             </div>
-          </article>
+          </motion.article>
           
-          <article className="bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg shadow-theme hover:shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-1">
+          <motion.article
+            className="bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg shadow-theme hover:shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-1"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.1 }}
+          >
             <div className="p-5">
               <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-300 mb-2 transition-colors duration-200">
                 {t.about.goals.longTerm.title}
@@ -154,18 +221,28 @@ export default function EnglishAboutPage() {
                 ))}
               </ul>
             </div>
-          </article>
+          </motion.article>
         </div>
-      </section>
+      </motion.section>
 
-      <section className="text-center mb-8">
+      <motion.section 
+        className="text-center mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 1 }}
+      >
         <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-4 transition-colors duration-200">
           {t.about.cta.title}
         </h2>
         <p className="text-blue-700 dark:text-blue-400 max-w-2xl mx-auto mb-6 text-sm transition-colors duration-200">
           {t.about.cta.description}
         </p>
-        <div className="flex flex-col md:flex-row justify-center space-y-3 md:space-y-0 md:space-x-3">
+        <motion.div 
+          className="flex flex-col md:flex-row justify-center space-y-3 md:space-y-0 md:space-x-3"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.2 }}
+        >
           <Link 
             href={`${isEnglish ? '/en' : ''}/projects`}
             className="interactive block md:inline-block text-center px-4 py-2 
@@ -188,16 +265,8 @@ export default function EnglishAboutPage() {
           >
             {t.about.cta.contact}
           </Link>
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
     </div>
   );
 }
-
-
-
-
-
-
-
-

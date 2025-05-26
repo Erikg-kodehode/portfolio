@@ -142,9 +142,19 @@ export interface Translations {
     form: {
       name: string;
       email: string;
+      subject: string;
       message: string;
-      send: string;
-    }
+      submit: {
+        idle: string;
+        submitting: string;
+      };
+      success: string;
+      error: string;
+    };
+    social: {
+      github: string;
+      discord: string;
+    };
   };
 }
 

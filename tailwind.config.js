@@ -9,13 +9,22 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      boxShadow: {
+        'glow-sm': '0 0 4px rgba(59, 130, 246, 0.5)',
+      },
       animation: {
-        fadeIn: 'fadeIn 0.5s ease-in-out',
+        'fade-in': 'fadeIn 0.3s ease-out forwards',
+        'skill-dot': 'skillDot 0.3s ease-out forwards',
       },
       keyframes: {
         fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
+          '0%': { opacity: '0', transform: 'scale(0.9) rotate(-20deg)' },
+          '100%': { opacity: '1', transform: 'scale(1) rotate(0)' },
+        },
+        skillDot: {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.25)' },
+          '100%': { transform: 'scale(1)' },
         },
       },
       colors: {
@@ -33,15 +42,6 @@ module.exports = {
           lg: '4rem',
           xl: '5rem',
           '2xl': '6rem',
-        },
-      },
-      animation: {
-        'fade-in': 'fadeIn 0.3s ease-out forwards',
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0', transform: 'scale(0.9) rotate(-20deg)' },
-          '100%': { opacity: '1', transform: 'scale(1) rotate(0)' },
         },
       },
     },

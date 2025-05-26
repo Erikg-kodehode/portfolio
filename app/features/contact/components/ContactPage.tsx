@@ -34,9 +34,12 @@ export default function ContactPage() {
                 className="w-full justify-center"
               >
                 GitHub Profile
-              </Button>
-              <DiscordLink className="w-full" />
-            </div>
+               </Button>
+               <DiscordLink 
+                 className="w-full" 
+                 spanClassName="text-slate-700 dark:text-slate-300"
+               />
+             </div>
           </Card>
 
           <Card variant="elevated" padding="lg">

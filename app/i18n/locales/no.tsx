@@ -54,68 +54,67 @@ const no: Translations = {
   },
   about: {
     title: 'Om Meg',
-    subtitle: 'Hei! Jeg er Erik Gulliksen, en utvikler med bakgrunn som Verdensmester i robotprogrammering for under 21. Mitt fokus er nå på backend-utvikling med C# og .NET.',
+    subtitle: 'Backend-utvikler spesialisert på C# og .NET, med en unik bakgrunn som Verdensmester i robotprogrammering.',
     whoAmI: {
       title: 'Hvem er jeg?',
-      description1: 'Jeg er en utvikler med en brennende lidenskap for faget, formet av en unik bakgrunn som verdensmester innen robotprogrammering.',
-      description2: 'I dag er mitt hovedfokus backend-utvikling med C# og .NET-økosystemet. Her får jeg fullt utløp for min systematiske og analytiske metode for å designe og bygge robuste, skalerbare applikasjoner og tjenester.'
+      description1: 'Jeg kombinerer analytisk tenkning fra robotikk med moderne utviklingsmetoder for å skape effektive, skalerbare løsninger.',
+      description2: 'Min reise fra robotprogrammering til backend-utvikling har gitt meg et unikt perspektiv på systemdesign og problemløsning, som jeg nå bruker til å bygge robuste applikasjoner med C# og .NET.'
     },
     robotics: {
-      title: 'Robotprogrammering: Min tidlige suksess',
-      intro: 'Lenge før jeg begynte med tradisjonell programvareutvikling, fordypet jeg meg i robotprogrammering. Denne interessen førte meg til internasjonale konkurranser hvor jeg konkurrerte mot talenter fra hele verden.',
-      highlight: 'Høydepunktet i min tidlige teknologireise var å vinne Verdensmestertittelen i robotprogrammering for deltakere under 21 år. Denne erfaringen ga meg ikke bare tekniske ferdigheter innen programmering, men også uvurderlig erfaring med:',
+      title: 'Fra Roboter til Programvare',
+      intro: 'Min teknologiske grunnmur startet med robotprogrammering, hvor jeg konkurrerte internasjonalt og oppnådde en Verdensmestertittel i under-21-kategorien.',
+      highlight: 'Denne erfaringen var transformativ og ga meg ferdigheter som er uvurderlige i programvareutvikling:',
       skills: [
-        'Algoritmetenkning og logisk problemløsning',
-        'Teamarbeid under press',
-        'Tid- og ressursoptimalisering',
-        'Tilpasning til uventede utfordringer'
+        'Avansert algoritmisk tenkning og problemnedbryting',
+        'Ytelses- og ressursoptimalisering',
+        'Design og implementering av sanntidssystemer',
+        'Tilpasningsdyktighet og rask problemløsning'
       ]
     },
     journey: {
       title: 'Min utviklerreise',
       sections: {
         fromRobots: {
-          title: 'Fra roboter til programvareutvikling',
-          description: 'Overgangen fra robotprogrammering til tradisjonell programvareutvikling var naturlig. De samme prinsippene for logikk, algoritmer og systematisk problemløsning jeg brukte i robotkonkurranser viste seg å være direkte overførbare til programvareutvikling. C# fanget raskt min interesse med sitt ryddige syntaks og kraftige økosystem.'
+          title: 'Naturlig Progresjon',
+          description: 'Overgangen fra roboter til programvareutvikling føltes naturlig - kjerneprinsippene for logikk, algoritmer og systematisk problemløsning passet perfekt. C# ble mitt foretrukne språk, med sin ideelle blanding av ytelse og moderne funksjoner.'
         },
         backend: {
-          title: 'Backend-utvikling og systemarkitektur',
-          description: 'Backend-utvikling tiltrakk meg naturlig. Databaser, API-er og server-logikk minner om hvordan robotsystemer håndterer data og logikk under overflaten. Jeg utforsker nå ASP.NET Core, hvor jeg kan anvende min erfaring med systemarkitektur fra robotkonkurransene i oppbyggingen av robuste og skalerbare backend-løsninger.'
+          title: 'Backend-fokus',
+          description: 'Backend-utvikling resonerer med min robotbakgrunn - begge krever nøyaktig systemdesign og effektiv datahåndtering. Arbeid med ASP.NET Core lar meg bruke denne erfaringen til å bygge skalerbare webtjenester og API-er.'
         },
         currentFocus: {
-          title: 'Mitt fokus i dag',
-          description: 'Jeg tror sterkt på læring gjennom praksis. Jeg bygger aktiv erfaring gjennom prosjekter som Bomberman-backend og Discord-bots, hvor jeg anvender min bakgrunn fra robotverdenen. Min tilnærming er å bryte ned komplekse problemer, utforske alternative løsninger, og balansere teoretisk kunnskap med praktisk implementering.'
+          title: 'Nåværende Retning',
+          description: 'Jeg bygger praktisk erfaring gjennom prosjekter som Bomberman og Discord-bots, hvor jeg kan anvende både teoretisk kunnskap og praktisk implementering. Min tilnærming fokuserer på å skape vedlikeholdbare, effektive løsninger som løser reelle problemer.'
         }
       }
     },
     goals: {
       title: 'Mine mål fremover',
       shortTerm: {
-        title: 'Kortsiktige mål',
+        title: 'Nåværende Fokus',
         items: [
-          'Mestre kjernekonseptene i ASP.NET Core, inkludert middleware, dependency injection, og routing',
-          'Bygge og deployere flere komplette backend-applikasjoner med C# og Entity Framework',
-          'Forbedre kunnskapen om database-design, normalisering og skrive optimaliserte queries',
-          'Lære grunnleggende Docker for å bygge images og kjøre .NET-applikasjonene dine i containere'
+          'Fordype meg i ASP.NET Core-arkitektur og mønstre',
+          'Bygge produksjonsklare applikasjoner med Entity Framework',
+          'Mestre databaseoptimalisering og spørringsytelse',
+          'Implementere containerisering med Docker og grunnleggende orkestrering'
         ]
       },
       mediumTerm: {
-        title: 'Mellomlangsiktige mål',
+        title: 'Neste Steg',
         items: [
-          'Dykke ned i avanserte C#/.NET-konsepter som asynkron programmering, multithreading, og ytelsesoptimalisering',
-          'Implementere en applikasjon basert på mikrotjeneste-arkitektur, inkludert kommunikasjon mellom tjenester (f.eks. via REST eller gRPC)',
-          'Få praktisk erfaring med Kubernetes (K8s) for å deploye og administrere container-baserte applikasjoner',
-          'Forstå grunnleggende nettverksprinsipper for distribuerte systemer, som DNS, load balancing og API Gateways',
-          'Bidra aktivt til et open-source prosjekt i .NET-økosystemet'
+          'Implementere avanserte C#-konsepter inkludert asynkrone mønstre og LINQ-optimalisering',
+          'Designe og deploye mikrotjeneste-baserte applikasjoner',
+          'Bygge erfaring med skyinfrastruktur og deployment',
+          'Bidra meningsfullt til open-source .NET-prosjekter'
         ]
       },
       longTerm: {
-        title: 'Langsiktige mål',
+        title: 'Fremtidsvisjon',
         items: [
-          'Spesialisere deg innen avansert systemdesign og arkitekturmønstre som CQRS og Event Sourcing',
-          'Designe og lede utviklingen av komplekse, distribuerte systemer med høye krav til skalerbarhet og pålitelighet',
-          'Utforske og anvende AI og maskinlæring med ML.NET for å løse reelle problemer',
-          'Mestre sky-arkitektur og avansert nettverkskonfigurasjon for å bygge robuste løsninger i skyen (f.eks. Azure, AWS)'
+          'Lede utvikling av storskala distribuerte systemer',
+          'Mestre sky-native arkitektur og deployeringsstrategier',
+          'Integrere AI/ML-løsninger i backend-systemer',
+          'Designe høyytelse enterprise-applikasjoner'
         ]
       }
     },

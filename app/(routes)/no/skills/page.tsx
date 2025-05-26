@@ -1,9 +1,42 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import { SkillLevelIndicator } from "@/features/skills/components";
 import { useTranslations } from "@/i18n";
+import { PageTitle } from "@/features/layout";
 import { useLoading } from "@/components/providers/LoadingProvider";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const articleVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6
+    }
+  }
+};
+
+const patterns = {
+  circles: (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30 dark:opacity-20">
+      <div className="absolute -left-4 -top-4 w-24 h-24 rounded-full bg-blue-200 dark:bg-blue-900/50" />
+      <div className="absolute -right-4 -bottom-4 w-32 h-32 rounded-full bg-green-200 dark:bg-green-900/50" />
+      <div className="absolute left-1/2 top-1/3 w-16 h-16 rounded-full bg-yellow-200 dark:bg-yellow-900/50" />
+    </div>
+  )
+};
 
 export default function SkillsPage() {
   const t = useTranslations();
@@ -30,22 +63,41 @@ export default function SkillsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-5xl">
-      <header className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-2 transition-colors duration-200">{t.skills.title}</h1>
-        <p className="text-base text-blue-700 dark:text-blue-400 max-w-2xl mx-auto leading-snug transition-colors duration-200">
-          {t.skills.intro}
-        </p>
-      </header>
+    <div className="container mx-auto px-4 py-6 max-w-5xl relative">
+      {patterns.circles}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <PageTitle
+          title={t.skills.title}
+          subtitle={t.skills.intro}
+          align="center"
+        />
+      </motion.div>
 
-      <div className="space-y-4">
+      <motion.div
+        className="space-y-4"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         {Object.entries(t.skills.categories).map(([id, category]) => (
-          <article 
-            key={id} 
-            className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+          <motion.article 
+            key={id}
+            variants={articleVariants}
+            className="backdrop-blur-sm bg-slate-100/10 dark:bg-slate-900/50 
+              rounded-lg shadow-theme overflow-hidden 
+              transition-all duration-300 
+              hover:shadow-lg hover:-translate-y-1
+              hover:bg-slate-100/20 dark:hover:bg-slate-900/60
+              group"
           >
             <div className="p-4">
-              <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-1.5 transition-colors duration-200">
+              <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 
+                mb-1.5 transition-colors duration-200
+                group-hover:text-blue-600 dark:group-hover:text-blue-400">
                 {category.title}
               </h2>
               <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed mb-3 transition-colors duration-200">
@@ -57,7 +109,11 @@ export default function SkillsPage() {
                   {category.skills.map((skill) => (
                     <span 
                       key={skill.name} 
-                      className="px-2 py-0.5 bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded-full transition-colors duration-200"
+                      className="px-3 py-1 bg-blue-100/50 dark:bg-blue-900/50 
+                        text-blue-700 dark:text-blue-300 rounded-full text-sm 
+                        transition-all duration-300 
+                        hover:-translate-y-0.5 hover:scale-105
+                        hover:bg-blue-200/50 dark:hover:bg-blue-800/50"
                     >
                       {skill.name}
                     </span>
@@ -68,15 +124,22 @@ export default function SkillsPage() {
                   {category.skills.map((skill) => (
                     <div 
                       key={skill.name} 
-                      className="flex flex-wrap items-center text-xs"
+                      className="flex flex-wrap items-center text-xs group/skill
+                        hover:bg-blue-50/10 dark:hover:bg-blue-900/10 
+                        rounded-md p-1 transition-all duration-200"
                     >
                       <div className="flex items-center space-x-1.5 min-w-[110px]">
-                        <span className="font-medium text-slate-700 dark:text-slate-300 transition-colors duration-200">
+                        <span className="font-medium text-slate-700 dark:text-slate-300 
+                          group-hover/skill:text-blue-600 dark:group-hover/skill:text-blue-400 
+                          transition-colors duration-200"
+                        >
                           {skill.name}
                         </span>
                         <SkillLevelIndicator level={skill.level} />
                       </div>
-                      <span className="text-slate-500 dark:text-slate-400 ml-auto text-[10px] transition-colors duration-200">
+                      <span className="text-slate-500 dark:text-slate-400 ml-auto text-[10px] 
+                        group-hover/skill:text-slate-600 dark:group-hover/skill:text-slate-300
+                        transition-colors duration-200">
                         {skill.description}
                       </span>
                     </div>
@@ -84,18 +147,29 @@ export default function SkillsPage() {
                 </div>
               </div>
             </div>
-          </article>
+          </motion.article>
         ))}
-      </div>
+      </motion.div>
       
-      <div className="mt-6 text-center">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        className="mt-12 text-center"
+      >
         <Link
-          href={isEnglish ? "/en/contact" : "/contact"} 
-          className="inline-block px-4 py-1.5 bg-blue-600 dark:bg-blue-700 text-slate-50 dark:text-slate-50 rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-200 text-sm font-medium hover:shadow-lg hover:shadow-blue-500/20 dark:hover:shadow-blue-700/20"
+          href={isEnglish ? "/en/contact" : "/contact"}
+          className="interactive block md:inline-block text-center px-4 py-2 
+            bg-blue-600 hover:bg-blue-700 
+            dark:bg-blue-700 dark:hover:bg-blue-600 
+            text-slate-50 dark:text-slate-50 
+            shadow-theme hover:shadow-lg
+            rounded text-sm font-medium
+            transform hover:scale-105 transition-all duration-300"
         >
-          {t.contact.form.send}
+          {t.home.cta.contact}
         </Link>
-      </div>
+      </motion.div>
     </div>
   );
 }

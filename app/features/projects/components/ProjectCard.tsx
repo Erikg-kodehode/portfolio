@@ -24,45 +24,7 @@ export default function ProjectCard({
   liveDemoUrl,
   sourceCodeUrl
 }: ProjectCardProps) {
-  // Add debug logging
-  console.log(`ProjectCard rendering for ${title}:`, {
-    hasSourceCode: Boolean(sourceCodeUrl),
-    sourceCodeUrl,
-    hasLiveDemo: Boolean(liveDemoUrl),
-    liveDemoUrl
-  });
-
   const [isVisible, setIsVisible] = useState(false);
-  const [dimensions, setDimensions] = useState({ article: null, content: null, buttons: null });
-
-  // Debug: Log container dimensions
-  useEffect(() => {
-    const articleEl = document.getElementById(`project-${title.replace(/\s+/g, "-").toLowerCase()}`);
-    const contentEl = articleEl?.querySelector('.content-wrapper');
-    const buttonsEl = articleEl?.querySelector('.buttons-wrapper');
-
-    if (articleEl && contentEl && buttonsEl) {
-      const dims = {
-        article: {
-          height: articleEl.offsetHeight,
-          scroll: articleEl.scrollHeight,
-          client: articleEl.clientHeight
-        },
-        content: {
-          height: contentEl.offsetHeight,
-          scroll: contentEl.scrollHeight,
-          client: contentEl.clientHeight
-        },
-        buttons: {
-          height: buttonsEl.offsetHeight,
-          scroll: buttonsEl.scrollHeight,
-          client: buttonsEl.clientHeight
-        }
-      };
-      console.log(`Dimensions for ${title}:`, dims);
-      setDimensions(dims);
-    }
-  }, [title, isVisible]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -159,17 +121,12 @@ export default function ProjectCard({
           border-t border-slate-200 dark:border-slate-700
           relative z-20
         "
-          onMouseEnter={() => console.log(`Buttons container for ${title} - mouse enter`)}
         >
           {sourceCodeUrl && (
             <a 
               href={sourceCodeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => {
-                console.log('GitHub button clicked:', { url: sourceCodeUrl });
-                // Don't prevent default - let the link work normally
-              }}
               className="
                 min-w-[120px] px-4 py-2 text-sm font-medium 
                 border-2 border-blue-400 dark:border-blue-600

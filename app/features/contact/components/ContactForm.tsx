@@ -55,7 +55,7 @@ export default function ContactForm() {
     message: ''
   });
   const [status, setStatus] = useState<FormStatus>('idle');
-  const statusTimeoutRef = useRef<NodeJS.Timeout>();
+  const statusTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Clear status message after 5 seconds
   useEffect(() => {

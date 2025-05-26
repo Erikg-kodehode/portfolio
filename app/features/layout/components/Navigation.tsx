@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useMemo } from 'react';
 import { ThemeToggle, LanguageSwitcher } from '@/components/ui';
-import { useTranslations } from '@/i18n/context';
+import { useTranslations } from '@/i18n';
 
 interface NavLink {
   name: string;

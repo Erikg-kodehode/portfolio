@@ -54,68 +54,67 @@ const en: Translations = {
   },
   about: {
     title: 'About Me',
-    subtitle: 'Hi! I\'m Erik Gulliksen, a developer with a background as a World Champion in robotics programming for under 21. My focus is now on backend development with C# and .NET.',
+    subtitle: 'Backend developer specializing in C# and .NET, with a unique background as a World Champion in robotics programming.',
     whoAmI: {
       title: 'Who am I?',
-      description1: 'I\'m a developer with a burning passion for the field, shaped by a unique background as a world champion in robotics programming.',
-      description2: 'Today, my main focus is backend development with C# and the .NET ecosystem. Here I get to fully utilize my systematic and analytical approach to designing and building robust, scalable applications and services.'
+      description1: 'I combine analytical thinking from robotics with modern software development practices to create efficient, scalable solutions.',
+      description2: 'My journey from robotics to backend development has given me a unique perspective on system design and problem-solving, which I now apply to building robust applications with C# and .NET.'
     },
     robotics: {
-      title: 'Robotics Programming: My Early Success',
-      intro: 'Long before I started with traditional software development, I immersed myself in robotics programming. This interest led me to international competitions where I competed against talents from around the world.',
-      highlight: 'The highlight of my early technology journey was winning the World Champion title in robotics programming for participants under 21. This experience gave me not only technical programming skills but also invaluable experience with:',
+      title: 'From Robotics to Software',
+      intro: 'My foundation in technology started with robotics programming, where I competed internationally and achieved a World Champion title in the under-21 category.',
+      highlight: 'This experience was transformative, equipping me with skills that prove invaluable in software development:',
       skills: [
-        'Algorithmic thinking and logical problem solving',
-        'Teamwork under pressure',
-        'Time and resource optimization',
-        'Adapting to unexpected challenges'
+        'Advanced algorithmic thinking and problem decomposition',
+        'Performance optimization and resource management',
+        'Real-time system design and implementation',
+        'Adaptability and rapid problem-solving'
       ]
     },
     journey: {
       title: 'My Development Journey',
       sections: {
         fromRobots: {
-          title: 'From Robots to Software Development',
-          description: 'The transition from robotics programming to traditional software development was natural. The same principles for logic, algorithms, and systematic problem solving I used in robotics competitions proved to be directly transferable to software development. C# quickly caught my interest with its clean syntax and powerful ecosystem.'
+          title: 'Natural Progression',
+          description: 'Moving from robotics to software development felt natural - the core principles of logic, algorithms, and systematic problem-solving transferred perfectly. C# became my language of choice, offering the perfect blend of performance and modern features.'
         },
         backend: {
-          title: 'Backend Development and System Architecture',
-          description: 'Backend development attracted me naturally. Databases, APIs, and server logic remind me of how robot systems handle data and logic under the surface. I\'m now exploring ASP.NET Core, where I can apply my experience with system architecture from robotics competitions in building robust and scalable backend solutions.'
+          title: 'Backend Focus',
+          description: 'Backend development resonates with my robotics background - both require careful system design and efficient data handling. Working with ASP.NET Core lets me apply this experience to build scalable web services and APIs.'
         },
         currentFocus: {
-          title: 'My Focus Today',
-          description: 'I strongly believe in learning through practice. I\'m building active experience through projects like Bomberman backend and Discord bots, where I apply my background from the robotics world. My approach is to break down complex problems, explore alternative solutions, and balance theoretical knowledge with practical implementation.'
+          title: 'Current Direction',
+          description: 'I\'m building practical experience through projects like Bomberman and Discord bots, where I can apply both theoretical knowledge and hands-on implementation. My approach focuses on creating maintainable, efficient solutions that solve real-world problems.'
         }
       }
     },
     goals: {
       title: 'My Goals Going Forward',
       shortTerm: {
-        title: 'Short-term Goals',
+        title: 'Current Focus',
         items: [
-          'Master core concepts in ASP.NET Core, including middleware, dependency injection, and routing',
-          'Build and deploy complete backend applications with C# and Entity Framework',
-          'Improve knowledge of database design, normalization, and writing optimized queries',
-          'Learn basic Docker to build images and run your .NET applications in containers'
+          'Deepen expertise in ASP.NET Core architecture and patterns',
+          'Build production-ready applications with Entity Framework',
+          'Master database optimization and query performance',
+          'Implement containerization with Docker and basic orchestration'
         ]
       },
       mediumTerm: {
-        title: 'Medium-term Goals',
+        title: 'Next Steps',
         items: [
-          'Dive into advanced C#/.NET concepts like asynchronous programming, multithreading, and performance optimization',
-          'Implement an application based on microservice architecture, including service communication (e.g., via REST or gRPC)',
-          'Gain practical experience with Kubernetes (K8s) to deploy and manage container-based applications',
-          'Understand fundamental networking principles for distributed systems, such as DNS, load balancing, and API Gateways',
-          'Actively contribute to an open-source project in the .NET ecosystem'
+          'Implement advanced C# concepts including async patterns and LINQ optimization',
+          'Design and deploy microservice-based applications',
+          'Build experience with cloud infrastructure and deployment',
+          'Contribute meaningfully to open-source .NET projects'
         ]
       },
       longTerm: {
-        title: 'Long-term Goals',
+        title: 'Future Vision',
         items: [
-          'Specialize in advanced system design and architectural patterns like CQRS and Event Sourcing',
-          'Design and lead the development of complex, distributed systems with high scalability and reliability requirements',
-          'Explore and apply AI and machine learning with ML.NET to solve real-world problems',
-          'Master cloud architecture and advanced network configuration to build robust solutions in the cloud (e.g., Azure, AWS)'
+          'Lead development of large-scale distributed systems',
+          'Master cloud-native architecture and deployment strategies',
+          'Integrate AI/ML solutions in backend systems',
+          'Design high-performance enterprise applications'
         ]
       }
     },

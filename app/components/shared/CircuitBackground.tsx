@@ -1,7 +1,29 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useId } from 'react';
+import React, { useState, useEffect, useCallback, useId, useRef } from 'react';
 import type { FC } from 'react';
+
+// Seeded random number generator for stable device positioning
+class SeededRandom {
+  private seed: number;
+
+  constructor(seed: number) {
+    this.seed = seed;
+  }
+
+  // Simple mulberry32 implementation for decent distribution
+  next(): number {
+    let t = this.seed += 0x6D2B79F5;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+
+  // Get random number between min and max
+  range(min: number, max: number): number {
+    return min + (max - min) * this.next();
+  }
+}
 
 interface NetworkDevice {
   id: string;
@@ -94,7 +116,8 @@ const ACTIVE_PATHS = 12;
 const GRID_DIVISIONS = 8;
 const EDGE_PADDING = 0.12;
 
-const generateCards = (width: number, height: number): NetworkDevice[] => {
+const generateCards = (width: number, height: number, seed: number = 12345): NetworkDevice[] => {
+  const random = new SeededRandom(seed);
   const cards: NetworkDevice[] = [];
   const effectiveWidth = width * (1 - 2 * EDGE_PADDING);
   const effectiveHeight = height * (1 - 2 * EDGE_PADDING);
@@ -120,7 +143,7 @@ const generateCards = (width: number, height: number): NetworkDevice[] => {
         let attempts = 0;
         while (attempts < maxAttempts) {
           const deviceTypes: ('pc' | 'phone' | 'server' | 'globe')[] = ['pc', 'phone', 'server', 'globe'];
-          const deviceType = deviceTypes[Math.floor(Math.random() * deviceTypes.length)];
+          const deviceType = deviceTypes[Math.floor(random.next() * deviceTypes.length)];
           
           // Calculate position
           // Add padding to prevent edge clumping
@@ -130,44 +153,38 @@ const generateCards = (width: number, height: number): NetworkDevice[] => {
           const column = bottomDeviceCount % numColumns;
           
           // Ensure devices spread across full width
-          let x = (column * columnWidth) + (Math.random() * (columnWidth - CARD_MAX_SIZE));
-          let y = height * EDGE_PADDING + (j * cellHeight) + Math.random() * (cellHeight - CARD_MAX_SIZE);
+          let x = (column * columnWidth) + (random.next() * (columnWidth - CARD_MAX_SIZE));
+          let y = height * EDGE_PADDING + (j * cellHeight) + random.next() * (cellHeight - CARD_MAX_SIZE);
           
           // Add slight horizontal offset for variety
-          x += Math.random() * 40 - 20; // ±20px random offset
+          x += random.range(-20, 20); // ±20px random offset
           
           // Distribute bottom devices more evenly
           if (bottomDeviceCount < bottomDevices) {
-            const fullHeight = Math.max(
-              document.documentElement.scrollHeight,
-              document.documentElement.offsetHeight,
-              document.documentElement.clientHeight
-            );
-            
-            const zoneHeight = fullHeight / 8;
+            const zoneHeight = height / 8;
             const zone = Math.floor(bottomDeviceCount % 8);
 
             switch(zone) {
               case 7:
-                y = fullHeight - (CARD_MAX_SIZE * 1.1) - (Math.random() * zoneHeight * 0.2);
+                y = height - (CARD_MAX_SIZE * 1.1) - (random.next() * zoneHeight * 0.2);
                 break;
               case 6:
-                y = fullHeight - (CARD_MAX_SIZE * 2.2) - (Math.random() * zoneHeight * 0.3);
+                y = height - (CARD_MAX_SIZE * 2.2) - (random.next() * zoneHeight * 0.3);
                 break;
               case 5:
-                y = fullHeight * 0.8 + (Math.random() * zoneHeight * 0.7);
+                y = height * 0.8 + (random.next() * zoneHeight * 0.7);
                 break;
               case 4:
-                y = fullHeight * 0.65 + (Math.random() * zoneHeight * 0.8);
+                y = height * 0.65 + (random.next() * zoneHeight * 0.8);
                 break;
               case 3:
-                y = fullHeight * 0.5 + (Math.random() * zoneHeight);
+                y = height * 0.5 + (random.next() * zoneHeight);
                 break;
               case 2:
-                y = fullHeight * 0.35 + (Math.random() * zoneHeight);
+                y = height * 0.35 + (random.next() * zoneHeight);
                 break;
               default:
-                y = (zone * zoneHeight) + (Math.random() * (zoneHeight - CARD_MAX_SIZE));
+                y = (zone * zoneHeight) + (random.next() * (zoneHeight - CARD_MAX_SIZE));
             }
             bottomDeviceCount++;
           }
@@ -218,7 +235,8 @@ const generateCards = (width: number, height: number): NetworkDevice[] => {
   return cards;
 };
 
-const generateConnections = (cards: NetworkDevice[]): Connection[] => {
+const generateConnections = (cards: NetworkDevice[], seed: number = 12345): Connection[] => {
+  const random = new SeededRandom(seed);
   const connections: Connection[] = [];
   const maxConnections = Math.min(cards.length - 1, MAX_CONNECTIONS);
   
@@ -226,7 +244,7 @@ const generateConnections = (cards: NetworkDevice[]): Connection[] => {
     // Connect to nearest cards within limits
     const numConnections = Math.max(
       MIN_CONNECTIONS,
-      Math.floor(Math.random() * (maxConnections - MIN_CONNECTIONS + 1)) + MIN_CONNECTIONS
+      Math.floor(random.next() * (maxConnections - MIN_CONNECTIONS + 1)) + MIN_CONNECTIONS
     );
     const otherCards = cards.slice(i + 1);
     
@@ -271,56 +289,142 @@ interface CircuitBackgroundProps {
   className?: string;
 }
 
+// Round to nearest multiple for more stable seeds
+const roundToNearest = (value: number, multiple: number = 100): number => {
+  return Math.round(value / multiple) * multiple;
+};
+
+// Calculate stable seed from dimensions that won't change with small viewport adjustments
+const calculateSeed = (width: number, height: number): number => {
+  const roundedWidth = roundToNearest(width);
+  const roundedHeight = roundToNearest(height);
+  return roundedWidth * roundedHeight / 100;
+};
+
+interface Dimensions {
+  width: number;
+  height: number;
+  scrollHeight: number;
+  seed: number;
+}
+
+const defaultDimensions: Dimensions = {
+  width: 1024,
+  height: 768,
+  scrollHeight: 768,
+  seed: calculateSeed(1024, 768)
+};
+
 const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
+  const [mounted, setMounted] = useState(false);
+  const [dimensions, setDimensions] = useState<Dimensions>(defaultDimensions);
   const [cards, setCards] = useState<NetworkDevice[]>([]);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [particles, setParticles] = useState<FlowParticle[]>([]);
   const uniqueId = useId();
+  const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const previousDimensionsRef = useRef<Dimensions>(defaultDimensions);
+
+  const updateDimensions = useCallback(() => {
+    if (!mounted) return;
+
+    // Clear any pending update
+    if (updateTimeoutRef.current) {
+      clearTimeout(updateTimeoutRef.current);
+    }
+
+    // Debounce the update
+    updateTimeoutRef.current = setTimeout(() => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const scrollHeight = Math.max(
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight,
+        document.documentElement.clientHeight
+      );
+
+      const newDimensions = { 
+        width, 
+        height, 
+        scrollHeight,
+        seed: calculateSeed(width, height)
+      };
+      const prevDims = previousDimensionsRef.current;
+
+      // Only update if dimensions changed significantly (more than 10%)
+      const widthChange = Math.abs(newDimensions.width - prevDims.width) / prevDims.width;
+      const heightChange = Math.abs(newDimensions.scrollHeight - prevDims.scrollHeight) / prevDims.scrollHeight;
+      
+      // Add hysteresis: require bigger change to trigger update, smaller change to maintain current state
+      const triggerThreshold = 0.10; // 10% change required to trigger update
+      const maintainThreshold = 0.08; // 8% change required to maintain current state
+      
+      const currentlyChanging = widthChange > maintainThreshold || heightChange > maintainThreshold;
+      const significantChange = widthChange > triggerThreshold || heightChange > triggerThreshold;
+
+      // Only update if we have a significant change or are continuing a current change
+      if (significantChange || (currentlyChanging && newDimensions.seed !== prevDims.seed)) {
+        setDimensions(newDimensions);
+        previousDimensionsRef.current = newDimensions;
+      }
+    }, 250); // 250ms debounce
+  }, [mounted]);
 
   const generateNetwork = useCallback(() => {
-    const width = window.innerWidth;
-    // Use document height instead of viewport height
-    const height = Math.max(
-      document.documentElement.scrollHeight,
-      document.documentElement.offsetHeight,
-      document.documentElement.clientHeight
-    );
+    if (!mounted) return;
     
-    const newCards = generateCards(width, height);
-    const newConnections = generateConnections(newCards);
+    // Use the stable seed from dimensions
+    const newCards = generateCards(dimensions.width, dimensions.scrollHeight, dimensions.seed);
+    const newConnections = generateConnections(newCards, dimensions.seed);
 
     setCards(newCards);
     setConnections(newConnections);
-  }, []);
+  }, [dimensions, mounted]);
 
+  // Initialize mounted state and dimensions
   useEffect(() => {
-    let lastHeight = document.documentElement.scrollHeight;
-    
+    setMounted(true);
+    updateDimensions();
+
+    return () => setMounted(false);
+  }, [updateDimensions]);
+
+  // Handle dimension changes
+  useEffect(() => {
+    if (!mounted) return;
+
     const handleScroll = () => {
-      const currentHeight = document.documentElement.scrollHeight;
-      if (Math.abs(currentHeight - lastHeight) > 100) {
-        // Only regenerate if height changed significantly
-        lastHeight = currentHeight;
-        generateNetwork();
-      }
+      updateDimensions();
     };
 
+    const handleResize = () => {
+      updateDimensions();
+    };
+
+    // Set up ResizeObserver for more reliable dimension tracking
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(document.documentElement);
+
+    // Initial generation
     generateNetwork();
-    window.addEventListener('resize', generateNetwork);
+
+    // Event listeners
+    window.addEventListener('resize', handleResize);
     window.addEventListener('scroll', handleScroll);
     
     return () => {
-      window.removeEventListener('resize', generateNetwork);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', handleResize);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [generateNetwork]);
+  }, [mounted, generateNetwork, updateDimensions]);
 
   useEffect(() => {
     if (connections.length === 0) return;
 
     let animationFrameId: number;
     let activePaths = new Array(ACTIVE_PATHS).fill(0).map((_, i) => ({
-      index: Math.floor(Math.random() * connections.length),
+      index: Math.floor((connections.length * (i / ACTIVE_PATHS)) % connections.length),
       prevProgress: 0
     }));
 
@@ -333,7 +437,8 @@ const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
         
         // When particles complete their path, move to a new random connection
         if (baseProgress < path.prevProgress) {
-          path.index = Math.floor(Math.random() * connections.length);
+          // Use deterministic pattern for connection selection
+          path.index = (path.index + Math.floor(connections.length / ACTIVE_PATHS)) % connections.length;
         }
         path.prevProgress = baseProgress;
 
@@ -366,11 +471,37 @@ const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
     };
   }, [connections, uniqueId]);
 
+  // Don't render particles during server-side rendering
+  const particleElements = mounted ? particles.map(particle => {
+    const pathElement = document.getElementById(particle.connection.id);
+    if (!pathElement || !(pathElement instanceof SVGPathElement)) return null;
+    
+    try {
+      const pathLength = pathElement.getTotalLength();
+      const point = pathElement.getPointAtLength(
+        particle.progress * pathLength
+      );
+      
+      return (
+        <circle 
+          key={particle.id}
+          cx={point.x}
+          cy={point.y}
+          r={particle.size}
+          className="fill-emerald-600/85 dark:fill-emerald-500/75"
+          filter="url(#particle-glow)"
+        />
+      );
+    } catch (error) {
+      return null;
+    }
+  }) : null;
+
   return (
     <div 
       className={`fixed inset-0 pointer-events-none ${className}`}
       style={{ 
-        minHeight: '100vh',
+        minHeight: dimensions.scrollHeight,
         height: '100%'
       }}
     >
@@ -382,11 +513,7 @@ const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
           position: 'absolute',
           top: 0,
           left: 0,
-          minHeight: Math.max(
-            document.documentElement.scrollHeight,
-            document.documentElement.offsetHeight,
-            document.documentElement.clientHeight
-          )
+          minHeight: dimensions.scrollHeight
         }}
       >
         <defs>
@@ -460,31 +587,7 @@ const CircuitBackground: FC<CircuitBackgroundProps> = ({ className = '' }) => {
         ))}
 
         {/* Flow particles */}
-        {particles.map(particle => {
-          const pathElement = document.getElementById(particle.connection.id);
-          if (!pathElement || !(pathElement instanceof SVGPathElement)) return null;
-          
-          try {
-            // Now TypeScript knows this is an SVGPathElement
-            const pathLength = pathElement.getTotalLength();
-            const point = pathElement.getPointAtLength(
-              particle.progress * pathLength
-            );
-            
-            return (
-              <circle 
-                key={particle.id}
-                cx={point.x}
-                cy={point.y}
-                r={particle.size}
-                className="fill-emerald-600/85 dark:fill-emerald-500/75"
-                filter="url(#particle-glow)"
-              />
-            );
-          } catch (error) {
-            return null; // Safely handle any path calculation errors
-          }
-        })}
+        {particleElements}
       </svg>
     </div>
   );

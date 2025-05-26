@@ -10,3 +10,4 @@ export { default as Logo } from './Logo';
 export { default as ThemeToggle } from './ThemeToggle';
 export { default as LanguageSwitcher } from './LanguageSwitcher';
 export { default as LoadingSpinner } from './LoadingSpinner';
+export { default as Modal } from './Modal';
