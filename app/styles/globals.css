@@ -23,12 +23,24 @@
   /* Base HTML elements */
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 80px;
     height: 100%;
+  }
+
+  @supports (-webkit-touch-callout: none) {
+    html {
+      -webkit-scroll-behavior: smooth;
+    }
+  }
+
+  section[id],
+  div[id]:not(#__next) {
+    scroll-margin-top: 80px;
   }
   
   body {
     @apply bg-gradient-to-br 
-    from-gray-50 via-gray-100 to-white 
+    from-gray-50/95 via-blue-50/90 to-white/95 
     dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 
     text-slate-800 dark:text-slate-100 
     antialiased transition-all duration-300;
@@ -102,37 +114,41 @@
   }
 
   .hero-container {
-    @apply bg-gradient-to-br from-white/80 via-blue-50/70 to-blue-100/75 
+    @apply bg-gradient-to-br from-white/90 via-blue-50/80 to-blue-100/85 
     dark:from-slate-800/80 dark:via-slate-800/85 dark:to-slate-900/90
     rounded-lg shadow-md overflow-hidden backdrop-blur-sm
-    transition-all duration-300;
+    transition-all duration-300
+    border border-blue-100/20 dark:border-slate-700/20;
   }
 
   .section-container {
     @apply py-8 md:py-12 
-    bg-gradient-to-br from-blue-100/90 via-blue-200/85 to-blue-300/90 
+    bg-gradient-to-br from-blue-50/95 via-blue-100/90 to-blue-200/95 
     dark:from-slate-800/85 dark:via-slate-800/80 dark:to-slate-900/85 
     text-blue-900 dark:text-slate-100 
     container mx-auto px-6 md:px-10 rounded-lg shadow-md my-10 backdrop-blur-sm
-    transition-all duration-300;
+    transition-all duration-300
+    border border-blue-200/20 dark:border-slate-700/20;
   }
   
   .section-container-light {
     @apply py-8 md:py-12 
-    bg-gradient-to-br from-blue-50/85 via-blue-50/80 to-blue-100/85 
+    bg-gradient-to-br from-white/95 via-blue-50/90 to-blue-100/95 
     dark:from-slate-800/80 dark:via-slate-800/75 dark:to-slate-900/80 
     text-blue-800 dark:text-slate-200
     container mx-auto px-6 md:px-10 rounded-lg shadow-md my-10 backdrop-blur-sm
-    transition-all duration-300;
+    transition-all duration-300
+    border border-blue-100/20 dark:border-slate-700/20;
   }
 
   .card {
-    @apply bg-gradient-to-br from-blue-100/90 via-blue-200/85 to-blue-300/90 
+    @apply bg-gradient-to-br from-white/95 via-blue-50/90 to-blue-100/95 
     text-blue-900 dark:from-slate-800/85 dark:via-slate-800/80 dark:to-slate-900/85 
     dark:text-slate-100 
     p-8 rounded-lg shadow-md hover:shadow-lg 
     transition-all duration-300 hover:-translate-y-1 
-    flex flex-col items-center;
+    flex flex-col items-center
+    border border-blue-100/20 dark:border-slate-700/20;
   }
 
   .btn {
