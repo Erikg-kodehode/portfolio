@@ -23,6 +23,7 @@ const en: Translations = {
     about: 'About',
     projects: 'Projects',
     skills: 'Skills',
+    cv: 'CV',
     contact: 'Contact',
     openMenu: 'Open menu',
     closeMenu: 'Close menu',

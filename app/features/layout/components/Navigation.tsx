@@ -23,6 +23,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
     { name: t.nav.about, path: `${isEnglish ? '/en' : ''}/about` },
     { name: t.nav.projects, path: `${isEnglish ? '/en' : ''}/projects` },
     { name: t.nav.skills, path: `${isEnglish ? '/en' : ''}/skills` },
+    { name: t.nav.cv, path: `${isEnglish ? '/en' : ''}/cv` },
     { name: t.nav.contact, path: `${isEnglish ? '/en' : ''}/contact` },
   ], [isEnglish, t.nav]);
 

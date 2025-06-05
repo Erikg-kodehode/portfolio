@@ -23,6 +23,7 @@ const no: Translations = {
     about: 'Om meg',
     projects: 'Prosjekter',
     skills: 'Ferdigheter',
+    cv: 'CV',
     contact: 'Kontakt',
     openMenu: 'Åpne meny',
     closeMenu: 'Lukk meny',
