@@ -45,6 +45,7 @@ export default function NavigationHints({ isEnglish, hasNextProject, hasPrevProj
       }, 4000);
       return () => clearTimeout(timer);
     }
+    return () => {}; // Empty cleanup function for when hasSeenHints is true
   }, []);
 
   return (

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useTranslations } from "@/i18n";
 import { ErrorBoundary } from "@/components/shared";
 import Image from "next/image";
@@ -17,6 +16,9 @@ export default function ProjectDetailPage({ projectId }: ProjectDetailPageProps)
   const pathname = usePathname();
   const isEnglish = pathname?.startsWith("/en");
 
+  type ProjectKey = 'bot' | 'hangman' | 'bomberman';
+  type ProjectUrlKey = 'checkinbot' | 'check-in' | 'discordbot' | 'discord-bot' | 'bot' | 'hangman' | 'bomberman';
+
   // Define the master project configuration
   const projectConfig = {
     // Map all possible URL variations to the canonical project key
@@ -28,20 +30,20 @@ export default function ProjectDetailPage({ projectId }: ProjectDetailPageProps)
       'bot': 'bot',
       'hangman': 'hangman',
       'bomberman': 'bomberman'
-    },
+    } as Record<ProjectUrlKey, ProjectKey>,
     // Map project keys to image asset names
     assetNames: {
       'bot': 'Bot',
       'hangman': 'Hangman',
       'bomberman': 'Bomberman'
-    },
+    } as Record<ProjectKey, string>,
     // Define the fixed navigation order
-    order: ['hangman', 'bot', 'bomberman']
+    order: ['hangman', 'bot', 'bomberman'] as ProjectKey[]
   };
 
   // Process the incoming project ID
-  const baseId = projectId.toLowerCase().split('-')[0];
-  const canonicalKey = projectConfig.urlToKey[baseId] || baseId;
+  const baseId = projectId.toLowerCase().split('-')[0] as ProjectUrlKey;
+  const canonicalKey = projectConfig.urlToKey[baseId] || (baseId as ProjectKey);
   const assetName = projectConfig.assetNames[canonicalKey] || canonicalKey;
   
   // Handle navigation

@@ -50,17 +50,17 @@ export default function ProjectSwipeNav({
   }, [prevProjectId, nextProjectId, isEnglish, router, isZoomed]);
 
   // Handle touch/swipe navigation
-  const handleDragStart = (e: any, info: PanInfo) => {
+  const handleDragStart = (_e: any, _info: PanInfo) => {
     if (isZoomed) return;
     setIsDragging(true);
   };
 
-  const handleDrag = (e: any, info: PanInfo) => {
+  const handleDrag = (_e: any, info: PanInfo) => {
     if (isZoomed) return;
     setDragDirection(info.offset.x > 0 ? 'right' : 'left');
   };
 
-  const handleDragEnd = async (e: any, info: PanInfo) => {
+  const handleDragEnd = async (_e: any, info: PanInfo) => {
     if (isZoomed) return;
     
     const threshold = 50;
@@ -129,7 +129,7 @@ export default function ProjectSwipeNav({
 
         {/* Progress indicators */}
         <div className="flex space-x-2">
-          {['prev', 'current', 'next'].map((position, index) => (
+          {['prev', 'current', 'next'].map((position) => (
             <motion.div
               key={position}
               animate={{

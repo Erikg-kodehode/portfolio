@@ -22,7 +22,7 @@ export default function ZoomableImage({ src, alt, priority = false }: ZoomableIm
     setScale(1); // Reset scale when toggling zoom
   }, []);
 
-  const handlePinch = useCallback((e: any, info: PanInfo) => {
+  const handlePinch = useCallback((_e: any, info: PanInfo) => {
     if (!isZoomed) return;
     
     const newScale = scale + info.offset.y * -0.01;
@@ -87,7 +87,7 @@ export default function ZoomableImage({ src, alt, priority = false }: ZoomableIm
           opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           {isEnglish ? "Click to zoom" : "Klikk for å zoome"}
         </div>
-      </div>
+      </motion.div>
 
       <AnimatePresence>
         {isZoomed && (

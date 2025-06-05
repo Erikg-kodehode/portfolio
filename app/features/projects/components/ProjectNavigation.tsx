@@ -21,9 +21,11 @@ export default function ProjectNavigation({ currentProjectId }: ProjectNavigatio
   const prevProjectId = currentIndex > 0 ? projectIds[currentIndex - 1] : null;
   const nextProjectId = currentIndex < projectIds.length - 1 ? projectIds[currentIndex + 1] : null;
 
+  type ProjectKey = keyof typeof t.projects.projects;
+
   // Get project details
-  const prevProject = prevProjectId ? t.projects.projects[prevProjectId] : null;
-  const nextProject = nextProjectId ? t.projects.projects[nextProjectId] : null;
+  const prevProject = prevProjectId ? t.projects.projects[prevProjectId as ProjectKey] : null;
+  const nextProject = nextProjectId ? t.projects.projects[nextProjectId as ProjectKey] : null;
 
   return (
     <div className="flex justify-between items-center w-full mt-12 gap-4">
@@ -52,7 +54,7 @@ export default function ProjectNavigation({ currentProjectId }: ProjectNavigatio
           </div>
         </Link>
       ) : (
-        <div className="flex-1 max-w-xs" /> {/* Spacer */}
+        <div className="flex-1 max-w-xs" />
       )}
 
       {nextProject ? (
@@ -80,7 +82,7 @@ export default function ProjectNavigation({ currentProjectId }: ProjectNavigatio
           </motion.span>
         </Link>
       ) : (
-        <div className="flex-1 max-w-xs" /> {/* Spacer */}
+        <div className="flex-1 max-w-xs" />
       )}
     </div>
   );
