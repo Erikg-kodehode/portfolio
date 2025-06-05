@@ -45,14 +45,13 @@ export default function Navigation({ className = '' }: NavigationProps) {
   return (
     <header 
       key={isEnglish ? 'en' : 'no'}
-      className={`sticky top-0 z-50 
-        bg-white/90 dark:bg-slate-800/90 
-        backdrop-blur-md shadow-theme 
+      className={`fixed top-4 left-0 right-0 z-50 
+        mx-auto max-w-7xl px-4 sm:px-6 lg:px-8
         transform-gpu transition-all duration-300 ease-in-out
-        py-4 ${className}`}
+        ${className}`}
       role="banner"
     >
-      <nav className="container mx-auto px-6 flex justify-between items-center">
+      <nav className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-theme rounded-2xl px-6 py-4 flex justify-between items-center">
         <Link 
           href={isEnglish ? '/en' : '/'} 
           className="flex items-center group relative"

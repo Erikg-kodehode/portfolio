@@ -18,7 +18,8 @@ const mailButtonRef = useRef<HTMLButtonElement>(null);
   return (
     <div className="flex flex-col relative isolate min-h-screen overflow-hidden">
       <CircuitBackground className="absolute inset-0 -z-10" />
-      <Navigation className="flex-shrink-0 sticky top-0 z-50" />
+      <Navigation className="flex-shrink-0" />
+      <div className="pt-24" />
       <main className="flex-1 w-full max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-5 sm:py-6 relative z-20">
         <ErrorBoundary>
           {children}

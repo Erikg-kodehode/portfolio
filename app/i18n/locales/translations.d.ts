@@ -96,7 +96,7 @@ export interface Translations {
         features: string[];
         technologies: string[];
       };
-      discordBot: {
+      bot: Project;
         title: string;
         description: string;
         features: string[];

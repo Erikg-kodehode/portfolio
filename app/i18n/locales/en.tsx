@@ -147,7 +147,7 @@ const en: Translations = {
           'HTML/CSS'
         ]
       },
-      discordBot: {
+      bot: {
         title: 'Check-in Discord Bot',
         description: 'A C#-based Discord bot for handling daily work check-ins. Posts a check-in message every weekday morning and offers buttons to check in for office or remote work.',
         features: [

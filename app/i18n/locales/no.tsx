@@ -147,7 +147,7 @@ const no: Translations = {
           'HTML/CSS'
         ]
       },
-      discordBot: {
+      bot: {
         title: 'Innsjekking Discord Bot',
         description: 'En C#-basert Discord-bot for håndtering av daglige arbeidsinnsjekk. Poster en innsjekk-melding hver ukedag morgen og tilbyr knapper for å sjekke inn på kontor eller hjemmekontor.',
         features: [
