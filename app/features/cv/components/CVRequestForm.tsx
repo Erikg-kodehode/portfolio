@@ -7,9 +7,11 @@ import { FaUser, FaEnvelope, FaBuilding, FaClipboardList, FaPaperPlane, FaSpinne
 import { motion, AnimatePresence } from 'framer-motion';
 import { CVAccessRequest, CVRequestFormState } from "../types";
 
-export default function CVRequestForm() {
-  const pathname = usePathname();
-  const isEnglish = pathname?.startsWith("/en");
+interface CVRequestFormProps {
+  isEnglish: boolean;
+}
+
+export default function CVRequestForm({ isEnglish }: CVRequestFormProps) {
 
   const [formData, setFormData] = useState({
     name: '',
@@ -40,7 +42,7 @@ export default function CVRequestForm() {
       const response = await fetch('/api/cv-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData)
+        body: JSON.stringify({ ...requestData, isEnglish })
       });
 
       const data = await response.json();

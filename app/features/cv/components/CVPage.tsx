@@ -22,7 +22,7 @@ export default function CVPage() {
         </div>
 
         <div className="backdrop-blur-sm bg-gradient-to-br from-slate-100/5 to-blue-50/5 dark:from-slate-900/95 dark:to-slate-800/90 shadow-xl dark:shadow-2xl dark:shadow-blue-500/5 rounded-2xl p-6">
-          <CVRequestForm />
+          <CVRequestForm isEnglish={isEnglish} />
         </div>
       </div>
     </div>

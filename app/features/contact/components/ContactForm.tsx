@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation';
 import { Input, Card, Button } from '@/components/ui';
 import { FaUser, FaEnvelope, FaHeading, FaComments, FaPaperPlane, FaSpinner } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
-import { sendContactEmail } from '@/app/lib/services/email';
 import { useTranslations } from '@/i18n';
 
 interface FormData {
@@ -88,15 +87,52 @@ export default function ContactForm() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Validate all fields before submission
+    const validationResults = {
+      name: validateField('name', formData.name),
+      email: validateField('email', formData.email),
+      subject: validateField('subject', formData.subject),
+      message: validateField('message', formData.message)
+    };
+
+    setIsValid(validationResults);
+    setTouched({
+      name: true,
+      email: true,
+      subject: true,
+      message: true
+    });
+
+    // Check if any validation failed
+    if (!Object.values(validationResults).every(Boolean)) {
+      return;
+    }
+
     setStatus('submitting');
     
     try {
-      await sendContactEmail({
-        name: formData.name,
-        email: formData.email,
-        subject: formData.subject,
-        message: formData.message
+      console.log('Submitting form data:', formData);
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message
+        }),
       });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message');
+      }
+
+      console.log('Form submission successful:', data);
 
       // Reset all form states
       setFormData({ name: '', email: '', subject: '', message: '' });
@@ -104,7 +140,7 @@ export default function ContactForm() {
       setIsValid({ name: true, email: true, subject: true, message: true });
       setStatus('success');
     } catch (error) {
-      console.error('Contact form error:', error);
+      console.error('Contact form error:', error instanceof Error ? error.message : error);
       setStatus('error');
     }
   };

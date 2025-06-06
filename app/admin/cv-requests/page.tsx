@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import { useRouter } from 'next/navigation'
+import SystemLogs from '@/components/admin/SystemLogs'
 
 type CVRequest = {
   requestId: string
@@ -140,6 +141,31 @@ export default function AdminPage() {
     }
   }
 
+  async function handleBulkApprove() {
+    if (!confirm('Are you sure you want to approve all pending requests?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/cv-request/approve-all', {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to approve requests');
+      }
+
+      const result = await response.json();
+      alert(`${result.succeeded} requests approved successfully${result.failed > 0 ? `, ${result.failed} failed` : ''}`);
+      
+      // Refresh the requests list
+      fetchRequests();
+    } catch (err) {
+      console.error('Failed to approve requests:', err);
+      alert('Failed to approve requests');
+    }
+  }
+
   async function handleLogout() {
     try {
       await fetch('/api/admin/logout', { method: 'POST' })
@@ -192,103 +218,124 @@ export default function AdminPage() {
       </nav>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6 flex justify-end space-x-4">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">CV Requests</h1>
           <button
-            onClick={() => handleAdminAction('resetRateLimits')}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+            onClick={() => fetchRequests()}
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+            title="Refresh list"
           >
-            Reset All Rate Limits
-          </button>
-          <button
-            onClick={() => handleAdminAction('clearRequests')}
-            className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
-          >
-            Clear All Requests
-          </button>
-          <button
-            onClick={() => handleAdminAction('resetAll')}
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-          >
-            Reset Everything
+            ↻ Refresh
           </button>
         </div>
-        <div className="overflow-x-auto bg-white/50 dark:bg-gray-800/50 shadow-md rounded-lg backdrop-blur-sm">
-          <table className="min-w-full">
-            <thead className="bg-gray-50/50 dark:bg-gray-900/50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Company</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Purpose</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Views</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {requests.map((request) => (
-                <tr key={request.requestId} className="bg-white/30 dark:bg-gray-800/30">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {format(new Date(request.createdAt), 'MMM d, yyyy')}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {request.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {request.email}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {request.company || '-'}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">
-                    {request.purpose}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      {
-                        PENDING: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-100',
-                        APPROVED: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-100',
-                        DENIED: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-100',
-                        EXPIRED: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
-                      }[request.status]
-                    }`}>
-                      {request.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {request.accessCount}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div className="flex space-x-2">
-                      {request.status === 'PENDING' && (
-                        <>
-                          <button
-                            onClick={() => handleAction(request.requestId, 'APPROVED')}
-                            className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors"
-                          >
-                            Approve
-                          </button>
-                          <button
-                            onClick={() => handleAction(request.requestId, 'DENIED')}
-                            className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors"
-                          >
-                            Deny
-                          </button>
-                        </>
-                      )}
-                      <button
-                        onClick={() => handleResetRateLimit(request.email)}
-                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
-                      >
-                        Reset Rate Limit
-                      </button>
-                    </div>
-                  </td>
+
+        {/* Actions Bar */}
+        <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-6 mb-8">
+          <div className="flex flex-wrap gap-4">
+            <button
+              onClick={() => handleBulkApprove()}
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors flex items-center gap-2"
+            >
+              <span>✓</span>
+              <span>Approve All Pending</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Requests Table */}
+          <div className="lg:col-span-2 overflow-x-auto bg-white/50 dark:bg-gray-800/50 shadow-md rounded-lg backdrop-blur-sm">
+            <table className="min-w-full">
+              <thead className="bg-gray-50/50 dark:bg-gray-900/50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Email</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                {requests.map((request) => (
+                  <tr key={request.requestId} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {format(new Date(request.createdAt), 'MMM d, yyyy')}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {request.name}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {request.email}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        {
+                          PENDING: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-100',
+                          APPROVED: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-100',
+                          DENIED: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-100',
+                          EXPIRED: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                        }[request.status]
+                      }`}>
+                        {request.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex gap-3">
+                        {request.status === 'PENDING' && (
+                          <>
+                            <button
+                              onClick={() => handleAction(request.requestId, 'APPROVED')}
+                              className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              onClick={() => handleAction(request.requestId, 'DENIED')}
+                              className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+                            >
+                              Deny
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* System Logs Panel */}
+          <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm">
+            <SystemLogs />
+          </div>
+        </div>
+
+        {/* Danger Zone */}
+        <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-6 mt-8">
+          <h2 className="text-lg font-semibold text-red-600 dark:text-red-400 mb-4">Danger Zone</h2>
+          <div className="flex flex-wrap gap-4">
+            <button
+              onClick={() => handleAdminAction('resetRateLimits')}
+              className="px-4 py-2 border-2 border-yellow-500 text-yellow-700 dark:text-yellow-400 rounded hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors"
+            >
+              Reset All Rate Limits
+            </button>
+            <button
+              onClick={() => handleAdminAction('clearRequests')}
+              className="px-4 py-2 border-2 border-red-500 text-red-700 dark:text-red-400 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            >
+              Clear All Requests
+            </button>
+            <button
+              onClick={() => handleAdminAction('resetAll')}
+              className="px-4 py-2 border-2 border-red-600 text-red-700 dark:text-red-400 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            >
+              Reset Everything
+            </button>
+          </div>
         </div>
       </main>
     </div>

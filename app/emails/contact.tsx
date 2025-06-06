@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { styles } from './styles';
 
 interface ContactEmailProps {
   name: string;
@@ -9,20 +10,30 @@ interface ContactEmailProps {
 
 export default function ContactEmail({ name, email, subject, message }: ContactEmailProps) {
   return (
-    <div>
-      <h2>New Contact Form Message</h2>
-      <div style={{ background: '#f5f5f5', padding: '20px', borderRadius: '5px', margin: '20px 0' }}>
-        <p><strong>From:</strong> {name}</p>
-        <p><strong>Email:</strong> {email}</p>
-        <p><strong>Subject:</strong> {subject}</p>
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <h2 style={styles.title}>New Contact Form Message</h2>
       </div>
-      <div style={{ background: '#f5f5f5', padding: '20px', borderRadius: '5px', margin: '20px 0' }}>
-        <p><strong>Message:</strong></p>
-        <p style={{ whiteSpace: 'pre-wrap' }}>{message}</p>
-      </div>
-      <hr style={{ margin: '30px 0', border: 'none', borderTop: '1px solid #eee' }} />
-      <div style={{ fontSize: '12px', color: '#666' }}>
-        <p>This is an automated message from your portfolio website contact form.</p>
+      <div style={styles.content}>
+        <div style={styles.field}>
+          <div style={styles.label}>From</div>
+          <p style={styles.text}>{name}</p>
+        </div>
+        <div style={styles.field}>
+          <div style={styles.label}>Email</div>
+          <p style={styles.text}>{email}</p>
+        </div>
+        <div style={styles.field}>
+          <div style={styles.label}>Subject</div>
+          <p style={styles.text}>{subject}</p>
+        </div>
+        <div style={styles.field}>
+          <div style={styles.label}>Message</div>
+          <p style={{ ...styles.text, whiteSpace: 'pre-wrap' }}>{message}</p>
+        </div>
+        <div style={styles.footer}>
+          <p style={styles.text}>This is an automated message from your portfolio website contact form.</p>
+        </div>
       </div>
     </div>
   );

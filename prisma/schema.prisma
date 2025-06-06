@@ -7,7 +7,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // Add direct connection for Neon serverless
 }
 
 // Enum for CV request status
@@ -100,6 +101,7 @@ model CVRequest {
   ipAddress       String
   userAgent       String
   status          RequestStatus @default(PENDING)
+  isEnglish       Boolean       @default(false)
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   reviewedAt      DateTime?
@@ -125,4 +127,19 @@ model RateLimit {
 
   @@index([key])
   @@index([resetAt])
+}
+
+// System logs for tracking issues
+model SystemLog {
+  id        String   @id @default(uuid())
+  level     String   // 'info', 'warning', 'error'
+  message   String
+  details   String?  @db.Text
+  source    String   // Which part of the system generated this log
+  createdAt DateTime @default(now())
+  resolvedAt DateTime?
+
+  @@index([level])
+  @@index([source])
+  @@index([createdAt])
 }

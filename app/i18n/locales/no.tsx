@@ -30,7 +30,7 @@ const no: Translations = {
     mobileMenu: 'Mobil meny'
   },
   home: {
-    title: 'Hei, jeg er Erik Gulliksen',
+    title: 'Hei, jeg er Erik',
     subtitle: 'Backend-utvikler fokusert på C# og .NET med en lidenskap for å bygge robuste og skalerbare løsninger.',
     cta: {
       projects: 'Se mine prosjekter',

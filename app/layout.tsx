@@ -19,7 +19,7 @@ const inter = Inter({
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Gulliksen - Portfolio",
+  title: "Erik - Portfolio",
   description: "Backend developer portfolio"
 };
 

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { styles } from './styles';
 
 interface CVRequestEmailProps {
   name: string;
@@ -9,20 +10,30 @@ interface CVRequestEmailProps {
 
 export default function CVRequestEmail({ name, email, company, purpose }: CVRequestEmailProps) {
   return (
-    <div>
-      <h2>New CV Access Request</h2>
-      <div style={{ background: '#f5f5f5', padding: '20px', borderRadius: '5px', margin: '20px 0' }}>
-        <p><strong>From:</strong> {name}</p>
-        <p><strong>Email:</strong> {email}</p>
-        <p><strong>Company:</strong> {company || 'Not specified'}</p>
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <h2 style={styles.title}>New CV Access Request</h2>
       </div>
-      <div style={{ background: '#f5f5f5', padding: '20px', borderRadius: '5px', margin: '20px 0' }}>
-        <p><strong>Purpose of Request:</strong></p>
-        <p style={{ whiteSpace: 'pre-wrap' }}>{purpose}</p>
-      </div>
-      <hr style={{ margin: '30px 0', border: 'none', borderTop: '1px solid #eee' }} />
-      <div style={{ fontSize: '12px', color: '#666' }}>
-        <p>This is an automated notification from your portfolio website.</p>
+      <div style={styles.content}>
+        <div style={styles.field}>
+          <div style={styles.label}>From</div>
+          <p style={styles.text}>{name}</p>
+        </div>
+        <div style={styles.field}>
+          <div style={styles.label}>Email</div>
+          <p style={styles.text}>{email}</p>
+        </div>
+        <div style={styles.field}>
+          <div style={styles.label}>Company</div>
+          <p style={styles.text}>{company || 'Not specified'}</p>
+        </div>
+        <div style={styles.field}>
+          <div style={styles.label}>Purpose of Request</div>
+          <p style={{ ...styles.text, whiteSpace: 'pre-wrap' }}>{purpose}</p>
+        </div>
+        <div style={styles.footer}>
+          <p style={styles.text}>This is an automated notification from your portfolio website.</p>
+        </div>
       </div>
     </div>
   );

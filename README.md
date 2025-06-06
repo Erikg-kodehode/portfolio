@@ -11,19 +11,43 @@ cd portfolio
 2. Install dependencies:
 ```bash
 npm install
-# or if using Yarn
-yarn install
 ```
+This will also automatically run Prisma generate as part of the postinstall script.
 
 3. Set up environment variables:
-Create a `.env` file with necessary environment variables (if required)
+Create a `.env.local` file with the following variables:
+```env
+# Resend API Key for email functionality
+RESEND_API_KEY=your_resend_api_key
 
-4. Start the development server:
+# Database URL for Prisma
+DATABASE_URL=your_database_url
+```
+
+4. Set up the database:
+```bash
+# Push the database schema
+npm run prisma:push
+
+# Optional: Seed the database
+npm run db:seed
+```
+
+5. Start the development server:
 ```bash
 npm run dev
-# or
-yarn dev
 ```
+
+## Available Scripts
+
+- `npm run dev` - Start the development server
+- `npm run build` - Build the production application
+- `npm run start` - Start the production server
+- `npm run lint` - Run ESLint
+- `npm run prisma:generate` - Generate Prisma client
+- `npm run prisma:studio` - Open Prisma Studio to manage your database
+- `npm run prisma:push` - Push schema changes to the database
+- `npm run db:seed` - Seed the database with initial data
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 

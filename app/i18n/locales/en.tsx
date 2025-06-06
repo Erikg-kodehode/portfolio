@@ -30,7 +30,7 @@ const en: Translations = {
     mobileMenu: 'Mobile menu'
   },
   home: {
-    title: 'Hi, I\'m Erik Gulliksen',
+    title: 'Hi, I\'m Erik',
     subtitle: 'Backend developer focused on C# and .NET with a passion for building robust and scalable solutions.',
     cta: {
       projects: 'See my projects',

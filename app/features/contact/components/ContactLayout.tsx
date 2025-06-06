@@ -58,7 +58,7 @@ const contactInfo = [
     icon: <FaEnvelope className="text-xl" />,
     title: "Email",
     titleNo: "E-post",
-    content: "Erik.gulliksen@gmail.com",
+    content: "Email",
     href: "mailto:Erik.gulliksen@gmail.com"
   }
 ];

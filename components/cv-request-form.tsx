@@ -18,7 +18,7 @@ const requestSchema = z.object({
 
 type RequestFormData = z.infer<typeof requestSchema>
 
-export function CVRequestForm() {
+export function CVRequestForm({ isEnglish }: { isEnglish: boolean }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<{
     type: 'success' | 'error'
@@ -39,12 +39,13 @@ export function CVRequestForm() {
     setSubmitStatus(null)
 
     try {
+      // Check if we're on the English version of the site
       const response = await fetch('/api/cv-request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({ ...data, isEnglish })
       })
 
       const result = await response.json()

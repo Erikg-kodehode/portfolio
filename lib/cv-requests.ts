@@ -9,6 +9,7 @@ export async function createCVRequest(data: {
   purpose: string
   ipAddress: string
   userAgent: string
+  isEnglish: boolean
 }) {
   // Send email notification using CV template
   try {
@@ -105,10 +106,18 @@ export async function updateCVRequestStatus(
     try {
       const { sendCVApprovalEmail } = await import('@/app/lib/services/email');
       
+      console.log('Debug - Language check:', {
+        isEnglish,
+        envEnglishCV: process.env.CV_URL_EN,
+        envNorwegianCV: process.env.CV_URL_NO
+      });
+
       // Use language-specific CV URLs
       const cvUrl = isEnglish
-        ? process.env.NEXT_PUBLIC_CV_URL_ENGLISH
-        : process.env.NEXT_PUBLIC_CV_URL_NORWEGIAN;
+        ? process.env.CV_URL_EN
+        : process.env.CV_URL_NO;
+
+      console.log('Selected CV URL:', cvUrl);
 
       if (!cvUrl) {
         throw new Error('CV URL not found in environment variables');

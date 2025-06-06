@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, email, company, purpose } = body
+    const { name, email, company, purpose, isEnglish } = body
 
     // Basic validation
     if (!name || !email || !purpose) {
@@ -36,7 +36,8 @@ export async function POST(request: Request) {
       company,
       purpose,
       ipAddress,
-      userAgent
+      userAgent,
+      isEnglish
     })
 
     return NextResponse.json({

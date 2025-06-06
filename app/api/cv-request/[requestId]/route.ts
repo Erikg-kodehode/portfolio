@@ -21,7 +21,13 @@ export async function PATCH(
 
     // Check if request was made from English version
     const cvRequest = await prisma.cVRequest.findUnique({
-      where: { requestId: params.requestId }
+      where: { requestId: params.requestId },
+      select: {
+        name: true,
+        email: true,
+        status: true,
+        isEnglish: true
+      }
     })
 
     if (!cvRequest) {
@@ -31,8 +37,8 @@ export async function PATCH(
       )
     }
 
-    // Determine language based on the request origin URL
-    const isEnglish = cvRequest.userAgent.includes('/en/') || cvRequest.userAgent.includes('en-')
+    // Use the stored language preference
+    const isEnglish = cvRequest.isEnglish
 
     const updatedRequest = await updateCVRequestStatus(
       params.requestId,
@@ -43,6 +49,17 @@ export async function PATCH(
     return NextResponse.json(updatedRequest)
   } catch (error) {
     console.error('Error updating CV request:', error)
+
+    // Log the error
+    await prisma.systemLog.create({
+      data: {
+        level: 'error',
+        message: 'Failed to update CV request',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        source: 'cv-request-approval'
+      }
+    })
+
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

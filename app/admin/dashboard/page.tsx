@@ -51,6 +51,11 @@ export default function AdminDashboard() {
       if (!response.ok) throw new Error('Failed to fetch requests')
       const requests = await response.json()
       
+      // Sort requests by date first
+      const sortedRequests = [...requests].sort((a: any, b: any) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
       // Calculate stats
       const stats = {
         pendingRequests: requests.filter((r: any) => r.status === 'PENDING').length,
@@ -58,8 +63,7 @@ export default function AdminDashboard() {
         approvedRequests: requests.filter((r: any) => r.status === 'APPROVED').length,
         deniedRequests: requests.filter((r: any) => r.status === 'DENIED').length,
         expiredRequests: requests.filter((r: any) => r.status === 'EXPIRED').length,
-        lastRequestDate: requests.length > 0 ? requests.sort((a: any, b: any) => 
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0].createdAt : undefined
+        lastRequestDate: sortedRequests.length > 0 ? sortedRequests[0].createdAt : undefined
       }
       
       setStats(stats)
@@ -175,15 +179,25 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Link 
                   href="/admin/cv-requests"
-                  className="flex items-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg
+                  className="group flex items-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg
                     hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all duration-300
-                    border border-blue-200 dark:border-blue-800"
+                    border border-blue-200 dark:border-blue-800 relative"
                 >
-                  <div className="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 text-2xl">📝</div>
-                  <div className="ml-4">
+                  {stats?.pendingRequests && stats.pendingRequests > 0 && (
+                    <span className="absolute -top-2 -right-2 h-6 w-6 flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full">
+                      {stats.pendingRequests}
+                    </span>
+                  )}
+                  <div className="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 text-2xl group-hover:scale-110 transition-transform">📝</div>
+                  <div className="ml-4 flex-grow">
                     <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Review Requests</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{stats?.pendingRequests} pending reviews</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {stats?.pendingRequests 
+                        ? `${stats.pendingRequests} pending review${stats.pendingRequests > 1 ? 's' : ''}` 
+                        : 'No pending reviews'}
+                    </p>
                   </div>
+                  <span className="text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                 </Link>
 
                 {admin.role === 'ADMIN' && (
@@ -241,7 +255,162 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">User Configuration</h2>
+              <button 
+                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+                onClick={() => {/* To be implemented */}}
+              >
+                Save Changes
+              </button>
+            </div>
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Interface Theme</label>
+                <select 
+                  className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm py-2 px-3
+                    text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="system">System Default</option>
+                  <option value="light">Light Mode</option>
+                  <option value="dark">Dark Mode</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Language Preference</label>
+                <select 
+                  className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm py-2 px-3
+                    text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="en">English</option>
+                  <option value="no">Norwegian</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Notification Preferences</label>
+                <div className="space-y-2">
+                  <label className="flex items-center">
+                    <input 
+                      type="checkbox" 
+                      className="rounded border-gray-300 dark:border-gray-700 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
+                      defaultChecked 
+                    />
+                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Email notifications for new requests</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input 
+                      type="checkbox" 
+                      className="rounded border-gray-300 dark:border-gray-700 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
+                      defaultChecked 
+                    />
+                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Dashboard notifications</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input 
+                      type="checkbox" 
+                      className="rounded border-gray-300 dark:border-gray-700 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
+                      defaultChecked 
+                    />
+                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Request expiration reminders</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input 
+                      type="checkbox" 
+                      className="rounded border-gray-300 dark:border-gray-700 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
+                      defaultChecked 
+                    />
+                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Weekly summary reports</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Display Settings</label>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm text-gray-600 dark:text-gray-400">Items per page</label>
+                    <select 
+                      className="mt-1 block w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm py-2 px-3
+                        text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-600 dark:text-gray-400">Default sort order</label>
+                    <select 
+                      className="mt-1 block w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm py-2 px-3
+                        text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="newest">Newest first</option>
+                      <option value="oldest">Oldest first</option>
+                      <option value="status">By status</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="flex items-center">
+                      <input 
+                        type="checkbox" 
+                        className="rounded border-gray-300 dark:border-gray-700 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
+                        defaultChecked 
+                      />
+                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Compact view</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input 
+                        type="checkbox" 
+                        className="rounded border-gray-300 dark:border-gray-700 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
+                        defaultChecked 
+                      />
+                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Show request timestamps</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input 
+                        type="checkbox" 
+                        className="rounded border-gray-300 dark:border-gray-700 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
+                        defaultChecked 
+                      />
+                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Enable quick actions</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Auto Response Settings</label>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm text-gray-600 dark:text-gray-400">Auto-deny after</label>
+                    <select 
+                      className="mt-1 block w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm py-2 px-3
+                        text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="never">Never</option>
+                      <option value="24h">24 hours</option>
+                      <option value="48h">48 hours</option>
+                      <option value="72h">72 hours</option>
+                      <option value="1w">1 week</option>
+                    </select>
+                  </div>
+                  <label className="flex items-center">
+                    <input 
+                      type="checkbox" 
+                      className="rounded border-gray-300 dark:border-gray-700 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
+                    />
+                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Send reminder before auto-deny</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Documentation</h2>
             <div className="space-y-4">
@@ -270,24 +439,28 @@ export default function AdminDashboard() {
           <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Admin Tools</h2>
             <div className="space-y-4">
-              <Link 
-                href="/admin/settings"
-                className="block p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg
-                  hover:bg-gray-100 dark:hover:bg-gray-900/30 transition-all duration-300
-                  border border-gray-200 dark:border-gray-700"
-              >
-                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Settings</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Configure system settings</p>
-              </Link>
+              <div className="block p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Settings</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Configure system settings</p>
+                  </div>
+                  <span className="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 rounded">Coming Soon</span>
+                </div>
+              </div>
 
               <Link 
                 href="/admin/logs"
-                className="block p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg
-                  hover:bg-gray-100 dark:hover:bg-gray-900/30 transition-all duration-300
-                  border border-gray-200 dark:border-gray-700"
+                className="block p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg border border-gray-200 dark:border-gray-700
+                  hover:bg-gray-100 dark:hover:bg-gray-900/30 transition-all duration-300"
               >
-                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">System Logs</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">View system activity logs</p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">System Logs</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">View system activity logs</p>
+                  </div>
+                  <span className="text-blue-600 dark:text-blue-400">→</span>
+                </div>
               </Link>
             </div>
           </div>

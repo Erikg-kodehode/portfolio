@@ -4,10 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "check-translations": "ts-node scripts/check-translations.ts"
+    "check-translations": "ts-node scripts/check-translations.ts",
+    "postinstall": "prisma generate",
+    "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio",
+    "prisma:push": "prisma db push",
+    "db:seed": "prisma db seed"
   },
   "dependencies": {
     "@auth/core": "^0.34.2",
