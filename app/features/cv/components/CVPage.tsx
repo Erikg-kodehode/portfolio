@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { PageTitle } from "@/features/layout";
 import CVRequestForm from "./CVRequestForm";
 
 export default function CVPage() {

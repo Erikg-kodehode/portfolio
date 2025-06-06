@@ -8,8 +8,8 @@ import { headers } from "next/headers";
 import { MainContent } from "@/features/layout/components";
 import { Providers } from "@/providers";
 import { ErrorBoundary } from "@/components/shared";
+import { LocalizedWrapper } from "@/layout-wrappers";
 import { getLocaleFromPath } from "@/i18n";
-import { TranslationsProvider } from "@/i18n/context";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -58,13 +58,13 @@ export default function RootLayout({
           overflow-y-scroll
         ">
         <Providers>
-          <TranslationsProvider>
-            <ErrorBoundary>
+          <ErrorBoundary>
+            <LocalizedWrapper>
               <MainContent>
                 {children}
               </MainContent>
-            </ErrorBoundary>
-          </TranslationsProvider>
+            </LocalizedWrapper>
+          </ErrorBoundary>
         </Providers>
       </body>
     </html>

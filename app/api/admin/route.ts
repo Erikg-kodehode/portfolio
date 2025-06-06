@@ -2,6 +2,16 @@ import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { loginAdmin } from '@/lib/auth'
 
+export const dynamic = 'force-dynamic'
+
+// Handle GET requests
+export async function GET() {
+  return NextResponse.json(
+    { error: 'Method not allowed' },
+    { status: 405 }
+  )
+}
+
 export async function POST(request: Request) {
   try {
     const { username, password } = await request.json()

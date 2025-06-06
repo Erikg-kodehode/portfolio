@@ -37,7 +37,7 @@ export default function CVRequestForm() {
     };
 
     try {
-      const response = await fetch('/api/cv/request', {
+      const response = await fetch('/api/cv-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestData)
@@ -142,22 +142,6 @@ export default function CVRequestForm() {
       </Button>
 
       <AnimatePresence>
-        {formState.status === 'success' && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="p-4 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-100 rounded-lg flex items-center"
-          >
-            <svg className="w-5 h-5 mr-3 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-            {isEnglish 
-              ? "Request submitted successfully! I'll review it and get back to you soon."
-              : "Forespørsel sendt! Jeg vil gjennomgå den og svare deg snart."}
-          </motion.div>
-        )}
-        
         {formState.status === 'error' && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}

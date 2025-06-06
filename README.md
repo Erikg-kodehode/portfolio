@@ -1,3 +1,30 @@
+# Portfolio Project
+
+## Setup Instructions
+
+1. Clone the repository:
+```bash
+git clone <your-repo-url>
+cd portfolio
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or if using Yarn
+yarn install
+```
+
+3. Set up environment variables:
+Create a `.env` file with necessary environment variables (if required)
+
+4. Start the development server:
+```bash
+npm run dev
+# or
+yarn dev
+```
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

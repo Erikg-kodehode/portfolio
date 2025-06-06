@@ -1,7 +1,10 @@
-import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { NextResponse } from 'next/server'
 import { validateSession } from '@/lib/auth'
 import { cookies } from 'next/headers'
+
+// Mark route as dynamic
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
@@ -22,10 +25,11 @@ export async function GET() {
       )
     }
 
-    // Fetch CV requests
+    // Get all CV requests in a single query with pagination
     const requests = await prisma.cVRequest.findMany({
       orderBy: { createdAt: 'desc' },
       select: {
+        id: true,
         requestId: true,
         name: true,
         email: true,
@@ -34,7 +38,8 @@ export async function GET() {
         status: true,
         createdAt: true,
         accessCount: true
-      }
+      },
+      take: 100 // Limit to last 100 requests
     })
 
     return NextResponse.json(requests)
@@ -46,4 +51,3 @@ export async function GET() {
     )
   }
 }
-

@@ -10,6 +10,20 @@ export async function createCVRequest(data: {
   ipAddress: string
   userAgent: string
 }) {
+  // Send email notification using CV template
+  try {
+    const { sendCVRequestEmail } = await import('@/app/lib/services/email');
+    await sendCVRequestEmail({
+      name: data.name,
+      email: data.email,
+      company: data.company || '',
+      purpose: data.purpose
+    });
+  } catch (error) {
+    console.error('Failed to send CV request notification:', error)
+    // Don't throw - we still want to create the request even if email fails
+  }
+
   return prisma.cVRequest.create({
     data: {
       ...data,
@@ -20,33 +34,26 @@ export async function createCVRequest(data: {
 
 // Function to check if user has exceeded rate limit
 export async function checkRateLimit(key: string): Promise<boolean> {
-  const LIMIT = 3 // Maximum requests per hour
+  const LIMIT = 10 // Maximum requests per hour
   const now = new Date()
   const hourAgo = new Date(now.getTime() - 60 * 60 * 1000)
 
-  // Get or create rate limit record
-  const rateLimit = await prisma.rateLimit.upsert({
-    where: { key },
-    create: {
-      key,
-      count: 1,
-      resetAt: now
-    },
-    update: {
-      count: {
-        increment: 1
-      },
-      resetAt: {
-        set: now
-      }
-    }
+  // Get existing rate limit record
+  const existingRateLimit = await prisma.rateLimit.findUnique({
+    where: { key }
   })
 
-  // Reset count if last request was more than an hour ago
-  if (rateLimit.resetAt < hourAgo) {
-    await prisma.rateLimit.update({
+  // If no existing record or last request was more than an hour ago,
+  // create/reset the rate limit
+  if (!existingRateLimit || existingRateLimit.resetAt < hourAgo) {
+    await prisma.rateLimit.upsert({
       where: { key },
-      data: {
+      create: {
+        key,
+        count: 1,
+        resetAt: now
+      },
+      update: {
         count: 1,
         resetAt: now
       }
@@ -54,7 +61,22 @@ export async function checkRateLimit(key: string): Promise<boolean> {
     return false
   }
 
-  return rateLimit.count > LIMIT
+  // If within the hour window and already at limit, reject
+  if (existingRateLimit.count >= LIMIT) {
+    return true
+  }
+
+  // Otherwise increment the count but keep the original resetAt time
+  await prisma.rateLimit.update({
+    where: { key },
+    data: {
+      count: {
+        increment: 1
+      }
+    }
+  })
+
+  return false
 }
 
 // Function to get CV request by ID
@@ -68,21 +90,44 @@ export async function getCVRequest(requestId: string) {
 export async function updateCVRequestStatus(
   requestId: string,
   status: 'APPROVED' | 'DENIED' | 'EXPIRED',
-  accessToken?: string
+  isEnglish: boolean
 ) {
-  return prisma.cVRequest.update({
+  const updatedRequest = await prisma.cVRequest.update({
     where: { requestId },
     data: {
       status,
-      reviewedAt: new Date(),
-      ...(status === 'APPROVED' && accessToken
-        ? {
-            accessToken,
-            accessExpiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
-          }
-        : {})
+      reviewedAt: new Date()
     }
   })
+
+  // If request is approved, send the CV access email
+  if (status === 'APPROVED') {
+    try {
+      const { sendCVApprovalEmail } = await import('@/app/lib/services/email');
+      
+      // Use language-specific CV URLs
+      const cvUrl = isEnglish
+        ? process.env.NEXT_PUBLIC_CV_URL_ENGLISH
+        : process.env.NEXT_PUBLIC_CV_URL_NORWEGIAN;
+
+      if (!cvUrl) {
+        throw new Error('CV URL not found in environment variables');
+      }
+
+      await sendCVApprovalEmail({
+        name: updatedRequest.name,
+        email: updatedRequest.email,
+        cvUrl,
+        isEnglish
+      });
+    } catch (error) {
+      console.error('Failed to send CV approval email:', error)
+      // Don't throw the error - we don't want to rollback the status update
+      // just because the email failed to send
+    }
+  }
+
+  return updatedRequest
 }
 
 // Function to validate and increment access count

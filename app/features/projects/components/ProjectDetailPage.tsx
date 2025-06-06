@@ -17,8 +17,15 @@ export default function ProjectDetailPage({ projectId }: ProjectDetailPageProps)
   const pathname = usePathname();
   const isEnglish = pathname?.startsWith("/en");
 
+  type ProjectKey = 'bot' | 'hangman' | 'bomberman';
+  type ProjectUrlKey = ProjectKey | 'checkinbot' | 'check-in' | 'discordbot' | 'discord-bot';
+
   // Define the master project configuration
-  const projectConfig = {
+  const projectConfig: {
+    urlToKey: Record<ProjectUrlKey, ProjectKey>;
+    assetNames: Record<ProjectKey, string>;
+    order: ProjectKey[];
+  } = {
     // Map all possible URL variations to the canonical project key
     urlToKey: {
       'checkinbot': 'bot',
@@ -40,8 +47,8 @@ export default function ProjectDetailPage({ projectId }: ProjectDetailPageProps)
   };
 
   // Process the incoming project ID
-  const baseId = projectId.toLowerCase().split('-')[0];
-  const canonicalKey = projectConfig.urlToKey[baseId] || baseId;
+  const baseId = projectId.toLowerCase().split('-')[0] as ProjectUrlKey;
+  const canonicalKey = projectConfig.urlToKey[baseId] || (baseId as ProjectKey);
   const assetName = projectConfig.assetNames[canonicalKey] || canonicalKey;
   
   // Handle navigation

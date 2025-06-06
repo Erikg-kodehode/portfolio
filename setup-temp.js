@@ -1,15 +1,15 @@
-import { PrismaClient } from '@prisma/client'
-import bcrypt from 'bcryptjs'
-import { createInterface } from 'readline'
+const { PrismaClient } = require('@prisma/client')
+const bcrypt = require('bcryptjs')
+const readline = require('readline')
 
 const prisma = new PrismaClient()
 
-const rl = createInterface({
+const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 })
 
-function question(query: string): Promise<string> {
+function question(query) {
   return new Promise((resolve) => {
     rl.question(query, resolve)
   })
@@ -38,7 +38,7 @@ async function main() {
 
     console.log('\n✅ Admin account created successfully!')
     console.log(`Username: ${admin.username}`)
-console.log('You can now log in at /admin')
+    console.log('You can now log in at /admin')
   } catch (error) {
     console.error('❌ Error creating admin account:', error)
   } finally {

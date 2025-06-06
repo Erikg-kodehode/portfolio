@@ -2,15 +2,13 @@
 
 import { FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useTheme } from 'next-themes'
 
 export default function AdminLoginPage() {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-  const { theme } = useTheme()
+   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(null)
     setLoading(true)
@@ -20,7 +18,7 @@ export default function AdminLoginPage() {
     const password = formData.get('password') as string
 
     try {
-      const response = await fetch('/api/admin/login', {
+      const response = await fetch('/api/admin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -38,7 +36,7 @@ export default function AdminLoginPage() {
       }
 
       // Redirect to admin panel on success
-      router.push('/admin/cv-requests')
+      router.push('/admin/dashboard')
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')

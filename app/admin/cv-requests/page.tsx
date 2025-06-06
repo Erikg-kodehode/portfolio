@@ -70,12 +70,73 @@ export default function AdminPage() {
         body: JSON.stringify({ status })
       })
 
-      if (!response.ok) throw new Error('Failed to update request')
+      if (!response.ok) {
+        const error = await response.text()
+        throw new Error(`Failed to update request: ${error}`)
+      }
+      
+      // Show success message
+      alert(`Request ${status.toLowerCase()} successfully`)
       
       // Refresh the requests list
       fetchRequests()
     } catch (err) {
       console.error('Failed to update request:', err)
+      alert(err instanceof Error ? err.message : 'Failed to update request')
+    }
+  }
+
+  async function handleResetRateLimit(email: string) {
+    if (!confirm(`Are you sure you want to reset rate limit for ${email}?`)) {
+      return
+    }
+
+    try {
+      const response = await fetch('/api/cv-request/actions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'resetRateLimits', email })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to reset rate limit')
+      }
+
+      const result = await response.json()
+      alert(result.message)
+      
+      // Refresh the requests list
+      fetchRequests()
+    } catch (err) {
+      console.error('Failed to reset rate limit:', err)
+      alert('Failed to reset rate limit')
+    }
+  }
+
+  async function handleAdminAction(action: 'clearRequests' | 'resetRateLimits' | 'resetAll') {
+    if (!confirm(`Are you sure you want to ${action.replace(/([A-Z])/g, ' $1').toLowerCase()}?`)) {
+      return
+    }
+
+    try {
+      const response = await fetch('/api/cv-request/actions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to perform action')
+      }
+
+      const result = await response.json()
+      alert(result.message)
+      
+      // Refresh the requests list
+      fetchRequests()
+    } catch (err) {
+      console.error('Failed to perform action:', err)
+      alert('Failed to perform action')
     }
   }
 
@@ -108,7 +169,13 @@ export default function AdminPage() {
       <nav className="bg-white/50 dark:bg-gray-800/50 shadow-sm backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => router.push('/admin/dashboard')}
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+              >
+                ← Back to Dashboard
+              </button>
               <span className="text-lg font-semibold text-blue-900 dark:text-blue-100">CV Request Admin</span>
             </div>
             <div className="flex items-center space-x-4">
@@ -125,6 +192,26 @@ export default function AdminPage() {
       </nav>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-6 flex justify-end space-x-4">
+          <button
+            onClick={() => handleAdminAction('resetRateLimits')}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          >
+            Reset All Rate Limits
+          </button>
+          <button
+            onClick={() => handleAdminAction('clearRequests')}
+            className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
+          >
+            Clear All Requests
+          </button>
+          <button
+            onClick={() => handleAdminAction('resetAll')}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+          >
+            Reset Everything
+          </button>
+        </div>
         <div className="overflow-x-auto bg-white/50 dark:bg-gray-800/50 shadow-md rounded-lg backdrop-blur-sm">
           <table className="min-w-full">
             <thead className="bg-gray-50/50 dark:bg-gray-900/50">
@@ -173,22 +260,30 @@ export default function AdminPage() {
                     {request.accessCount}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {request.status === 'PENDING' && (
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => handleAction(request.requestId, 'APPROVED')}
-                          className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors"
-                        >
-                          Approve
-                        </button>
-                        <button
-                          onClick={() => handleAction(request.requestId, 'DENIED')}
-                          className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors"
-                        >
-                          Deny
-                        </button>
-                      </div>
-                    )}
+                    <div className="flex space-x-2">
+                      {request.status === 'PENDING' && (
+                        <>
+                          <button
+                            onClick={() => handleAction(request.requestId, 'APPROVED')}
+                            className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors"
+                          >
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => handleAction(request.requestId, 'DENIED')}
+                            className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+                          >
+                            Deny
+                          </button>
+                        </>
+                      )}
+                      <button
+                        onClick={() => handleResetRateLimit(request.email)}
+                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                      >
+                        Reset Rate Limit
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

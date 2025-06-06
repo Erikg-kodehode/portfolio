@@ -1,2 +1,6 @@
-export * from './components';
-
+export {
+  ProjectImage,
+  ProjectsPage,
+  ProjectCard,
+  ProjectLayout
+} from './components';

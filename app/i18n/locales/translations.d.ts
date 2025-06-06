@@ -97,7 +97,7 @@ export interface Translations {
         features: string[];
         technologies: string[];
       };
-      bot: Project;
+      bot: {
         title: string;
         description: string;
         features: string[];

@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { Input, Card, Button } from '@/components/ui';
 import { FaUser, FaEnvelope, FaHeading, FaComments, FaPaperPlane, FaSpinner } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
-import { sendEmail, EmailTemplateParams } from '@/lib/services/emailjs';
+import { sendContactEmail } from '@/app/lib/services/email';
 import { useTranslations } from '@/i18n';
 
 interface FormData {
@@ -91,26 +91,18 @@ export default function ContactForm() {
     setStatus('submitting');
     
     try {
-      const templateParams: EmailTemplateParams = {
-        from_name: formData.name,
-        reply_to: formData.email,
-        subject: formData.subject,
-        message: formData.message,
-        to_name: 'Erik Gulliksen',
+      await sendContactEmail({
+        name: formData.name,
         email: formData.email,
-      };
+        subject: formData.subject,
+        message: formData.message
+      });
 
-      const result = await sendEmail(templateParams);
-
-      if (result.status === 200) {
-        // Reset all form states
-        setFormData({ name: '', email: '', subject: '', message: '' });
-        setTouched({ name: false, email: false, subject: false, message: false });
-        setIsValid({ name: true, email: true, subject: true, message: true });
-        setStatus('success');
-      } else {
-        throw new Error('Failed to send message');
-      }
+      // Reset all form states
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTouched({ name: false, email: false, subject: false, message: false });
+      setIsValid({ name: true, email: true, subject: true, message: true });
+      setStatus('success');
     } catch (error) {
       console.error('Contact form error:', error);
       setStatus('error');
