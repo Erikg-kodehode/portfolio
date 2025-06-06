@@ -1,40 +1,27 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL") // Add direct connection for Neon serverless
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
-// Enum for CV request status
-enum RequestStatus {
-  PENDING
-  APPROVED
-  DENIED
-  EXPIRED
-}
-
-// NextAuth User model
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -66,34 +53,35 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// Admin authentication
 model Admin {
-  id            String        @id @default(cuid())
-  username      String        @unique
-  passwordHash  String
-  role          String        @default("admin") // For future role types like "super_admin", "moderator", etc.
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  lastLoginAt   DateTime?
-  reviewedCVs   CVRequest[]   // Link to requests this admin has reviewed
-  sessions      AdminSession[]
+  id                  String         @id @default(cuid())
+  username            String         @unique
+  passwordHash        String
+  role                String         @default("admin")
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  lastLoginAt         DateTime?
+  email               String         @unique
+  resetToken          String?
+  resetTokenExpiresAt DateTime?
+  sessions            AdminSession[]
+  reviewedCVs         CVRequest[]
 }
 
 model AdminSession {
-  id           String   @id @default(cuid())
-  adminId      String
-  token        String   @unique
-  expires      DateTime
-  createdAt    DateTime @default(now())
-  admin        Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  adminId   String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
   @@index([token])
 }
 
-// Main CV request model
 model CVRequest {
   id              String        @id @default(uuid())
-  requestId       String        @unique @default(cuid()) // Public ID for reference
+  requestId       String        @unique @default(cuid())
   name            String
   email           String
   company         String?
@@ -101,45 +89,50 @@ model CVRequest {
   ipAddress       String
   userAgent       String
   status          RequestStatus @default(PENDING)
-  isEnglish       Boolean       @default(false)
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   reviewedAt      DateTime?
   accessToken     String?       @unique
   accessExpiresAt DateTime?
-  accessCount     Int          @default(0)
-  reviewedBy      Admin?       @relation(fields: [reviewedById], references: [id])
+  accessCount     Int           @default(0)
   reviewedById    String?
+  isEnglish       Boolean       @default(false)
+  reviewedBy      Admin?        @relation(fields: [reviewedById], references: [id])
 
   @@index([email])
   @@index([status])
   @@index([createdAt])
 }
 
-// Rate limiting tracking
 model RateLimit {
-  id         String   @id @default(uuid())
-  key        String   @unique // IP address or email
-  count      Int      @default(0)
-  resetAt    DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @id @default(uuid())
+  key       String   @unique
+  count     Int      @default(0)
+  resetAt   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([key])
   @@index([resetAt])
 }
 
-// System logs for tracking issues
 model SystemLog {
-  id        String   @id @default(uuid())
-  level     String   // 'info', 'warning', 'error'
-  message   String
-  details   String?  @db.Text
-  source    String   // Which part of the system generated this log
-  createdAt DateTime @default(now())
+  id         String    @id @default(uuid())
+  level      String
+  message    String
+  details    String?
+  source     String
+  createdAt  DateTime  @default(now())
   resolvedAt DateTime?
 
   @@index([level])
   @@index([source])
   @@index([createdAt])
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  DENIED
+  EXPIRED
 }

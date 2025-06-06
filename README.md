@@ -26,8 +26,9 @@ DATABASE_URL=your_database_url
 
 4. Set up the database:
 ```bash
-# Push the database schema
-npm run prisma:push
+npm run setup
+```
+This will install dependencies, generate the Prisma client, push the database schema, and set up the admin account.
 
 # Optional: Seed the database
 npm run db:seed

@@ -1,9 +1,17 @@
 {
+  "version": 2,
+  "framework": "nextjs",
+  "regions": ["fra1"],
   "buildCommand": "prisma generate && next build",
   "devCommand": "next dev",
   "installCommand": "npm install",
-  "framework": "nextjs",
-  "regions": ["fra1"],
+  "outputDirectory": ".next",
+  "functions": {
+    "app/api/**/*.ts": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
   "crons": [{
     "path": "/api/cv-request/actions",
     "schedule": "0 0 * * *"
