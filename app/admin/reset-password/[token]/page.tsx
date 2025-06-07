@@ -1,12 +1,20 @@
 import { validateResetToken } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
-type Props = {
-  params: { token: string };
+type PageParams = {
+  token: string;
 };
 
-export default async function ResetPasswordPage({ params }: Props) {
-  const { token } = params;
+type SearchParams = { [key: string]: string | string[] | undefined };
+
+type Props = {
+  params: Promise<PageParams>;
+  searchParams: Promise<SearchParams>;
+};
+
+export default async function ResetPasswordPage({ params, searchParams }: Props) {
+  const [resolvedParams, resolvedSearchParams] = await Promise.all([params, searchParams]);
+  const { token } = resolvedParams;
   const isValid = await validateResetToken(token);
 
   if (!isValid) {

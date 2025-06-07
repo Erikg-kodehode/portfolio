@@ -4,10 +4,17 @@ import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: { requestId: string } }
-) {
+export async function PATCH(request: Request) {
+  const { pathname } = new URL(request.url);
+  const requestId = pathname.split('/').pop();
+
+  if (!requestId) {
+    return NextResponse.json(
+      { error: 'Request ID is required' },
+      { status: 400 }
+    );
+  }
+
   try {
     const body = await request.json()
     const { status } = body
@@ -21,7 +28,7 @@ export async function PATCH(
 
     // Check if request was made from English version
     const cvRequest = await prisma.cVRequest.findUnique({
-      where: { requestId: params.requestId },
+      where: { requestId },
       select: {
         name: true,
         email: true,
@@ -41,7 +48,7 @@ export async function PATCH(
     const isEnglish = cvRequest.isEnglish
 
     const updatedRequest = await updateCVRequestStatus(
-      cvRequest.requestId, // Use the request ID from the found CV request
+      requestId, // Use the request ID from the URL
       status,
       isEnglish
     )

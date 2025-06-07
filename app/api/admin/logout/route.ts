@@ -6,12 +6,13 @@ export const dynamic = 'force-dynamic'
 
 export async function POST() {
   try {
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const sessionToken = cookieStore.get('admin_session')?.value
 
     if (sessionToken) {
       await logout(sessionToken)
-      cookies().delete('admin_session')
+      const deleteStore = await cookies()
+      deleteStore.delete('admin_session')
     }
 
     return NextResponse.json({ success: true })

@@ -34,7 +34,8 @@ export async function POST(request: Request) {
     const { session, admin } = result
 
     // Set session cookie
-    cookies().set('admin_session', session.token, {
+    const cookieStore = await cookies()
+    cookieStore.set('admin_session', session.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

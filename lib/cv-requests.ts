@@ -1,5 +1,5 @@
 import { prisma } from './prisma'
-import type { CVRequest, RateLimit } from '../generated/prisma'
+import type { CVRequest, RateLimit } from '@prisma/client'
 
 // Function to create a new CV request
 export async function createCVRequest(data: {

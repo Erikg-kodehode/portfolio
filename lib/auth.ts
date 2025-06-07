@@ -107,7 +107,7 @@ export async function logout(token: string) {
 // Get current admin from session cookie
 export async function getCurrentAdmin() {
   try {
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const sessionToken = cookieStore.get('admin_session')?.value
 
     if (!sessionToken) return null

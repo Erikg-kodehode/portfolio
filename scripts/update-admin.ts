@@ -17,6 +17,7 @@ async function updateAdminCredentials() {
       },
       create: {
         username,
+        email: `${username}@example.com`,
         passwordHash: hashedPassword,
         role: 'admin'
       },
