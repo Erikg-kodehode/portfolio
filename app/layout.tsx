@@ -8,8 +8,8 @@ import { headers } from "next/headers";
 import { MainContent } from "@/features/layout/components";
 import { Providers } from "@/providers";
 import { ErrorBoundary } from "@/components/shared";
+import { LocalizedWrapper } from "@/layout-wrappers";
 import { getLocaleFromPath } from "@/i18n";
-import { TranslationsProvider } from "@/i18n/context";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,7 +19,7 @@ const inter = Inter({
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Gulliksen - Portfolio",
+  title: "Erik - Portfolio",
   description: "Backend developer portfolio"
 };
 
@@ -32,12 +32,12 @@ function getLanguageFromPath(pathname: string): string {
   }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: ReactNode;
-}): ReactElement {
-  const headersList = headers();
+}): Promise<ReactElement> {
+  const headersList = await headers();
   const pathname = headersList.get("x-invoke-path") || "";
   const lang = getLanguageFromPath(pathname);
   const fontClass = inter?.className ?? "";
@@ -58,13 +58,13 @@ export default function RootLayout({
           overflow-y-scroll
         ">
         <Providers>
-          <TranslationsProvider>
-            <ErrorBoundary>
+          <ErrorBoundary>
+            <LocalizedWrapper>
               <MainContent>
                 {children}
               </MainContent>
-            </ErrorBoundary>
-          </TranslationsProvider>
+            </LocalizedWrapper>
+          </ErrorBoundary>
         </Providers>
       </body>
     </html>

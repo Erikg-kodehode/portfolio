@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 import { LoadingProvider } from "@/components/providers/LoadingProvider";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
+import { TranslationsProvider } from "@/i18n/context";
 
 interface ProvidersProps {
   children: ReactNode;
@@ -29,14 +30,16 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <LoadingProvider>
       <LanguageProvider>
-        <ThemeProvider 
-          attribute="class" 
-          defaultTheme="dark" 
-          enableSystem
-          disableTransitionOnChange={false}
-        >
-          {children}
-        </ThemeProvider>
+        <TranslationsProvider>
+          <ThemeProvider 
+            attribute="class" 
+            defaultTheme="dark" 
+            enableSystem
+            disableTransitionOnChange={false}
+          >
+            {children}
+          </ThemeProvider>
+        </TranslationsProvider>
       </LanguageProvider>
     </LoadingProvider>
   );

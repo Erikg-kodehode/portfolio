@@ -1,2 +1,8 @@
-export { Navigation, Footer, Container, Section, PageTitle } from './components';
-
+export {
+  Navigation,
+  Footer,
+  Container,
+  Section,
+  PageTitle,
+  MainContent
+} from './components';

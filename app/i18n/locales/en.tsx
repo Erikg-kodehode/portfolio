@@ -23,13 +23,14 @@ const en: Translations = {
     about: 'About',
     projects: 'Projects',
     skills: 'Skills',
+    cv: 'CV',
     contact: 'Contact',
     openMenu: 'Open menu',
     closeMenu: 'Close menu',
     mobileMenu: 'Mobile menu'
   },
   home: {
-    title: 'Hi, I\'m Erik Gulliksen',
+    title: 'Hi, I\'m Erik',
     subtitle: 'Backend developer focused on C# and .NET with a passion for building robust and scalable solutions.',
     cta: {
       projects: 'See my projects',

@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation';
 import { Input, Card, Button } from '@/components/ui';
 import { FaUser, FaEnvelope, FaHeading, FaComments, FaPaperPlane, FaSpinner } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
-import { sendEmail, EmailTemplateParams } from '@/lib/services/emailjs';
 import { useTranslations } from '@/i18n';
 
 interface FormData {
@@ -88,31 +87,60 @@ export default function ContactForm() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Validate all fields before submission
+    const validationResults = {
+      name: validateField('name', formData.name),
+      email: validateField('email', formData.email),
+      subject: validateField('subject', formData.subject),
+      message: validateField('message', formData.message)
+    };
+
+    setIsValid(validationResults);
+    setTouched({
+      name: true,
+      email: true,
+      subject: true,
+      message: true
+    });
+
+    // Check if any validation failed
+    if (!Object.values(validationResults).every(Boolean)) {
+      return;
+    }
+
     setStatus('submitting');
     
     try {
-      const templateParams: EmailTemplateParams = {
-        from_name: formData.name,
-        reply_to: formData.email,
-        subject: formData.subject,
-        message: formData.message,
-        to_name: 'Erik Gulliksen',
-        email: formData.email,
-      };
+      console.log('Submitting form data:', formData);
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message
+        }),
+      });
 
-      const result = await sendEmail(templateParams);
-
-      if (result.status === 200) {
-        // Reset all form states
-        setFormData({ name: '', email: '', subject: '', message: '' });
-        setTouched({ name: false, email: false, subject: false, message: false });
-        setIsValid({ name: true, email: true, subject: true, message: true });
-        setStatus('success');
-      } else {
-        throw new Error('Failed to send message');
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message');
       }
+
+      console.log('Form submission successful:', data);
+
+      // Reset all form states
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTouched({ name: false, email: false, subject: false, message: false });
+      setIsValid({ name: true, email: true, subject: true, message: true });
+      setStatus('success');
     } catch (error) {
-      console.error('Contact form error:', error);
+      console.error('Contact form error:', error instanceof Error ? error.message : error);
       setStatus('error');
     }
   };

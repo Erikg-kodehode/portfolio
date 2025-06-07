@@ -4,6 +4,7 @@ export interface Translations {
     about: string;
     projects: string;
     skills: string;
+    cv: string;
     contact: string;
     openMenu: string;
     closeMenu: string;

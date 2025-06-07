@@ -3,12 +3,11 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import type { Translations } from "@/i18n/locales/translations";
 import { usePathname } from "next/navigation";
-import * as enTranslations from "./locales/en";
-import * as noTranslations from "./locales/no";
+import en from "./locales/en";
+import no from "./locales/no";
 
 // Default minimal translations to use as fallback
-// Use complete Norwegian translations as default
-const defaultTranslations: Translations = noTranslations.default;
+const defaultTranslations: Translations = no;
 
 interface TranslationsContextType {
   translations: Translations;
@@ -37,7 +36,7 @@ export function TranslationsProvider({
   const updateTranslations = useCallback(() => {
     const isEnglish = pathname?.startsWith("/en");
     setState({
-      translations: isEnglish ? enTranslations.default : noTranslations.default,
+      translations: isEnglish ? en : no,
       isLoading: false,
       error: null,
     });

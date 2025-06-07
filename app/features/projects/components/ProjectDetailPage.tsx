@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useTranslations } from "@/i18n";
 import { ErrorBoundary } from "@/components/shared";
 import Image from "next/image";
@@ -17,10 +18,14 @@ export default function ProjectDetailPage({ projectId }: ProjectDetailPageProps)
   const isEnglish = pathname?.startsWith("/en");
 
   type ProjectKey = 'bot' | 'hangman' | 'bomberman';
-  type ProjectUrlKey = 'checkinbot' | 'check-in' | 'discordbot' | 'discord-bot' | 'bot' | 'hangman' | 'bomberman';
+  type ProjectUrlKey = ProjectKey | 'checkinbot' | 'check-in' | 'discordbot' | 'discord-bot';
 
   // Define the master project configuration
-  const projectConfig = {
+  const projectConfig: {
+    urlToKey: Record<ProjectUrlKey, ProjectKey>;
+    assetNames: Record<ProjectKey, string>;
+    order: ProjectKey[];
+  } = {
     // Map all possible URL variations to the canonical project key
     urlToKey: {
       'checkinbot': 'bot',
@@ -30,15 +35,15 @@ export default function ProjectDetailPage({ projectId }: ProjectDetailPageProps)
       'bot': 'bot',
       'hangman': 'hangman',
       'bomberman': 'bomberman'
-    } as Record<ProjectUrlKey, ProjectKey>,
+    },
     // Map project keys to image asset names
     assetNames: {
       'bot': 'Bot',
       'hangman': 'Hangman',
       'bomberman': 'Bomberman'
-    } as Record<ProjectKey, string>,
+    },
     // Define the fixed navigation order
-    order: ['hangman', 'bot', 'bomberman'] as ProjectKey[]
+    order: ['hangman', 'bot', 'bomberman']
   };
 
   // Process the incoming project ID

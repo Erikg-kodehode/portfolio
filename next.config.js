@@ -1,10 +1,18 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
   // Force clean build to avoid caching issues
   generateBuildId: async () => {
     return 'clean-build-' + Date.now();
   },
   webpack: (config, { isServer }) => {
+    // Add path aliases
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.join(__dirname),
+    };
+
     // Add fallback configuration and explicitly exclude MongoDB
     config.resolve.fallback = {
       ...config.resolve.fallback,

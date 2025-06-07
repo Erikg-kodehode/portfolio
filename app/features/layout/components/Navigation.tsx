@@ -23,6 +23,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
     { name: t.nav.about, path: `${isEnglish ? '/en' : ''}/about` },
     { name: t.nav.projects, path: `${isEnglish ? '/en' : ''}/projects` },
     { name: t.nav.skills, path: `${isEnglish ? '/en' : ''}/skills` },
+    { name: t.nav.cv, path: `${isEnglish ? '/en' : ''}/cv` },
     { name: t.nav.contact, path: `${isEnglish ? '/en' : ''}/contact` },
   ], [isEnglish, t.nav]);
 
@@ -53,7 +54,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
     >
       <nav className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-theme rounded-2xl px-6 py-4 flex justify-between items-center">
         <Link 
-          href={isEnglish ? '/en' : '/'} 
+          href={isEnglish ? '/en' : '/no'} 
           className="flex items-center group relative"
         >
           <div className="relative flex items-center justify-center w-12 h-12 md:w-14 md:h-14
@@ -75,7 +76,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
             <div className="relative w-10 h-10 md:w-12 md:h-12 transform-gpu transition-all duration-300 ease-out group-hover:scale-[1.05]">
               <Image
                 src="/assets/Logo.jpg"
-                alt="Erik Gulliksen Logo"
+                alt="Erik Logo"
                 className="object-cover w-full h-full rounded-full select-none 
                   transition-all duration-300
                   group-hover:brightness-105 group-hover:contrast-105"
@@ -104,6 +105,12 @@ export default function Navigation({ className = '' }: NavigationProps) {
                       ? 'text-blue-600 dark:text-blue-400 font-medium' 
                       : 'text-content hover:text-blue-600 dark:hover:text-blue-300'
                   }`}
+                  onClick={(e) => {
+                    if (pathname === link.path) {
+                      e.preventDefault();
+                      window.location.reload();
+                    }
+                  }}
                 >
                   <span className="relative group-hover:translate-x-1 transition-transform duration-300 ease-out">
                     {link.name}

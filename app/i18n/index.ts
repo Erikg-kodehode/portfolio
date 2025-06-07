@@ -4,16 +4,21 @@ export { useTranslations, TranslationsProvider } from './context';
 // Cache for translations
 const translationCache = new Map<string, Promise<Translations>>();
 
+// Import translations statically to ensure they're included in the build
+import en from './locales/en';
+import no from './locales/no';
+
 const dictionaries = {
-  en: () => import('./locales/en').then((module) => module.default),
-  no: () => import('./locales/no').then((module) => module.default),
+  en: () => Promise.resolve(en),
+  no: () => Promise.resolve(no),
 } as const;
 
 // Preload both language dictionaries
 export function preloadTranslations() {
-  Object.keys(dictionaries).forEach((locale) => {
-    void getTranslations(locale);
-  });
+  return Promise.all([
+    getTranslations('en'),
+    getTranslations('no'),
+  ]);
 }
 
 export async function getTranslations(locale: string): Promise<Translations> {

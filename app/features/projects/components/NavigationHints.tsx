@@ -37,15 +37,19 @@ export default function NavigationHints({ isEnglish, hasNextProject, hasPrevProj
   // Show hints briefly when component mounts
   useEffect(() => {
     const hasSeenHints = localStorage.getItem('hasSeenNavigationHints');
+    let timer: NodeJS.Timeout;
+    
     if (!hasSeenHints) {
       setIsVisible(true);
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         setIsVisible(false);
         localStorage.setItem('hasSeenNavigationHints', 'true');
-      }, 4000);
-      return () => clearTimeout(timer);
+      }, 5000);
     }
-    return () => {}; // Empty cleanup function for when hasSeenHints is true
+    
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, []);
 
   return (

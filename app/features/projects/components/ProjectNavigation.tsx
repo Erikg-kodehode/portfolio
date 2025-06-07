@@ -13,15 +13,15 @@ export default function ProjectNavigation({ currentProjectId }: ProjectNavigatio
   const pathname = usePathname();
   const isEnglish = pathname?.startsWith("/en");
 
+  type ProjectKey = 'bot' | 'hangman' | 'bomberman';
+
   // Get all project IDs in order
-  const projectIds = Object.keys(t.projects.projects);
-  const currentIndex = projectIds.indexOf(currentProjectId.split('-')[0]);
+  const projectIds = Object.keys(t.projects.projects) as ProjectKey[];
+  const currentIndex = projectIds.indexOf(currentProjectId.split('-')[0] as ProjectKey);
   
   // Get previous and next project IDs
   const prevProjectId = currentIndex > 0 ? projectIds[currentIndex - 1] : null;
   const nextProjectId = currentIndex < projectIds.length - 1 ? projectIds[currentIndex + 1] : null;
-
-  type ProjectKey = keyof typeof t.projects.projects;
 
   // Get project details
   const prevProject = prevProjectId ? t.projects.projects[prevProjectId as ProjectKey] : null;
@@ -54,7 +54,7 @@ export default function ProjectNavigation({ currentProjectId }: ProjectNavigatio
           </div>
         </Link>
       ) : (
-        <div className="flex-1 max-w-xs" />
+        <div className="flex-1 max-w-xs">{/* Spacer */}</div>
       )}
 
       {nextProject ? (
@@ -82,7 +82,7 @@ export default function ProjectNavigation({ currentProjectId }: ProjectNavigatio
           </motion.span>
         </Link>
       ) : (
-        <div className="flex-1 max-w-xs" />
+        <div className="flex-1 max-w-xs">{/* Spacer */}</div>
       )}
     </div>
   );
