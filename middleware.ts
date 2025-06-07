@@ -17,6 +17,7 @@ const LOCALE_EXEMPT_PATHS = [
 
 // Admin paths that require authentication
 const PROTECTED_ADMIN_PATHS = [
+  '/admin',
   '/admin/cv-requests'
 ]
 

@@ -74,6 +74,34 @@ export default function AdminPage() {
     }
   }
 
+  async function handleAdminAction(action: 'clearRequests' | 'resetRateLimits' | 'resetAll') {
+    const actionText = action.replace(/([A-Z])/g, ' $1').toLowerCase()
+    const confirmed = window.confirm(`Are you sure you want to ${actionText}? This action cannot be undone.`)
+
+    if (!confirmed) return
+
+    try {
+      const response = await fetch('/api/cv-request/actions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to perform action')
+      }
+
+      const result = await response.json()
+      alert(result.message)
+      
+      // Refresh the stats
+      fetchStats()
+    } catch (err) {
+      console.error('Failed to perform action:', err)
+      alert('Failed to perform action')
+    }
+  }
+
   async function handleLogout() {
     try {
       await fetch('/api/admin/logout', { method: 'POST' })
@@ -237,6 +265,89 @@ export default function AdminPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Documentation</h2>
+            </div>
+            <div className="space-y-4">
+              <Link 
+                href="/docs/cv-requests"
+                className="block p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg
+                  hover:bg-gray-100 dark:hover:bg-gray-900/30 transition-all duration-300
+                  border border-gray-200 dark:border-gray-700"
+              >
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">CV Request Guide</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Learn about the CV request workflow</p>
+              </Link>
+
+              <Link 
+                href="/docs/admin"
+                className="block p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg
+                  hover:bg-gray-100 dark:hover:bg-gray-900/30 transition-all duration-300
+                  border border-gray-200 dark:border-gray-700"
+              >
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Admin Guide</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Administrative documentation</p>
+              </Link>
+            </div>
+          </div>
+
+          <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-6">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Admin Tools</h2>
+            <div className="space-y-4">
+              <div className="block p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">System Settings</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Configure system settings</p>
+                  </div>
+                  <span className="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 rounded">Coming Soon</span>
+                </div>
+              </div>
+
+              <Link 
+                href="/admin/logs"
+                className="block p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg border border-gray-200 dark:border-gray-700
+                  hover:bg-gray-100 dark:hover:bg-gray-900/30 transition-all duration-300"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">System Logs</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">View system activity logs</p>
+                  </div>
+                  <span className="text-blue-600 dark:text-blue-400">→</span>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Danger Zone */}
+        <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-6 mt-8">
+          <h2 className="text-lg font-semibold text-red-600 dark:text-red-400 mb-4">Danger Zone</h2>
+          <div className="flex flex-wrap gap-4">
+            <button
+              onClick={() => handleAdminAction('resetRateLimits')}
+              className="px-4 py-2 border-2 border-yellow-500 text-yellow-700 dark:text-yellow-400 rounded hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors"
+            >
+              Reset All Rate Limits
+            </button>
+            <button
+              onClick={() => handleAdminAction('clearRequests')}
+              className="px-4 py-2 border-2 border-red-500 text-red-700 dark:text-red-400 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            >
+              Clear All Requests
+            </button>
+            <button
+              onClick={() => handleAdminAction('resetAll')}
+              className="px-4 py-2 border-2 border-red-600 text-red-700 dark:text-red-400 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            >
+              Reset Everything
+            </button>
           </div>
         </div>
       </main>
