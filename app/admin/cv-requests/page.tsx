@@ -326,7 +326,7 @@ export default function AdminPage() {
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => router.push('/admin')
+                onClick={() => router.push('/admin')}
                 className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
               >
                 ← Back to Dashboard
