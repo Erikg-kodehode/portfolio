@@ -32,12 +32,12 @@ function getLanguageFromPath(pathname: string): string {
   }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: ReactNode;
-}): ReactElement {
-  const headersList = headers();
+}): Promise<ReactElement> {
+  const headersList = await headers();
   const pathname = headersList.get("x-invoke-path") || "";
   const lang = getLanguageFromPath(pathname);
   const fontClass = inter?.className ?? "";

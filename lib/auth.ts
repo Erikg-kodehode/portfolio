@@ -2,6 +2,24 @@ import { prisma } from './prisma'
 import bcrypt from 'bcryptjs'
 import { cookies } from 'next/headers'
 
+export async function validateResetToken(token: string): Promise<boolean> {
+  try {
+    const admin = await prisma.admin.findFirst({
+      where: {
+        resetToken: token,
+        resetTokenExpiresAt: {
+          gt: new Date()
+        }
+      }
+    });
+
+    return !!admin;
+  } catch (error) {
+    console.error('Error validating reset token:', error);
+    return false;
+  }
+}
+
 // Session duration in seconds (30 days)
 const SESSION_DURATION = 30 * 24 * 60 * 60
 

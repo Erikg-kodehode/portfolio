@@ -9,7 +9,8 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   try {
     // Validate session
-    const sessionToken = cookies().get('admin_session')?.value
+    const cookieStore = await cookies();
+    const sessionToken = cookieStore.get('admin_session')?.value
     if (!sessionToken) {
       return NextResponse.json(
         { error: 'Unauthorized' },

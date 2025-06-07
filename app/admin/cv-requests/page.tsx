@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import { useRouter } from 'next/navigation'
 import SystemLogs from '@/components/admin/SystemLogs'
+import { toast, Toaster } from 'react-hot-toast'
+import { motion, AnimatePresence } from 'framer-motion'
 
 type CVRequest = {
   requestId: string
@@ -76,21 +78,60 @@ export default function AdminPage() {
         throw new Error(`Failed to update request: ${error}`)
       }
       
-      // Show success message
-      alert(`Request ${status.toLowerCase()} successfully`)
+      // Show success message with toast
+      toast.success(`Request ${status.toLowerCase()} successfully`, {
+        duration: 3000,
+        position: 'bottom-right',
+      })
       
       // Refresh the requests list
       fetchRequests()
     } catch (err) {
       console.error('Failed to update request:', err)
-      alert(err instanceof Error ? err.message : 'Failed to update request')
+      toast.error(err instanceof Error ? err.message : 'Failed to update request', {
+        duration: 4000,
+        position: 'bottom-right',
+      })
     }
   }
 
   async function handleResetRateLimit(email: string) {
-    if (!confirm(`Are you sure you want to reset rate limit for ${email}?`)) {
-      return
-    }
+    const confirmed = await new Promise((resolve) => {
+      // Create a custom toast for confirmation
+      toast(
+        (t) => (
+          <div className="flex flex-col gap-2 p-2">
+            <p>Are you sure you want to reset rate limit for {email}?</p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id)
+                  resolve(false)
+                }}
+                className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id)
+                  resolve(true)
+                }}
+                className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+        ),
+        {
+          duration: Infinity,
+          position: 'top-center',
+        }
+      )
+    })
+
+    if (!confirmed) return
 
     try {
       const response = await fetch('/api/cv-request/actions', {
@@ -104,20 +145,60 @@ export default function AdminPage() {
       }
 
       const result = await response.json()
-      alert(result.message)
+      toast.success(result.message, {
+        duration: 3000,
+        position: 'bottom-right',
+      })
       
       // Refresh the requests list
       fetchRequests()
     } catch (err) {
       console.error('Failed to reset rate limit:', err)
-      alert('Failed to reset rate limit')
+      toast.error('Failed to reset rate limit', {
+        duration: 4000,
+        position: 'bottom-right',
+      })
     }
   }
 
   async function handleAdminAction(action: 'clearRequests' | 'resetRateLimits' | 'resetAll') {
-    if (!confirm(`Are you sure you want to ${action.replace(/([A-Z])/g, ' $1').toLowerCase()}?`)) {
-      return
-    }
+    const actionText = action.replace(/([A-Z])/g, ' $1').toLowerCase()
+    const confirmed = await new Promise((resolve) => {
+      toast(
+        (t) => (
+          <div className="flex flex-col gap-2 p-2">
+            <p>Are you sure you want to {actionText}?</p>
+            <p className="text-sm text-red-500">This action cannot be undone.</p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id)
+                  resolve(false)
+                }}
+                className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id)
+                  resolve(true)
+                }}
+                className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        ),
+        {
+          duration: Infinity,
+          position: 'top-center',
+        }
+      )
+    })
+
+    if (!confirmed) return
 
     try {
       const response = await fetch('/api/cv-request/actions', {
@@ -131,20 +212,58 @@ export default function AdminPage() {
       }
 
       const result = await response.json()
-      alert(result.message)
+      toast.success(result.message, {
+        duration: 3000,
+        position: 'bottom-right',
+      })
       
       // Refresh the requests list
       fetchRequests()
     } catch (err) {
       console.error('Failed to perform action:', err)
-      alert('Failed to perform action')
+      toast.error('Failed to perform action', {
+        duration: 4000,
+        position: 'bottom-right',
+      })
     }
   }
 
   async function handleBulkApprove() {
-    if (!confirm('Are you sure you want to approve all pending requests?')) {
-      return;
-    }
+    const confirmed = await new Promise((resolve) => {
+      toast(
+        (t) => (
+          <div className="flex flex-col gap-2 p-2">
+            <p>Are you sure you want to approve all pending requests?</p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id)
+                  resolve(false)
+                }}
+                className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id)
+                  resolve(true)
+                }}
+                className="px-3 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600"
+              >
+                Approve All
+              </button>
+            </div>
+          </div>
+        ),
+        {
+          duration: Infinity,
+          position: 'top-center',
+        }
+      )
+    })
+
+    if (!confirmed) return;
 
     try {
       const response = await fetch('/api/cv-request/approve-all', {
@@ -156,13 +275,22 @@ export default function AdminPage() {
       }
 
       const result = await response.json();
-      alert(`${result.succeeded} requests approved successfully${result.failed > 0 ? `, ${result.failed} failed` : ''}`);
+      toast.success(
+        `${result.succeeded} requests approved successfully${result.failed > 0 ? `, ${result.failed} failed` : ''}`,
+        {
+          duration: 3000,
+          position: 'bottom-right',
+        }
+      )
       
       // Refresh the requests list
       fetchRequests();
     } catch (err) {
       console.error('Failed to approve requests:', err);
-      alert('Failed to approve requests');
+      toast.error('Failed to approve requests', {
+        duration: 4000,
+        position: 'bottom-right',
+      });
     }
   }
 
@@ -190,8 +318,9 @@ export default function AdminPage() {
 
   if (!admin) return null // Wait for admin data before rendering
 
-  return (
+    return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100/90 via-gray-50/80 to-white/90 dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/90 transition-colors duration-500">
+      <Toaster />
       <nav className="bg-white/50 dark:bg-gray-800/50 shadow-sm backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">

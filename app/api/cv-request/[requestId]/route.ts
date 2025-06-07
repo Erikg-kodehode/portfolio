@@ -41,7 +41,7 @@ export async function PATCH(
     const isEnglish = cvRequest.isEnglish
 
     const updatedRequest = await updateCVRequestStatus(
-      params.requestId,
+      cvRequest.requestId, // Use the request ID from the found CV request
       status,
       isEnglish
     )
