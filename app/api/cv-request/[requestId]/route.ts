@@ -17,8 +17,28 @@ export async function PATCH(request: Request) {
 
   try {
     const body = await request.json()
-    const { status } = body
+    const { status, isEnglish, toggleLanguage } = body
 
+    // Handle language toggle
+    if (toggleLanguage) {
+      // Log the language toggle action
+      await prisma.systemLog.create({
+        data: {
+          level: 'info',
+          message: `Language switched to ${isEnglish ? 'English' : 'Norwegian'}`,
+          details: `Request ID: ${requestId}`,
+          source: 'cv-request'
+        }
+      });
+
+      const updatedRequest = await prisma.cVRequest.update({
+        where: { requestId },
+        data: { isEnglish }
+      })
+      return NextResponse.json(updatedRequest)
+    }
+
+    // Handle status change
     if (!status || !['APPROVED', 'DENIED'].includes(status)) {
       return NextResponse.json(
         { error: 'Invalid status' },
@@ -44,13 +64,13 @@ export async function PATCH(request: Request) {
       )
     }
 
-    // Use the stored language preference
-    const isEnglish = cvRequest.isEnglish
+    // Use the language preference from the request or fall back to stored value
+    const useEnglish = isEnglish ?? cvRequest.isEnglish
 
     const updatedRequest = await updateCVRequestStatus(
       requestId, // Use the request ID from the URL
       status,
-      isEnglish
+      useEnglish
     )
 
     return NextResponse.json(updatedRequest)

@@ -1,6 +1,20 @@
 import { prisma } from './prisma'
 import type { CVRequest, RateLimit } from '@prisma/client'
 
+// Utility function to fetch CV request data in a single query
+async function fetchCVRequestData() {
+  return prisma.$transaction([
+    prisma.adminSession.findFirst({
+      where: { expires: { gt: new Date() } },
+      orderBy: { createdAt: 'desc' }
+    }),
+    prisma.cVRequest.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 100
+    })
+  ]);
+}
+
 // Function to create a new CV request
 export async function createCVRequest(data: {
   name: string
@@ -15,13 +29,14 @@ export async function createCVRequest(data: {
   try {
     const { sendCVRequestEmail } = await import('@/lib/services/email');
     await sendCVRequestEmail({
+      isEnglish: data.isEnglish,
       name: data.name,
       email: data.email,
       company: data.company || '',
       purpose: data.purpose
     });
   } catch (error) {
-    console.error('Failed to send CV request notification:', error)
+    console.error('Failed to send CV request notification:', error);
     // Don't throw - we still want to create the request even if email fails
   }
 
@@ -93,6 +108,16 @@ export async function updateCVRequestStatus(
   status: 'APPROVED' | 'DENIED' | 'EXPIRED',
   isEnglish: boolean
 ) {
+  // Log the action
+  await prisma.systemLog.create({
+    data: {
+      level: 'info',
+      message: `CV request ${status.toLowerCase()}`,
+      details: `Request ID: ${requestId}, Language: ${isEnglish ? 'English' : 'Norwegian'}`,
+      source: 'cv-request'
+    }
+  });
+
   const updatedRequest = await prisma.cVRequest.update({
     where: { requestId },
     data: {
@@ -106,18 +131,10 @@ export async function updateCVRequestStatus(
     try {
       const { sendCVApprovalEmail } = await import('@/lib/services/email');
       
-      console.log('Debug - Language check:', {
-        isEnglish,
-        envEnglishCV: process.env.CV_URL_EN,
-        envNorwegianCV: process.env.CV_URL_NO
-      });
-
       // Use language-specific CV URLs
       const cvUrl = isEnglish
         ? process.env.CV_URL_EN
         : process.env.CV_URL_NO;
-
-      console.log('Selected CV URL:', cvUrl);
 
       if (!cvUrl) {
         throw new Error('CV URL not found in environment variables');
@@ -130,7 +147,7 @@ export async function updateCVRequestStatus(
         isEnglish
       });
     } catch (error) {
-      console.error('Failed to send CV approval email:', error)
+      console.error('Failed to send CV approval email:', error);
       // Don't throw the error - we don't want to rollback the status update
       // just because the email failed to send
     }

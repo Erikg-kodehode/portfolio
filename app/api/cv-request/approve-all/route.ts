@@ -28,7 +28,18 @@ export async function POST() {
     const succeeded = results.filter(r => r.status === 'fulfilled').length;
     const failed = results.filter(r => r.status === 'rejected').length;
 
-    // Log any failures
+    // Log the result
+    if (succeeded > 0) {
+      await prisma.systemLog.create({
+        data: {
+          level: 'info',
+          message: `Bulk approval completed`,
+          details: `${succeeded} requests approved successfully`,
+          source: 'cv-request-bulk-approval'
+        }
+      });
+    } 
+
     if (failed > 0) {
       await prisma.systemLog.create({
         data: {
