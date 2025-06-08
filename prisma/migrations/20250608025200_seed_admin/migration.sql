@@ -1,4 +1,4 @@
--- Seed admin user with bcrypt hash of 'admin123'
+-- Seed initial admin user
 INSERT INTO "Admin" (
   "id",
   "username",
@@ -9,8 +9,8 @@ INSERT INTO "Admin" (
   "updatedAt"
 ) VALUES (
   'clst0000000000001',
-  'admin',
-  '$2a$10$vxF3RNqWZKoL7k9HoD2q.eNPtxmXeJsWfuJ0lDjxJ8QQgY0YzLvwe',
+  'ErikG',
+  '$2a$10$YfpfZMQ1QxhZ.X2VGqBWieeF0UHYvbNu7QTKUKpZxQKh/W6TW.6jq',
   'admin',
   'erik.gulliksen@gmail.com',
   CURRENT_TIMESTAMP,
