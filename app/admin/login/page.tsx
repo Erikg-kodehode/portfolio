@@ -16,13 +16,17 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
+      console.log('Attempting login with:', { username });
+      
       const response = await fetch('/api/admin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       });
 
+      console.log('Login response status:', response.status);
       const data = await response.json();
+      console.log('Login response data:', data);
 
       if (response.ok) {
         // Store admin data in localStorage for UI updates
@@ -60,6 +64,8 @@ export default function AdminLogin() {
               <input
                 type="text"
                 id="username"
+                name="username"
+                autoComplete="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600
@@ -78,6 +84,8 @@ export default function AdminLogin() {
               <input
                 type="password"
                 id="password"
+                name="password"
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600
