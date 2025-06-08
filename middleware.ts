@@ -33,7 +33,18 @@ export async function middleware(request: NextRequest) {
 
     // Only validate for protected admin paths
     if (PROTECTED_ADMIN_PATHS.some(path => pathname.startsWith(path))) {
-      const sessionToken = request.cookies.get('admin_session')?.value
+    const sessionToken = request.cookies.get('admin_session')?.value
+
+      // Allow access to login page even without session
+      if (pathname === '/admin/login') {
+        if (sessionToken) {
+          const admin = await validateSessionToken(sessionToken)
+          if (admin) {
+            return NextResponse.redirect(new URL('/admin', request.url))
+          }
+        }
+        return NextResponse.next()
+      }
 
       if (!sessionToken) {
         return NextResponse.redirect(new URL('/admin/login', request.url))
@@ -41,7 +52,10 @@ export async function middleware(request: NextRequest) {
 
       const admin = await validateSessionToken(sessionToken)
       if (!admin) {
-        return NextResponse.redirect(new URL('/admin/login', request.url))
+        // Clear invalid session cookie
+        const response = NextResponse.redirect(new URL('/admin/login', request.url))
+        response.cookies.delete('admin_session')
+        return response
       }
     }
 
