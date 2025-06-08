@@ -14,7 +14,8 @@
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
     "prisma:push": "prisma db push",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "sync-env": "node scripts/sync-env.js"
   },
   "dependencies": {
     "@auth/core": "0.34.2",
@@ -51,6 +52,7 @@
     "@types/react-dom": "^19.1.5",
     "autoprefixer": "^10.4.14",
     "babel-loader": "^10.0.0",
+    "dotenv": "^16.5.0",
     "eslint": "^8.56.0",
     "eslint-config-next": "14.1.0",
     "postcss": "^8.4.31",
