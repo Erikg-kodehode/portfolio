@@ -25,7 +25,8 @@ const SESSION_DURATION = 30 * 24 * 60 * 60
 
 // Generate a random session token
 function generateSessionToken() {
-  return Buffer.from(crypto.getRandomValues(new Uint8Array(32))).toString('base64')
+  const crypto = require('crypto');
+  return crypto.randomBytes(32).toString('base64');
 }
 
 // Create a new session for an admin
