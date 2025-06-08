@@ -1,29 +1,42 @@
-import { NextResponse } from 'next/server'
-import { validateSession } from '@/lib/auth'
+import { NextResponse } from 'next/server';
+import { validateSession } from '@/lib/auth';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
-    const { token } = await request.json()
+    const { token } = await request.json();
 
     if (!token) {
-      return NextResponse.json({ valid: false }, { status: 400 })
+      return NextResponse.json(
+        { error: 'Token is required' },
+        { status: 400 }
+      );
     }
 
-    const admin = await validateSession(token)
+    const admin = await validateSession(token);
+    
+    if (!admin) {
+      return NextResponse.json(
+        { valid: false },
+        { status: 401 }
+      );
+    }
 
     return NextResponse.json({
-      valid: !!admin,
-      admin: admin ? {
+      valid: true,
+      admin: {
         id: admin.id,
         username: admin.username,
         role: admin.role
-      } : null
-    })
+      }
+    });
   } catch (error) {
-    console.error('Validation error:', error)
-    return NextResponse.json({ valid: false }, { status: 500 })
+    console.error('Validation error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
 
