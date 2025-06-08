@@ -14,7 +14,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { username, password } = await request.json()
+    const body = await request.json();
+    const { username, password } = body;
+    console.log('Login attempt:', { username });
 
     if (!username || !password) {
       return NextResponse.json(

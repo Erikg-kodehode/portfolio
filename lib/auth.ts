@@ -52,13 +52,18 @@ export async function loginAdmin(username: string, password: string) {
       where: { username },
     })
 
-    if (!admin) return null
+    if (!admin) {
+      console.log('Admin not found:', { username });
+      return null;
+    }
 
-    const passwordValid = await bcrypt.compare(password, admin.passwordHash)
-    if (!passwordValid) return null
+    console.log('Found admin:', { username: admin.username });
+    const passwordValid = await bcrypt.compare(password, admin.passwordHash);
+    console.log('Password valid:', passwordValid);
+    if (!passwordValid) return null;
 
     // Create session
-    const session = await createSession(admin.id)
+    const session = await createSession(admin.id);
 
     // Update last login time
     await prisma.admin.update({
