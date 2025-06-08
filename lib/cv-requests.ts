@@ -15,16 +15,18 @@ async function fetchCVRequestData() {
   ]);
 }
 
+type CVRequestData = {
+  name: string;
+  email: string;
+  company?: string;
+  purpose: string;
+  ipAddress: string;
+  userAgent: string;
+  isEnglish: boolean;
+};
+
 // Function to create a new CV request
-export async function createCVRequest(data: {
-  name: string
-  email: string
-  company?: string
-  purpose: string
-  ipAddress: string
-  userAgent: string
-  isEnglish: boolean
-}) {
+export async function createCVRequest(data: CVRequestData) {
   // Send email notification using CV template
   try {
     const { sendCVRequestEmail } = await import('@/lib/services/email');
