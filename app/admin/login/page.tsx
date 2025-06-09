@@ -29,10 +29,8 @@ export default function AdminLogin() {
       console.log('Login response data:', data);
 
       if (response.ok) {
-        // Store admin data in localStorage for UI updates
-        localStorage.setItem('admin_data', JSON.stringify(data.admin));
-        // Force a full page reload for proper initialization
-        window.location.href = '/admin';
+        // Redirect to admin dashboard
+        window.location.replace('/admin');
       } else {
         setError(data.error || 'Login failed');
       }

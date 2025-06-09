@@ -10,18 +10,7 @@ export async function validateSessionToken(token: string) {
       return cached.admin;
     }
 
-    // If no cache, try localStorage (for just after login)
-    if (typeof window !== 'undefined') {
-      const storedAdmin = localStorage.getItem('admin_data');
-      if (storedAdmin) {
-        const admin = JSON.parse(storedAdmin);
-        validationCache.set(token, {
-          admin,
-          timestamp: Date.now()
-        });
-        return admin;
-      }
-    }
+    // Skip localStorage check in edge runtime
 
     // If no cache hit, validate with API
     // In edge runtime, we can use the request URL as base

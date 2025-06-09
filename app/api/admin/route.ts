@@ -43,10 +43,8 @@ export async function POST(request: Request) {
       sameSite: 'lax' as const,
       expires: session.expires,
       path: '/',
-      // Add domain for Vercel deployment
-      ...(process.env.VERCEL_URL 
-        ? { domain: `.${process.env.VERCEL_URL}` }
-        : {})
+      // Domain and path settings
+      path: '/'
     }
     cookieStore.set('admin_session', session.token, cookieOptions)
 
