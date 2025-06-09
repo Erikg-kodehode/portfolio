@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const path = require('path');
 
+// Determine the environment
+const env = process.env.NODE_ENV || 'development';
+
+// Load environment-specific .env file
+require('dotenv').config({
+  path: `.env.${env}`,
+});
+
 const nextConfig = {
   // Force clean build to avoid caching issues
   generateBuildId: async () => {
@@ -74,6 +82,9 @@ const nextConfig = {
   },
   // Enable strict mode for better performance in development
   reactStrictMode: true,
-}
+  experimental: {
+    esmExternals: true
+  }
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

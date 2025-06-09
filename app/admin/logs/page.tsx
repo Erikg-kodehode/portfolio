@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
+import { AdminHeader } from '@/components/admin';
 
 type LogType = 'all' | 'error' | 'warning' | 'info' | 'security' | 'performance';
 type TimeRange = '1h' | '24h' | '7d' | '30d' | 'all';
@@ -137,25 +138,7 @@ export default function SystemLogsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100/90 via-gray-50/80 to-white/90 dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/90">
-      {/* Navigation */}
-      <nav className="bg-white/50 dark:bg-gray-800/50 shadow-sm backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => router.push('/admin/dashboard')}
-                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
-              >
-                ← Back to Dashboard
-              </button>
-              <span className="text-xl font-semibold text-blue-900 dark:text-blue-100">System Logs</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600 dark:text-gray-300">{admin.username}</span>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <AdminHeader title="System Logs" />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filters */}

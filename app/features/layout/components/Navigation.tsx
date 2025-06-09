@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect, useMemo } from 'react';
 import { ThemeToggle, LanguageSwitcher } from '@/components/ui';
 import { useTranslations } from '@/i18n';
+import { FaLock } from 'react-icons/fa';
 
 interface NavigationProps {
   className?: string;
@@ -14,9 +15,20 @@ interface NavigationProps {
 export default function Navigation({ className = '' }: NavigationProps) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const t = useTranslations();
   
   const isEnglish = pathname?.startsWith('/en');
+
+  useEffect(() => {
+    // Check if admin data exists in localStorage
+    const storedAdmin = localStorage.getItem('admin_data');
+    if (storedAdmin) {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [pathname]);
   
   const navLinks = useMemo(() => [
     { name: t.nav.home, path: isEnglish ? '/en' : '/' },
@@ -25,7 +37,8 @@ export default function Navigation({ className = '' }: NavigationProps) {
     { name: t.nav.skills, path: `${isEnglish ? '/en' : ''}/skills` },
     { name: t.nav.cv, path: `${isEnglish ? '/en' : ''}/cv` },
     { name: t.nav.contact, path: `${isEnglish ? '/en' : ''}/contact` },
-  ], [isEnglish, t.nav]);
+    ...(isAdmin ? [{ name: 'Admin', path: '/admin', icon: FaLock }] : [])
+  ], [isEnglish, isAdmin, t.nav]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -112,13 +125,15 @@ export default function Navigation({ className = '' }: NavigationProps) {
                     }
                   }}
                 >
-                  <span className="relative group-hover:translate-x-1 transition-transform duration-300 ease-out">
+                  <span className="relative group-hover:translate-x-1 transition-transform duration-300 ease-out flex items-center gap-2">
+                    {link.icon && <link.icon className="text-sm" />}
                     {link.name}
                     <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 
                       bg-blue-600 dark:bg-blue-400 
                       transition-all duration-300 ease-out group-hover:w-full
                       ${pathname === link.path ? 'w-full' : ''}`}
                     />
+                    {link.name === 'Admin' && <span className="ml-1 text-xs text-blue-600 dark:text-blue-400">•</span>}
                   </span>
                 </Link>
               </li>

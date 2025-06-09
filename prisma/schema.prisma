@@ -116,6 +116,32 @@ model RateLimit {
   @@index([resetAt])
 }
 
+model SystemSettings {
+  id                    Int      @id @default(1)
+  emailTemplates        Json?    @default("{}") // Store email templates
+  adminSettings         Json?    @default("{}") // Store admin settings
+  maintenanceMode       Boolean  @default(false)
+  maintenanceMessage    String?  @db.Text
+  lastBackup           DateTime?
+  backupSettings       Json?    @default("{}") // Store backup settings
+  interfaceSettings    Json?    @default("{}") // Store UI customization
+  updatedAt            DateTime @updatedAt
+}
+
+model EmailLog {
+  id          String    @id @default(cuid())
+  type        String    // e.g., 'contact', 'cv_request', 'cv_approval'
+  to          String
+  subject     String
+  status      String    // 'pending', 'sent', 'failed'
+  attempts    Int       @default(0)
+  error       String?   @db.Text
+  metadata    Json?
+  createdAt   DateTime  @default(now())
+  sentAt      DateTime?
+  lastAttempt DateTime?
+}
+
 model SystemLog {
   id         String    @id @default(uuid())
   level      String

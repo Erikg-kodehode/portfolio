@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import SystemLogs from '@/components/admin/SystemLogs'
 import { toast, Toaster } from 'react-hot-toast'
 import { motion, AnimatePresence } from 'framer-motion'
+import { AdminHeader } from '@/components/admin'
 
 type CVRequest = {
   requestId: string
@@ -65,33 +66,99 @@ export default function AdminPage() {
     }
   }
 
-  async function handleAction(requestId: string, status: 'APPROVED' | 'DENIED') {
+  // Function to reliably detect the language of a request
+  function detectRequestLanguage(request: CVRequest): 'en' | 'no' {
+    // Check the purpose field first as it's most reliable
+    if (request.purpose) {
+      const purposeLower = request.purpose.toLowerCase();
+      if (purposeLower.includes('purpose') || purposeLower.includes('why do you need')) return 'en';
+      if (purposeLower.includes('formål') || purposeLower.includes('hvorfor trenger')) return 'no';
+    }
+
+    // Check company field if available
+    if (request.company) {
+      const companyLower = request.company.toLowerCase();
+      if (companyLower.includes('company') || companyLower.includes('organization')) return 'en';
+      if (companyLower.includes('firma') || companyLower.includes('organisasjon')) return 'no';
+    }
+
+    // Fallback to checking for Norwegian characters in all text fields
+    const allText = `${request.name} ${request.purpose || ''} ${request.company || ''}`;
+    return allText.match(/[æøåÆØÅ]/) ? 'no' : 'en';
+  }
+
+  async function handleLanguageToggle(requestId: string) {
+    const request = requests.find(r => r.requestId === requestId);
+    if (!request) return;
+
+    // Detect current language and toggle it
+    const currentLanguage = detectRequestLanguage(request);
+    const isCurrentlyEnglish = currentLanguage === 'en';
+    
     try {
       const response = await fetch(`/api/cv-request/${requestId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status })
-      })
+        body: JSON.stringify({ 
+          toggleLanguage: true,
+          isEnglish: !isCurrentlyEnglish
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to toggle language');
+      
+      toast.success('Language updated successfully');
+      fetchRequests(); // Refresh the list
+    } catch (error) {
+      console.error('Failed to toggle language:', error);
+      toast.error('Failed to update language');
+    }
+  }
+
+  async function handleAction(requestId: string, status: 'APPROVED' | 'DENIED') {
+    try {
+      const request = requests.find(r => r.requestId === requestId);
+      if (!request) throw new Error('Request not found');
+
+      const response = await fetch(`/api/cv-request/${requestId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          status,
+          isEnglish: detectRequestLanguage(request) === 'en'
+        })
+      });
 
       if (!response.ok) {
-        const error = await response.text()
-        throw new Error(`Failed to update request: ${error}`)
+        const error = await response.text();
+        throw new Error(`Failed to update request: ${error}`);
       }
       
       // Show success message with toast
       toast.success(`Request ${status.toLowerCase()} successfully`, {
         duration: 3000,
-        position: 'bottom-right',
-      })
+        position: 'top-right',
+        style: {
+          background: 'rgba(255, 255, 255, 0.9)',
+          color: '#1F2937',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(209, 213, 219, 0.3)',
+          zIndex: 9999
+        },
+        className: 'dark:!bg-gray-800/90 dark:!text-gray-100 dark:!border-gray-700/30'
+      });
       
       // Refresh the requests list
-      fetchRequests()
+      await fetchRequests();
     } catch (err) {
-      console.error('Failed to update request:', err)
-      toast.error(err instanceof Error ? err.message : 'Failed to update request', {
-        duration: 4000,
-        position: 'bottom-right',
-      })
+      console.error('Failed to update request:', err);
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to update request',
+        {
+          duration: 4000,
+          position: 'bottom-right'
+        }
+      );
     }
   }
 
@@ -127,6 +194,14 @@ export default function AdminPage() {
         {
           duration: Infinity,
           position: 'top-center',
+          style: {
+            background: 'rgba(255, 255, 255, 0.9)',
+            color: '#1F2937',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(209, 213, 219, 0.3)',
+            zIndex: 9999,
+          },
+          className: 'dark:!bg-gray-800/90 dark:!text-gray-100 dark:!border-gray-700/30',
         }
       )
     })
@@ -320,68 +395,63 @@ export default function AdminPage() {
 
     return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100/90 via-gray-50/80 to-white/90 dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/90 transition-colors duration-500">
-      <Toaster />
-      <nav className="bg-white/50 dark:bg-gray-800/50 shadow-sm backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => router.push('/admin')}
-                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
-              >
-                ← Back to Dashboard
-              </button>
-              <span className="text-lg font-semibold text-blue-900 dark:text-blue-100">CV Request Admin</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600 dark:text-gray-300">{admin.username}</span>
-              <button
-                onClick={handleLogout}
-                className="text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors"
-              >
-                Sign out
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Toaster
+          toastOptions={{
+          style: {
+            background: 'rgba(255, 255, 255, 0.9)',
+            color: '#1F2937',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(209, 213, 219, 0.3)',
+            marginTop: '5rem', // Add margin to account for navbar height
+          },
+          position: 'top-right',
+          className: '!z-[9999] relative dark:!bg-gray-800/90 dark:!text-gray-100 dark:!border-gray-700/30',
+        }}
+      />
+      <AdminHeader title="CV Requests" />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">CV Requests</h1>
-          <button
-            onClick={() => fetchRequests()}
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
-            title="Refresh list"
-          >
-            ↻ Refresh
-          </button>
-        </div>
-
         {/* Actions Bar */}
         <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-6 mb-8">
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap justify-between items-center">
+            <div className="flex gap-4">
+              <button
+                onClick={() => handleBulkApprove()}
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors flex items-center gap-2"
+                title="Approve all pending CV requests"
+              >
+                <span>✓</span>
+                <span>Approve All Pending</span>
+              </button>
+            </div>
             <button
-              onClick={() => handleBulkApprove()}
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors flex items-center gap-2"
+              onClick={() => fetchRequests()}
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors flex items-center gap-1"
+              title="Refresh list"
             >
-              <span>✓</span>
-              <span>Approve All Pending</span>
+              <span className="text-lg">↻</span> Refresh
             </button>
           </div>
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-8">
           {/* Requests Table */}
-          <div className="lg:col-span-2 overflow-x-auto bg-white/50 dark:bg-gray-800/50 shadow-md rounded-lg backdrop-blur-sm">
-            <table className="min-w-full">
-              <thead className="bg-gray-50/50 dark:bg-gray-900/50">
+          <div className="xl:col-span-9 bg-white/50 dark:bg-gray-800/50 shadow-md rounded-lg backdrop-blur-sm overflow-hidden">
+            <div 
+              className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-20rem)] relative"
+              style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: 'rgba(156, 163, 175, 0.5) transparent'
+              }}
+            >
+              <table className="w-full min-w-[800px] border-separate border-spacing-0">
+                <thead className="bg-gray-50/50 dark:bg-gray-900/50 sticky top-0 z-10">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date/Time</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Email</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Language</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                 </tr>
@@ -389,16 +459,40 @@ export default function AdminPage() {
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {requests.map((request) => (
                   <tr key={request.requestId} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {format(new Date(request.createdAt), 'MMM d, yyyy')}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 w-[120px] sticky left-0 bg-white/50 dark:bg-gray-800/50">
+                      <div>{format(new Date(request.createdAt), 'MMM d, yyyy')}</div>
+                      <div className="text-xs opacity-75">{format(new Date(request.createdAt), 'HH:mm:ss')}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100 min-w-[150px]">
                       {request.name}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {request.email}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 min-w-[200px]">
+                      <div className="truncate max-w-[250px]">{request.email}</div>
+                      {request.company && (
+                        <div className="text-xs opacity-75 truncate max-w-[250px]">{request.company}</div>
+                      )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap w-[100px]">
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                          detectRequestLanguage(request) === 'en'
+                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                            : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+                        }`}>
+                          {detectRequestLanguage(request) === 'en' ? 'EN' : 'NO'}
+                        </span>
+                        {request.status === 'PENDING' && (
+                          <button
+                            onClick={() => handleLanguageToggle(request.requestId)}
+                            className="px-2 py-1 text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/20 rounded transition-colors"
+                            title="Toggle language"
+                          >
+                            Switch to {detectRequestLanguage(request) === 'en' ? 'NO' : 'EN'}
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap w-[100px]">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                         {
                           PENDING: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-100',
@@ -411,18 +505,18 @@ export default function AdminPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex gap-3">
+                      <div className="flex gap-3 justify-start">
                         {request.status === 'PENDING' && (
                           <>
                             <button
                               onClick={() => handleAction(request.requestId, 'APPROVED')}
-                              className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 transition-colors"
+                              className="px-3 py-1 text-sm bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 rounded hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors"
                             >
                               Approve
                             </button>
                             <button
                               onClick={() => handleAction(request.requestId, 'DENIED')}
-                              className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+                              className="px-3 py-1 text-sm bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 rounded hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
                             >
                               Deny
                             </button>
@@ -434,24 +528,24 @@ export default function AdminPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
 
           {/* System Logs Panel */}
-          <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm">
+          <div className="xl:col-span-3 bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm max-h-[calc(100vh-20rem)] overflow-y-auto"
+            style={{
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'rgba(156, 163, 175, 0.5) transparent'
+            }}
+          >
             <SystemLogs />
           </div>
         </div>
 
         {/* Danger Zone */}
-        <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-6 mt-8">
+        <div className="bg-red-50/50 dark:bg-red-900/10 rounded-lg shadow-md backdrop-blur-sm p-6 mt-8 border border-red-200 dark:border-red-900/20">
           <h2 className="text-lg font-semibold text-red-600 dark:text-red-400 mb-4">Danger Zone</h2>
           <div className="flex flex-wrap gap-4">
-            <button
-              onClick={() => handleAdminAction('resetRateLimits')}
-              className="px-4 py-2 border-2 border-yellow-500 text-yellow-700 dark:text-yellow-400 rounded hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors"
-            >
-              Reset All Rate Limits
-            </button>
             <button
               onClick={() => handleAdminAction('clearRequests')}
               className="px-4 py-2 border-2 border-red-500 text-red-700 dark:text-red-400 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"

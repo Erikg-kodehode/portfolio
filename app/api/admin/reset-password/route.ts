@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
     // Send reset email
     await resend.emails.send({
-      from: 'Admin <onboarding@resend.dev>',
+      from: 'Erik Gulliksen <onboarding@resend.dev>',
       to: admin.email,
       subject: 'Reset Your Password',
       react: createElement(PasswordResetEmail, {

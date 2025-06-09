@@ -7,7 +7,7 @@ import { AdminProvider } from '@/contexts/AdminContext'
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
-      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
         <AdminProvider>
           {children}
         </AdminProvider>

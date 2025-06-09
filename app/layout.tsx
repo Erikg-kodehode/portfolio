@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 import React, { type ReactNode } from "react";
-import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import type { ReactElement } from "react";
 import { headers } from "next/headers";
@@ -10,13 +9,6 @@ import { Providers } from "@/providers";
 import { ErrorBoundary } from "@/components/shared";
 import { LocalizedWrapper } from "@/layout-wrappers";
 import { getLocaleFromPath } from "@/i18n";
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap"
-});
-
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Erik - Portfolio",
@@ -40,11 +32,9 @@ export default async function RootLayout({
   const headersList = await headers();
   const pathname = headersList.get("x-invoke-path") || "";
   const lang = getLanguageFromPath(pathname);
-  const fontClass = inter?.className ?? "";
-  
   return (
-    <html lang={lang} className={`${fontClass} scroll-smooth`} suppressHydrationWarning>
-      <body 
+    <html lang={lang} className="scroll-smooth font-sans" suppressHydrationWarning>
+      <body
         className="
           w-full
           min-h-screen

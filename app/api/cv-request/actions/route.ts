@@ -10,7 +10,17 @@ export async function POST(request: Request) {
 
     switch (action) {
       case 'clearRequests':
+        // Delete all CV requests but preserve system logs
         await prisma.cVRequest.deleteMany({})
+        // Add a system log entry for the clear action
+        await prisma.systemLog.create({
+          data: {
+            level: 'info',
+            message: 'All CV requests cleared',
+            source: 'cv-request-admin',
+            details: 'Administrator cleared all CV requests'
+          }
+        })
         return NextResponse.json({ message: 'All CV requests cleared' })
 
       case 'resetRateLimits':

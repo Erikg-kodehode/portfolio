@@ -26,22 +26,30 @@ export async function GET() {
       )
     }
 
-    // Get all CV requests in a single query with pagination
-    const requests = await prisma.cVRequest.findMany({
-      orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        requestId: true,
-        name: true,
-        email: true,
-        company: true,
-        purpose: true,
-        status: true,
-        createdAt: true,
-        accessCount: true
-      },
-      take: 100 // Limit to last 100 requests
-    })
+    // Get all CV requests and session data in a single transaction
+    const [session, requests] = await prisma.$transaction([
+      prisma.adminSession.findFirst({
+        where: {
+          token: sessionToken,
+          expires: { gt: new Date() }
+        }
+      }),
+      prisma.cVRequest.findMany({
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          requestId: true,
+          name: true,
+          email: true,
+          company: true,
+          purpose: true,
+          status: true,
+          createdAt: true,
+          accessCount: true
+        },
+        take: 100 // Limit to last 100 requests
+      })
+    ])
 
     return NextResponse.json(requests)
   } catch (error) {
