@@ -18,7 +18,15 @@ const LOCALE_EXEMPT_PATHS = [
 // Admin paths that require authentication
 const PROTECTED_ADMIN_PATHS = [
   '/admin',
-  '/admin/cv-requests'
+  '/admin/cv-requests',
+  '/admin/logs',
+  '/admin/settings'
+]
+
+// Paths that don't require authentication
+const PUBLIC_ADMIN_PATHS = [
+  '/admin/login',
+  '/admin/reset-password'
 ]
 
 export async function middleware(request: NextRequest) {

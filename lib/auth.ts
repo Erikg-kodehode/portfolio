@@ -86,10 +86,23 @@ export async function validateSession(token: string) {
       include: { admin: true },
     })
 
-    if (!session) return null
+    if (!session) {
+      console.log('Session not found for token');
+      return null;
+    }
+
     if (session.expires < new Date()) {
+      console.log('Session expired:', {
+        expires: session.expires,
+        now: new Date()
+      });
       await prisma.adminSession.delete({ where: { id: session.id } })
-      return null
+      return null;
+    }
+
+    if (!session.admin) {
+      console.log('Admin not found for session');
+      return null;
     }
 
     return session.admin

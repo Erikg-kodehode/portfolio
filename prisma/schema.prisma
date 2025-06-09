@@ -62,6 +62,7 @@ model Admin {
   updatedAt           DateTime       @updatedAt
   lastLoginAt         DateTime?
   email               String         @unique
+  emailVerified       DateTime?
   resetToken          String?
   resetTokenExpiresAt DateTime?
   sessions            AdminSession[]

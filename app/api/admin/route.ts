@@ -37,13 +37,18 @@ export async function POST(request: Request) {
 
     // Set session cookie
     const cookieStore = await cookies()
-    cookieStore.set('admin_session', session.token, {
+    const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'lax' as const,
       expires: session.expires,
       path: '/',
-    })
+      // Add domain for Vercel deployment
+      ...(process.env.VERCEL_URL 
+        ? { domain: `.${process.env.VERCEL_URL}` }
+        : {})
+    }
+    cookieStore.set('admin_session', session.token, cookieOptions)
 
     // Return admin data for initial cache
     return NextResponse.json({

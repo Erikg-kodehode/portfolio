@@ -31,7 +31,8 @@ export default function AdminLogin() {
       if (response.ok) {
         // Store admin data in localStorage for UI updates
         localStorage.setItem('admin_data', JSON.stringify(data.admin));
-        router.push('/admin');
+        // Force a full page reload for proper initialization
+        window.location.href = '/admin';
       } else {
         setError(data.error || 'Login failed');
       }

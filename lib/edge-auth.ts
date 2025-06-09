@@ -24,7 +24,10 @@ export async function validateSessionToken(token: string) {
     }
 
     // If no cache hit, validate with API
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    // In edge runtime, we can use the request URL as base
+    const baseUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     const response = await fetch(`${baseUrl}/api/admin/validate`, {
       method: 'POST',
       headers: {
