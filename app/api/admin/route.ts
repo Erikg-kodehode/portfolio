@@ -42,8 +42,7 @@ export async function POST(request: Request) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax' as const,
       expires: session.expires,
-      path: '/',
-      // Domain and path settings
+      // Cookie path setting
       path: '/'
     }
     cookieStore.set('admin_session', session.token, cookieOptions)
