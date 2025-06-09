@@ -111,6 +111,14 @@ export default function AdminLogin() {
             >
               {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
+            <div className="mt-4 text-center">
+              <a
+                href="/admin/reset-password"
+                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+              >
+                Forgot your password?
+              </a>
+            </div>
           </form>
         </div>
       </div>
