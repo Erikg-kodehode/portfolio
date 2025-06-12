@@ -34,13 +34,22 @@ async function createSession(adminId: string) {
   const token = generateSessionToken()
   const expires = new Date(Date.now() + SESSION_DURATION * 1000)
 
-  await prisma.adminSession.create({
+  console.log('Creating session for admin:', adminId);
+  
+  // Clean up any existing sessions for this admin first
+  await prisma.adminSession.deleteMany({
+    where: { adminId }
+  });
+  
+  const session = await prisma.adminSession.create({
     data: {
       adminId,
       token,
       expires,
     },
   })
+  
+  console.log('Session created successfully:', { id: session.id, token: token.substring(0, 10) + '...', expires });
 
   return { token, expires }
 }
@@ -81,15 +90,19 @@ export async function loginAdmin(username: string, password: string) {
 // Validate session token
 export async function validateSession(token: string) {
   try {
+    console.log('Validating session token:', token.substring(0, 10) + '...');
+    
     const session = await prisma.adminSession.findUnique({
       where: { token },
       include: { admin: true },
     })
 
     if (!session) {
-      console.log('Session not found for token');
+      console.log('Session not found for token:', token.substring(0, 10) + '...');
       return null;
     }
+
+    console.log('Session found:', { id: session.id, adminId: session.adminId, expires: session.expires });
 
     if (session.expires < new Date()) {
       console.log('Session expired:', {
@@ -105,6 +118,7 @@ export async function validateSession(token: string) {
       return null;
     }
 
+    console.log('Session validation successful for admin:', session.admin.username);
     return session.admin
   } catch (error) {
     console.error('Session validation error:', error)

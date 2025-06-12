@@ -77,8 +77,8 @@ export default function AdminPage() {
       }
     };
     
-    // Use setTimeout to ensure component is fully mounted
-    const timeoutId = setTimeout(initializeAuth, 100);
+    // Use setTimeout to ensure component is fully mounted and session is persisted
+    const timeoutId = setTimeout(initializeAuth, 300);
     
     return () => clearTimeout(timeoutId);
   }, [])
