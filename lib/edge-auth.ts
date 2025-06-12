@@ -13,10 +13,8 @@ export async function validateSessionToken(token: string) {
     // Skip localStorage check in edge runtime
 
     // If no cache hit, validate with API
-    // In edge runtime, we can use the request URL as base
-    const baseUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}`
-      : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    // Use the public production URL for consistency
+    const baseUrl = 'https://erikg-portfolio.vercel.app';
     const response = await fetch(`${baseUrl}/api/admin/validate`, {
       method: 'POST',
       headers: {

@@ -64,8 +64,8 @@ export async function POST(request: Request) {
       }
     });
 
-    // Generate reset link - use current request URL if NEXTAUTH_URL is not set correctly
-    const baseUrl = process.env.NEXTAUTH_URL || request.headers.get('origin') || 'https://erikg-portfolio.vercel.app';
+    // Generate reset link - always use the public production URL
+    const baseUrl = 'https://erikg-portfolio.vercel.app'; // Force public URL
     const resetLink = `${baseUrl}/admin/reset-password/${resetToken}`;
 
     // Send reset email
