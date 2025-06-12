@@ -64,8 +64,9 @@ export async function POST(request: Request) {
       }
     });
 
-    // Generate reset link
-    const resetLink = `${process.env.NEXTAUTH_URL}/admin/reset-password/${resetToken}`;
+    // Generate reset link - use current request URL if NEXTAUTH_URL is not set correctly
+    const baseUrl = process.env.NEXTAUTH_URL || request.headers.get('origin') || 'https://erikg-portfolio.vercel.app';
+    const resetLink = `${baseUrl}/admin/reset-password/${resetToken}`;
 
     // Send reset email
     console.log('Attempting to send email to:', admin.email);

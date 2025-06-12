@@ -26,8 +26,8 @@ const PROTECTED_ADMIN_PATHS = [
 // Paths that don't require authentication
 const PUBLIC_ADMIN_PATHS = [
   '/admin/login',
-  '/admin/reset-password',
-  '/admin/reset-password/'
+  '/admin/reset-password'
+  // Note: /admin/reset-password/[token] routes are handled separately below
 ]
 
 export async function middleware(request: NextRequest) {
@@ -37,6 +37,11 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith('/admin')) {
     // Public admin paths that don't require authentication
     if (PUBLIC_ADMIN_PATHS.some(path => pathname.startsWith(path))) {
+      return NextResponse.next()
+    }
+    
+    // Special handling for password reset with token routes
+    if (pathname.match(/^\/admin\/reset-password\/[^/]+$/)) {
       return NextResponse.next()
     }
 

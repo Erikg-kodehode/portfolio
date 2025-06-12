@@ -1,73 +1,56 @@
-import { validateResetToken } from '@/lib/auth';
-import { redirect } from 'next/navigation';
+'use client';
 
-type PageParams = {
-  token: string;
-};
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { ResetPasswordForm } from '@/components/admin/ResetPasswordForm';
 
-type SearchParams = { [key: string]: string | string[] | undefined };
+export default function ResetPasswordPage() {
+  const router = useRouter();
+  const params = useParams();
+  const token = params.token as string;
+  const [isValidating, setIsValidating] = useState(true);
+  const [isValid, setIsValid] = useState(false);
 
-type Props = {
-  params: Promise<PageParams>;
-  searchParams: Promise<SearchParams>;
-};
+  useEffect(() => {
+    async function validateToken() {
+      try {
+        const response = await fetch('/api/admin/validate-reset-token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.valid) {
+          setIsValid(true);
+        } else {
+          router.push('/admin/login?error=invalid_token');
+        }
+      } catch (error) {
+        console.error('Token validation error:', error);
+        router.push('/admin/login?error=validation_failed');
+      } finally {
+        setIsValidating(false);
+      }
+    }
+    
+    if (token) {
+      validateToken();
+    }
+  }, [token, router]);
 
-export default async function ResetPasswordPage({ params, searchParams }: Props) {
-  const [resolvedParams, resolvedSearchParams] = await Promise.all([params, searchParams]);
-  const { token } = resolvedParams;
-  const isValid = await validateResetToken(token);
-
-  if (!isValid) {
-    redirect('/admin/login?error=invalid_token');
+  if (isValidating) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100/90 via-gray-50/80 to-white/90 dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/90">
+        <div className="text-blue-900 dark:text-blue-100">Validating reset link...</div>
+      </div>
+    );
   }
 
-  return (
-    <form
-      action="/api/admin/reset-password"
-      method="POST"
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100/90 via-gray-50/80 to-white/90 dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/90 py-12 px-4 sm:px-6 lg:px-8 transition-all duration-500"
-    >
-      <div className="max-w-md w-full space-y-6">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-100">
-            Reset your password
-          </h2>
-        </div>
-        <input type="hidden" name="token" value={token} />
-        <div className="rounded-md shadow-sm -space-y-px">
-          <div>
-            <label htmlFor="password" className="sr-only">New Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-gray-100 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm bg-white dark:bg-gray-800"
-              placeholder="New Password"
-            />
-          </div>
-          <div>
-            <label htmlFor="confirmPassword" className="sr-only">Confirm Password</label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              required
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-gray-100 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm bg-white dark:bg-gray-800"
-              placeholder="Confirm Password"
-            />
-          </div>
-        </div>
+  if (!isValid) {
+    return null; // Will redirect
+  }
 
-        <div>
-          <button
-            type="submit"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Reset Password
-          </button>
-        </div>
-      </div>
-    </form>
-  );
+  return <ResetPasswordForm token={token} />;
 }
