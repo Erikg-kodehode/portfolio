@@ -73,8 +73,8 @@ export async function POST(request: Request) {
     
     const emailResult = await resend.emails.send({
       from: 'Erik Gulliksen <onboarding@resend.dev>',
-      to: admin.email,
-      subject: 'Reset Your Password',
+      to: 'erik.gulliksen@gmail.com', // Free tier can only send to verified email
+      subject: 'Admin Password Reset Request',
       react: createElement(PasswordResetEmail, {
         username: admin.username,
         resetLink
