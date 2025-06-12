@@ -10,7 +10,21 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
   try {
+    console.log('Password reset request received');
+    
+    // Check environment variables
+    const resendKey = process.env.RESEND_API_KEY;
+    const nextAuthUrl = process.env.NEXTAUTH_URL;
+    
+    console.log('Environment check:', {
+      hasResendKey: !!resendKey,
+      resendKeyLength: resendKey ? resendKey.length : 0,
+      hasNextAuthUrl: !!nextAuthUrl,
+      nextAuthUrl: nextAuthUrl
+    });
+    
     const { email } = await request.json();
+    console.log('Password reset requested for email:', email);
 
     // Find admin by email
     const admin = await prisma.admin.findUnique({
@@ -18,11 +32,14 @@ export async function POST(request: Request) {
     });
 
     if (!admin) {
+      console.log('No admin found with email:', email);
       // Return 200 even if email not found to prevent email enumeration
       return NextResponse.json({
         message: 'If an account exists with this email, you will receive a password reset link.'
       });
     }
+    
+    console.log('Admin found:', admin.username);
 
     // Generate reset token
     const resetToken = randomBytes(32).toString('hex');
@@ -51,7 +68,10 @@ export async function POST(request: Request) {
     const resetLink = `${process.env.NEXTAUTH_URL}/admin/reset-password/${resetToken}`;
 
     // Send reset email
-    await resend.emails.send({
+    console.log('Attempting to send email to:', admin.email);
+    console.log('Reset link:', resetLink);
+    
+    const emailResult = await resend.emails.send({
       from: 'Erik Gulliksen <onboarding@resend.dev>',
       to: admin.email,
       subject: 'Reset Your Password',
@@ -60,6 +80,8 @@ export async function POST(request: Request) {
         resetLink
       })
     });
+    
+    console.log('Email send result:', emailResult);
 
     return NextResponse.json({
       message: 'If an account exists with this email, you will receive a password reset link.'
