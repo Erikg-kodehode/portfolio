@@ -29,36 +29,58 @@ export default function AdminPage() {
   useEffect(() => {
     console.log('🏠 [DASHBOARD] Component mounted, checking authentication...');
     
-    // Check if we're on the client side
-    if (typeof window !== 'undefined') {
-      console.log('🏠 [DASHBOARD] Client-side detected, checking localStorage...');
-      
-      // First check if admin data exists in localStorage
-      const storedAdmin = localStorage.getItem('admin_data')
-      console.log('🏠 [DASHBOARD] Stored admin data found:', !!storedAdmin);
-      
-      if (storedAdmin) {
-        try {
-          const adminData = JSON.parse(storedAdmin)
-          console.log('🏠 [DASHBOARD] Parsed admin data:', adminData);
-          setAdmin(adminData)
-          setLoading(false) // Set loading false immediately when admin data is found
-          console.log('🏠 [DASHBOARD] Admin state set, fetching stats...');
-          fetchStats() // This can run in background
-        } catch (err) {
-          console.error('🏠 [DASHBOARD] Failed to parse admin data:', err)
-          // If localStorage data is corrupted, try to validate session
-          console.log('🏠 [DASHBOARD] Falling back to session validation...');
-          validateSession()
+    // Add a small delay to ensure the component is fully mounted
+    const initializeAuth = async () => {
+      try {
+        // Check if we're on the client side
+        if (typeof window === 'undefined') {
+          console.log('🏠 [DASHBOARD] Server-side render detected, skipping auth check');
+          return;
         }
-      } else {
-        console.log('🏠 [DASHBOARD] No localStorage data, checking session cookie...');
-        // No localStorage data, check if there's a valid session cookie
-        validateSession()
+        
+        console.log('🏠 [DASHBOARD] Client-side detected, checking localStorage...');
+        
+        // First check if admin data exists in localStorage
+        const storedAdmin = localStorage.getItem('admin_data');
+        console.log('🏠 [DASHBOARD] Stored admin data found:', !!storedAdmin);
+        
+        if (storedAdmin) {
+          try {
+            const adminData = JSON.parse(storedAdmin);
+            console.log('🏠 [DASHBOARD] Parsed admin data:', adminData);
+            
+            // Validate that the admin data has required fields
+            if (adminData && adminData.id && adminData.username) {
+              setAdmin(adminData);
+              setLoading(false); // Set loading false immediately when admin data is found
+              console.log('🏠 [DASHBOARD] Admin state set successfully, fetching stats...');
+              fetchStats(); // This can run in background
+            } else {
+              console.warn('🏠 [DASHBOARD] Invalid admin data structure, validating session...');
+              await validateSession();
+            }
+          } catch (err) {
+            console.error('🏠 [DASHBOARD] Failed to parse admin data:', err);
+            // If localStorage data is corrupted, try to validate session
+            console.log('🏠 [DASHBOARD] Falling back to session validation...');
+            await validateSession();
+          }
+        } else {
+          console.log('🏠 [DASHBOARD] No localStorage data, checking session cookie...');
+          // No localStorage data, check if there's a valid session cookie
+          await validateSession();
+        }
+      } catch (error) {
+        console.error('🏠 [DASHBOARD] Error during auth initialization:', error);
+        setLoading(false);
+        router.push('/admin/login?error=auth_failed');
       }
-    } else {
-      console.log('🏠 [DASHBOARD] Server-side render detected');
-    }
+    };
+    
+    // Use setTimeout to ensure component is fully mounted
+    const timeoutId = setTimeout(initializeAuth, 100);
+    
+    return () => clearTimeout(timeoutId);
   }, [])
 
   async function validateSession() {
@@ -176,7 +198,10 @@ export default function AdminPage() {
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100/90 via-gray-50/80 to-white/90 dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/90">
-      <div className="text-blue-900 dark:text-blue-100">Loading...</div>
+      <div className="text-center">
+        <div className="text-blue-900 dark:text-blue-100 text-lg mb-2">Loading Admin Dashboard...</div>
+        <div className="text-blue-600 dark:text-blue-400 text-sm">Verifying authentication...</div>
+      </div>
     </div>
   )
 
