@@ -26,7 +26,8 @@ const PROTECTED_ADMIN_PATHS = [
 // Paths that don't require authentication
 const PUBLIC_ADMIN_PATHS = [
   '/admin/login',
-  '/admin/reset-password'
+  '/admin/reset-password',
+  '/admin/reset-password/'
 ]
 
 export async function middleware(request: NextRequest) {
@@ -34,25 +35,19 @@ export async function middleware(request: NextRequest) {
 
   // Check admin routes first
   if (pathname.startsWith('/admin')) {
-    // Skip validation for login page and API routes
-    if (pathname === '/admin/login' || pathname.startsWith('/admin/api/')) {
+    // Public admin paths that don't require authentication
+    if (PUBLIC_ADMIN_PATHS.some(path => pathname.startsWith(path))) {
       return NextResponse.next()
     }
 
-    // Only validate for protected admin paths
-    if (PROTECTED_ADMIN_PATHS.some(path => pathname.startsWith(path))) {
-    const sessionToken = request.cookies.get('admin_session')?.value
+    // API routes also don't require middleware auth (they handle their own)
+    if (pathname.startsWith('/api/admin')) {
+      return NextResponse.next()
+    }
 
-      // Allow access to login page even without session
-      if (pathname === '/admin/login') {
-        if (sessionToken) {
-          const admin = await validateSessionToken(sessionToken)
-          if (admin) {
-            return NextResponse.redirect(new URL('/admin', request.url))
-          }
-        }
-        return NextResponse.next()
-      }
+    // For protected admin paths, check authentication
+    if (PROTECTED_ADMIN_PATHS.some(path => pathname.startsWith(path))) {
+      const sessionToken = request.cookies.get('admin_session')?.value
 
       if (!sessionToken) {
         return NextResponse.redirect(new URL('/admin/login', request.url))

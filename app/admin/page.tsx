@@ -60,6 +60,7 @@ export default function AdminPage() {
           setAdmin(data.admin)
           localStorage.setItem('admin_data', JSON.stringify(data.admin))
           fetchStats()
+          setLoading(false)
           return
         }
       }
@@ -68,6 +69,7 @@ export default function AdminPage() {
     }
     
     // If session validation fails, redirect to login
+    setLoading(false)
     router.push('/admin/login')
   }
 
