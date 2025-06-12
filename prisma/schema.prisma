@@ -62,9 +62,9 @@ model Admin {
   updatedAt           DateTime       @updatedAt
   lastLoginAt         DateTime?
   email               String         @unique
-  emailVerified       DateTime?
   resetToken          String?
   resetTokenExpiresAt DateTime?
+  emailVerified       DateTime?
   sessions            AdminSession[]
   reviewedCVs         CVRequest[]
 }
@@ -118,25 +118,25 @@ model RateLimit {
 }
 
 model SystemSettings {
-  id                    Int      @id @default(1)
-  emailTemplates        Json?    @default("{}") // Store email templates
-  adminSettings         Json?    @default("{}") // Store admin settings
-  maintenanceMode       Boolean  @default(false)
-  maintenanceMessage    String?  @db.Text
-  lastBackup           DateTime?
-  backupSettings       Json?    @default("{}") // Store backup settings
-  interfaceSettings    Json?    @default("{}") // Store UI customization
-  updatedAt            DateTime @updatedAt
+  id                 Int       @id @default(1)
+  emailTemplates     Json?     @default("{}")
+  adminSettings      Json?     @default("{}")
+  maintenanceMode    Boolean   @default(false)
+  maintenanceMessage String?
+  lastBackup         DateTime?
+  backupSettings     Json?     @default("{}")
+  interfaceSettings  Json?     @default("{}")
+  updatedAt          DateTime  @updatedAt
 }
 
 model EmailLog {
   id          String    @id @default(cuid())
-  type        String    // e.g., 'contact', 'cv_request', 'cv_approval'
+  type        String
   to          String
   subject     String
-  status      String    // 'pending', 'sent', 'failed'
+  status      String
   attempts    Int       @default(0)
-  error       String?   @db.Text
+  error       String?
   metadata    Json?
   createdAt   DateTime  @default(now())
   sentAt      DateTime?

@@ -8,6 +8,7 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -29,6 +30,10 @@ export default function AdminLogin() {
       console.log('Login response data:', data);
 
       if (response.ok) {
+        // Store admin data in localStorage for the dashboard
+        if (data.admin) {
+          localStorage.setItem('admin_data', JSON.stringify(data.admin));
+        }
         // Redirect to admin dashboard
         window.location.replace('/admin');
       } else {
@@ -80,20 +85,29 @@ export default function AdminLogin() {
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600
-                  bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm
-                  focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-                  focus:border-transparent outline-none
-                  text-gray-900 dark:text-gray-100"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-2 pr-10 rounded-md border border-gray-300 dark:border-gray-600
+                    bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm
+                    focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
+                    focus:border-transparent outline-none
+                    text-gray-900 dark:text-gray-100"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
             </div>
 
             <button

@@ -12,6 +12,11 @@ export function ResetPasswordForm({ token }: Props) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -75,7 +80,7 @@ export function ResetPasswordForm({ token }: Props) {
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-blue-900 dark:text-blue-100 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm bg-white/50 dark:bg-gray-800/50"
                 placeholder="New Password"
@@ -87,13 +92,19 @@ export function ResetPasswordForm({ token }: Props) {
               <input
                 id="confirmPassword"
                 name="confirmPassword"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-blue-900 dark:text-blue-100 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm bg-white/50 dark:bg-gray-800/50"
                 placeholder="Confirm Password"
                 minLength={8}
               />
             </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox" checked={showPassword} onChange={togglePasswordVisibility} />
+              <span className="ml-2">Show Password</span>
+            </label>
           </div>
 
           <div className="flex flex-col space-y-4">

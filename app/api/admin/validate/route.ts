@@ -5,12 +5,32 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
-    const { token } = await request.json();
+    // Try to get token from request body first
+    let token;
+    try {
+      const body = await request.json();
+      token = body.token;
+    } catch {
+      // If no body or parsing fails, that's okay
+    }
+
+    // If no token in body, try to get from cookies
+    if (!token) {
+      const cookieHeader = request.headers.get('cookie');
+      if (cookieHeader) {
+        const cookies = cookieHeader.split(';').reduce((acc, cookie) => {
+          const [key, value] = cookie.trim().split('=');
+          acc[key] = value;
+          return acc;
+        }, {} as Record<string, string>);
+        token = cookies['admin_session'];
+      }
+    }
 
     if (!token) {
       return NextResponse.json(
-        { error: 'Token is required' },
-        { status: 400 }
+        { valid: false, error: 'No session token found' },
+        { status: 401 }
       );
     }
 

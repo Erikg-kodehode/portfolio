@@ -29,7 +29,7 @@ export default function AdminPage() {
   useEffect(() => {
     // Check if we're on the client side
     if (typeof window !== 'undefined') {
-      // Get admin data from localStorage
+      // First check if admin data exists in localStorage
       const storedAdmin = localStorage.getItem('admin_data')
       if (storedAdmin) {
         try {
@@ -37,13 +37,39 @@ export default function AdminPage() {
           fetchStats()
         } catch (err) {
           console.error('Failed to parse admin data:', err)
-          router.push('/admin/login')
+          // If localStorage data is corrupted, try to validate session
+          validateSession()
         }
       } else {
-        router.push('/admin/login')
+        // No localStorage data, check if there's a valid session cookie
+        validateSession()
       }
     }
   }, [])
+
+  async function validateSession() {
+    try {
+      const response = await fetch('/api/admin/validate', {
+        method: 'POST',
+        credentials: 'include'
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        if (data.valid && data.admin) {
+          setAdmin(data.admin)
+          localStorage.setItem('admin_data', JSON.stringify(data.admin))
+          fetchStats()
+          return
+        }
+      }
+    } catch (err) {
+      console.error('Session validation failed:', err)
+    }
+    
+    // If session validation fails, redirect to login
+    router.push('/admin/login')
+  }
 
   async function fetchStats() {
     try {
