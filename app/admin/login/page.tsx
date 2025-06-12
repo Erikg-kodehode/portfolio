@@ -17,7 +17,8 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
-      console.log('Attempting login with:', { username });
+      console.log('🔐 [LOGIN] Attempting login with:', { username });
+      console.log('🔐 [LOGIN] Password length:', password.length);
       
       const response = await fetch('/api/admin', {
         method: 'POST',
@@ -25,21 +26,40 @@ export default function AdminLogin() {
         body: JSON.stringify({ username, password })
       });
 
-      console.log('Login response status:', response.status);
+      console.log('🔐 [LOGIN] Response status:', response.status);
+      console.log('🔐 [LOGIN] Response headers:', Object.fromEntries(response.headers.entries()));
+      
       const data = await response.json();
-      console.log('Login response data:', data);
+      console.log('🔐 [LOGIN] Response data:', data);
 
-      if (response.ok) {
+      if (response.ok && data.success) {
+        console.log('🔐 [LOGIN] Login successful, storing admin data');
+        
         // Store admin data in localStorage for the dashboard
         if (data.admin) {
+          console.log('🔐 [LOGIN] Storing admin data in localStorage:', data.admin);
           localStorage.setItem('admin_data', JSON.stringify(data.admin));
+          
+          // Verify localStorage was set
+          const stored = localStorage.getItem('admin_data');
+          console.log('🔐 [LOGIN] Verified localStorage storage:', !!stored);
+        } else {
+          console.error('🔐 [LOGIN] ERROR: No admin data in response');
+          setError('Login succeeded but no admin data received');
+          return;
         }
-        // Redirect to admin dashboard
-        window.location.replace('/admin');
+        
+        console.log('🔐 [LOGIN] Redirecting to /admin...');
+        // Add a small delay to ensure localStorage is written
+        setTimeout(() => {
+          window.location.replace('/admin');
+        }, 100);
       } else {
+        console.error('🔐 [LOGIN] Login failed:', data);
         setError(data.error || 'Login failed');
       }
     } catch (err) {
+      console.error('🔐 [LOGIN] Exception during login:', err);
       setError('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
