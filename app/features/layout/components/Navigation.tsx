@@ -24,11 +24,44 @@ export default function Navigation({ className = '' }: NavigationProps) {
     // Check if admin data exists in localStorage
     const storedAdmin = localStorage.getItem('admin_data');
     if (storedAdmin) {
-      setIsAdmin(true);
+      // Validate the stored admin session
+      validateAdminSession();
     } else {
       setIsAdmin(false);
     }
   }, [pathname]);
+
+  const validateAdminSession = async () => {
+    try {
+      const response = await fetch('/api/admin/validate', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.valid && data.admin) {
+          setIsAdmin(true);
+          // Update localStorage with fresh admin data
+          localStorage.setItem('admin_data', JSON.stringify(data.admin));
+        } else {
+          // Invalid session, clear everything
+          clearAdminState();
+        }
+      } else {
+        // Failed validation, clear everything
+        clearAdminState();
+      }
+    } catch (error) {
+      console.error('Session validation failed:', error);
+      clearAdminState();
+    }
+  };
+
+  const clearAdminState = () => {
+    setIsAdmin(false);
+    localStorage.removeItem('admin_data');
+  };
   
   const navLinks = useMemo(() => [
     { name: t.nav.home, path: isEnglish ? '/en' : '/' },
