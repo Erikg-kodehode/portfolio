@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { loginAdmin } from '@/lib/auth'
+import { loginAdminJWT } from '@/lib/jwt-auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,8 +29,8 @@ export async function POST(request: Request) {
       )
     }
 
-    console.log('🔑 [API] Calling loginAdmin function...');
-    const result = await loginAdmin(username, password)
+    console.log('🔑 [API] Calling loginAdminJWT function...');
+    const result = await loginAdminJWT(username, password)
     
     if (!result) {
       console.log('🔑 [API] Login failed - invalid credentials');
@@ -40,27 +40,24 @@ export async function POST(request: Request) {
       )
     }
 
-    const { session, admin } = result
+    const { token, admin } = result
     console.log('🔑 [API] Login successful for user:', admin.username);
-    console.log('🔑 [API] Session created:', { token: session.token.substring(0, 10) + '...', expires: session.expires });
+    console.log('🔑 [API] JWT token created:', { token: token.substring(0, 20) + '...' });
 
-    // Set session cookie
+    // Set JWT cookie with longer expiry
     const cookieStore = await cookies()
     const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax' as const,
-      expires: session.expires,
+      maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
       path: '/'
     }
     
-    console.log('🔑 [API] Setting session cookie with options:', {
-      ...cookieOptions,
-      token: session.token.substring(0, 10) + '...'
-    });
+    console.log('🔑 [API] Setting JWT cookie with options:', cookieOptions);
     
-    cookieStore.set('admin_session', session.token, cookieOptions)
-    console.log('🔑 [API] Session cookie set successfully');
+    cookieStore.set('admin_token', token, cookieOptions)
+    console.log('🔑 [API] JWT cookie set successfully');
 
     const responseData = {
       success: true,

@@ -1,11 +1,21 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { subHours, subDays } from 'date-fns';
+import { validateJWTFromRequest } from '@/lib/jwt-auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   try {
+    // Validate JWT token
+    const admin = await validateJWTFromRequest(request)
+    if (!admin) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type') || 'all';
     const timeRange = searchParams.get('timeRange') || '24h';
@@ -68,6 +78,15 @@ export async function GET(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
+    // Validate JWT token
+    const admin = await validateJWTFromRequest(request)
+    if (!admin) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     const { action } = await request.json();
     const id = request.url.split('/').pop();
 
@@ -95,8 +114,17 @@ export async function PATCH(request: Request) {
   }
 }
 
-export async function DELETE() {
+export async function DELETE(request: Request) {
   try {
+    // Validate JWT token
+    const admin = await validateJWTFromRequest(request)
+    if (!admin) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     // Delete all resolved logs
     await prisma.systemLog.deleteMany({
       where: {

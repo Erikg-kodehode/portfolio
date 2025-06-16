@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { validateJWTFromRequest } from '@/lib/jwt-auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -170,6 +171,15 @@ Message:
 
 // Get email template
 export async function GET(request: Request) {
+  // Validate JWT token
+  const admin = await validateJWTFromRequest(request)
+  if (!admin) {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    )
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
@@ -205,6 +215,15 @@ export async function GET(request: Request) {
 
 // Update email template
 export async function PUT(request: Request) {
+  // Validate JWT token
+  const admin = await validateJWTFromRequest(request)
+  if (!admin) {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    )
+  }
+
   try {
     const { type, subject, content } = await request.json();
 

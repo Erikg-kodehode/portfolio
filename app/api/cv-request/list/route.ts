@@ -1,55 +1,43 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
-import { validateSession } from '@/lib/auth'
-import { cookies } from 'next/headers'
+import { validateJWTFromRequest } from '@/lib/jwt-auth'
 
 // Mark route as dynamic
 export const dynamic = 'force-dynamic'
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    // Validate session
-    const cookieStore = await cookies();
-    const sessionToken = cookieStore.get('admin_session')?.value
-    if (!sessionToken) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
-    const admin = await validateSession(sessionToken)
+    console.log('📋 [CV-REQUESTS-API] Validating JWT token...');
+    
+    // Validate JWT token
+    const admin = await validateJWTFromRequest(request)
     if (!admin) {
+      console.log('📋 [CV-REQUESTS-API] JWT validation failed');
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
 
-    // Get all CV requests and session data in a single transaction
-    const [session, requests] = await prisma.$transaction([
-      prisma.adminSession.findFirst({
-        where: {
-          token: sessionToken,
-          expires: { gt: new Date() }
-        }
-      }),
-      prisma.cVRequest.findMany({
-        orderBy: { createdAt: 'desc' },
-        select: {
-          id: true,
-          requestId: true,
-          name: true,
-          email: true,
-          company: true,
-          purpose: true,
-          status: true,
-          createdAt: true,
-          accessCount: true
-        },
-        take: 100 // Limit to last 100 requests
-      })
-    ])
+    console.log('📋 [CV-REQUESTS-API] JWT valid for admin:', admin.username);
+    console.log('📋 [CV-REQUESTS-API] Fetching CV requests...');
+
+    // Get all CV requests
+    const requests = await prisma.cVRequest.findMany({
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        requestId: true,
+        name: true,
+        email: true,
+        company: true,
+        purpose: true,
+        status: true,
+        createdAt: true,
+        accessCount: true
+      },
+      take: 100 // Limit to last 100 requests
+    })
 
     return NextResponse.json(requests)
   } catch (error) {

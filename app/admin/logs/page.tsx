@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { AdminHeader } from '@/components/admin';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 type LogType = 'all' | 'error' | 'warning' | 'info' | 'security' | 'performance';
 type TimeRange = '1h' | '24h' | '7d' | '30d' | 'all';
@@ -20,18 +21,12 @@ interface SystemLog {
   metadata?: Record<string, any>;
 }
 
-type AdminData = {
-  id: string;
-  username: string;
-  role: string;
-};
-
 export default function SystemLogsPage() {
   const router = useRouter();
+  const { admin, loading: authLoading, error: authError } = useAdminAuth();
   const [logs, setLogs] = useState<SystemLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [admin, setAdmin] = useState<AdminData | null>(null);
   
   // Filters
   const [selectedType, setSelectedType] = useState<LogType>('all');
@@ -39,22 +34,13 @@ export default function SystemLogsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showResolved, setShowResolved] = useState(false);
 
+  // Load logs when admin is available
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedAdmin = localStorage.getItem('admin_data');
-      if (storedAdmin) {
-        try {
-          setAdmin(JSON.parse(storedAdmin));
-          fetchLogs();
-        } catch (err) {
-          console.error('Failed to parse admin data:', err);
-          router.push('/admin');
-        }
-      } else {
-        router.push('/admin');
-      }
+    if (admin) {
+      console.log('📄 [LOGS] Admin loaded, fetching logs...');
+      fetchLogs();
     }
-  }, []);
+  }, [admin, selectedType, timeRange, searchQuery, showResolved]);
 
   const fetchLogs = async () => {
     try {
@@ -122,7 +108,7 @@ export default function SystemLogsPage() {
     return styles[level as keyof typeof styles] || styles.info;
   };
 
-  if (loading) return (
+  if (authLoading || loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100/90 via-gray-50/80 to-white/90 dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/90">
       <div className="text-blue-900 dark:text-blue-100">Loading logs...</div>
     </div>

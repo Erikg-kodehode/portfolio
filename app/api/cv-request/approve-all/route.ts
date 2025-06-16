@@ -1,10 +1,25 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { updateCVRequestStatus } from '@/lib/cv-requests';
+import { validateJWTFromRequest } from '@/lib/jwt-auth';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST() {
+export async function POST(request: Request) {
+  console.log('🔍 [APPROVE-ALL] Validating JWT token...');
+  
+  // Validate JWT token
+  const admin = await validateJWTFromRequest(request)
+  if (!admin) {
+    console.log('🔍 [APPROVE-ALL] JWT validation failed');
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    )
+  }
+
+  console.log('🔍 [APPROVE-ALL] JWT valid for admin:', admin.username);
+  
   try {
     // Get all pending requests
     const pendingRequests = await prisma.cVRequest.findMany({

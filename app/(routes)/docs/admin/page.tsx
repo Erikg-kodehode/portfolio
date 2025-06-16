@@ -1,10 +1,38 @@
 'use client';
 
+import { AdminHeader } from '@/components/admin'
+import { useAdminAuth } from '@/hooks/useAdminAuth'
+import Link from 'next/link'
+
 export default function AdminGuide() {
+  const { admin, loading, error } = useAdminAuth()
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100/90 via-gray-50/80 to-white/90 dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/90">
+      <div className="text-blue-900 dark:text-blue-100">Loading documentation...</div>
+    </div>
+  )
+
+  if (error || !admin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100/90 via-gray-50/80 to-white/90 dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/90">
+        <div className="text-center">
+          <div className="text-red-600 dark:text-red-400 mb-4">Access Denied</div>
+          <Link href="/admin/login" className="text-blue-600 dark:text-blue-400 hover:underline">
+            Return to Login
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100/90 via-gray-50/80 to-white/90 dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/90 p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8">Admin Guide</h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-100/90 via-gray-50/80 to-white/90 dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/90">
+      <AdminHeader title="Admin Guide" />
+      
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8">Admin Guide</h1>
         
         <div className="space-y-8">
           <section className="bg-white/50 dark:bg-gray-800/50 rounded-lg p-6 backdrop-blur-sm">
@@ -89,7 +117,8 @@ export default function AdminGuide() {
             </div>
           </section>
         </div>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }

@@ -29,7 +29,7 @@ type CVRequestData = {
 export async function createCVRequest(data: CVRequestData) {
   // Send email notification using CV template
   try {
-    const { sendCVRequestEmail } = await import('@/lib/services/email');
+    const { sendCVRequestEmail } = await import('@/app/lib/services/email');
     await sendCVRequestEmail({
       isEnglish: data.isEnglish,
       name: data.name,
@@ -131,7 +131,7 @@ export async function updateCVRequestStatus(
   // If request is approved, send the CV access email
   if (status === 'APPROVED') {
     try {
-      const { sendCVApprovalEmail } = await import('@/lib/services/email');
+      const { sendCVApprovalEmail } = await import('@/app/lib/services/email');
       
       // Use language-specific CV URLs
       const cvUrl = isEnglish

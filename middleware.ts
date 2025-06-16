@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { validateSessionToken } from './lib/edge-auth'
+import { verifyJWTEdge } from './lib/edge-jwt'
 
 const locales = ['en', 'no']
 const defaultLocale = 'no'
@@ -8,6 +8,7 @@ const defaultLocale = 'no'
 // Paths that should skip locale check
 const LOCALE_EXEMPT_PATHS = [
   '/admin',  // All admin routes should skip locale
+  '/docs',   // Documentation pages should skip locale
   '/_next',
   '/api',
   '/static',
@@ -52,29 +53,42 @@ export async function middleware(request: NextRequest) {
 
     // For protected admin paths, check authentication
     if (PROTECTED_ADMIN_PATHS.some(path => pathname.startsWith(path))) {
-      const sessionToken = request.cookies.get('admin_session')?.value
+      const jwtToken = request.cookies.get('admin_token')?.value
+      
+      console.log('🔐 [MIDDLEWARE] Checking path:', pathname);
+      console.log('🔐 [MIDDLEWARE] JWT token present:', !!jwtToken);
 
-      if (!sessionToken) {
-        console.log('🔐 [MIDDLEWARE] No session token found, redirecting to login');
+      if (!jwtToken) {
+        console.log('🔐 [MIDDLEWARE] No JWT token found, redirecting to login');
         return NextResponse.redirect(new URL('/admin/login', request.url))
       }
 
-      console.log('🔐 [MIDDLEWARE] Session token found, validating...', sessionToken.substring(0, 10) + '...');
+      console.log('🔐 [MIDDLEWARE] JWT token found, validating...', jwtToken.substring(0, 20) + '...');
       
       try {
-        const admin = await validateSessionToken(sessionToken)
+        const admin = await verifyJWTEdge(jwtToken)
         if (!admin) {
-          console.log('🔐 [MIDDLEWARE] Session validation failed, redirecting to login');
-          // Clear invalid session cookie
-          const response = NextResponse.redirect(new URL('/admin/login', request.url))
-          response.cookies.delete('admin_session')
+          console.log('🔐 [MIDDLEWARE] JWT validation failed, redirecting to login');
+          console.log('🔐 [MIDDLEWARE] Clearing invalid JWT cookie');
+          
+          const response = NextResponse.redirect(new URL('/admin/login?error=token_invalid', request.url))
+          response.cookies.set('admin_token', '', {
+            expires: new Date(0),
+            path: '/'
+          })
           return response
         }
-        console.log('🔐 [MIDDLEWARE] Session valid for admin:', admin.username);
+        console.log('🔐 [MIDDLEWARE] JWT valid for admin:', admin.username);
+        console.log('🔐 [MIDDLEWARE] Proceeding to', pathname);
       } catch (error) {
-        console.error('🔐 [MIDDLEWARE] Session validation error:', error);
-        const response = NextResponse.redirect(new URL('/admin/login', request.url))
-        response.cookies.delete('admin_session')
+        console.error('🔐 [MIDDLEWARE] JWT validation error:', error);
+        console.log('🔐 [MIDDLEWARE] Clearing token due to validation error');
+        
+        const response = NextResponse.redirect(new URL('/admin/login?error=validation_error', request.url))
+        response.cookies.set('admin_token', '', {
+          expires: new Date(0),
+          path: '/'
+        })
         return response
       }
     }

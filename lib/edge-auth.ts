@@ -16,8 +16,25 @@ export async function validateSessionToken(token: string) {
     // Skip localStorage check in edge runtime
 
     // If no cache hit, validate with API
-    // Use the public production URL for consistency
-    const baseUrl = 'https://erikg-portfolio.vercel.app';
+    // Get the correct base URL for the current deployment
+    let baseUrl: string;
+    
+    if (process.env.NEXT_PUBLIC_APP_URL) {
+      baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+    } else if (process.env.VERCEL_URL) {
+      baseUrl = `https://${process.env.VERCEL_URL}`;
+    } else if (process.env.NODE_ENV === 'production') {
+      // Fallback to the latest deployment URL
+      baseUrl = 'https://myportfolio-mvbpron3n-fjorfotts-projects.vercel.app';
+    } else {
+      baseUrl = 'http://localhost:3000';
+    }
+    
+    console.log('🔍 [EDGE-AUTH] Environment:', { 
+      NODE_ENV: process.env.NODE_ENV,
+      VERCEL_URL: process.env.VERCEL_URL,
+      NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL
+    });
     console.log('🔍 [EDGE-AUTH] Making validation API call to:', `${baseUrl}/api/admin/validate`);
     
     const controller = new AbortController();
@@ -58,7 +75,7 @@ export async function validateSessionToken(token: string) {
     console.log('🔍 [EDGE-AUTH] Validation failed - invalid session');
     return null;
   } catch (error) {
-    if (error.name === 'AbortError') {
+    if (error instanceof Error && error.name === 'AbortError') {
       console.error('🔍 [EDGE-AUTH] Session validation timeout');
     } else {
       console.error('🔍 [EDGE-AUTH] Session validation error:', error);

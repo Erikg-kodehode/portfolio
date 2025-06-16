@@ -1,10 +1,25 @@
 import { NextResponse } from 'next/server'
 import { updateCVRequestStatus } from '../../../../lib/cv-requests'
 import { prisma } from '@/lib/prisma'
+import { validateJWTFromRequest } from '@/lib/jwt-auth'
 
 export const dynamic = 'force-dynamic'
 
 export async function PATCH(request: Request) {
+  console.log('🔍 [CV-REQUEST-UPDATE] Validating JWT token...');
+  
+  // Validate JWT token
+  const admin = await validateJWTFromRequest(request)
+  if (!admin) {
+    console.log('🔍 [CV-REQUEST-UPDATE] JWT validation failed');
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    )
+  }
+
+  console.log('🔍 [CV-REQUEST-UPDATE] JWT valid for admin:', admin.username);
+  
   const { pathname } = new URL(request.url);
   const requestId = pathname.split('/').pop();
 

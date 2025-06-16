@@ -7,6 +7,7 @@ import SystemLogs from '@/components/admin/SystemLogs'
 import { toast, Toaster } from 'react-hot-toast'
 import { motion, AnimatePresence } from 'framer-motion'
 import { AdminHeader } from '@/components/admin'
+import { useAdminAuth } from '@/hooks/useAdminAuth'
 
 type CVRequest = {
   requestId: string
@@ -19,39 +20,20 @@ type CVRequest = {
   accessCount: number
 }
 
-type AdminData = {
-  id: string
-  username: string
-  role: string
-}
-
 export default function AdminPage() {
   const router = useRouter()
+  const { admin, loading: authLoading, error: authError } = useAdminAuth()
   const [requests, setRequests] = useState<CVRequest[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [admin, setAdmin] = useState<AdminData | null>(null)
 
+  // Load requests when admin is available
   useEffect(() => {
-    // Check if we're on the client side
-    if (typeof window !== 'undefined') {
-      // Get admin data from localStorage
-      const storedAdmin = localStorage.getItem('admin_data')
-      if (storedAdmin) {
-        try {
-          setAdmin(JSON.parse(storedAdmin))
-          fetchRequests()
-        } catch (err) {
-          console.error('Failed to parse admin data:', err)
-          // If admin data is invalid, redirect to login
-          router.push('/admin/login')
-        }
-      } else {
-        // No admin data found, redirect to login
-        router.push('/admin/login')
-      }
+    if (admin) {
+      console.log('📋 [CV-REQUESTS] Admin loaded, fetching requests...');
+      fetchRequests();
     }
-  }, [])
+  }, [admin])
 
   async function fetchRequests() {
     try {
@@ -379,7 +361,7 @@ export default function AdminPage() {
     }
   }
 
-  if (loading) return (
+  if (authLoading || loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100/90 via-gray-50/80 to-white/90 dark:from-gray-900/90 dark:via-gray-800/80 dark:to-gray-900/90">
       <div className="text-blue-900 dark:text-blue-100">Loading...</div>
     </div>

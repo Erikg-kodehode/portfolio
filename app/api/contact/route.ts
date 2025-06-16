@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sendContactEmail } from '@/lib/services/email';
+import { sendContactEmail } from '@/app/lib/services/email';
 
 export const dynamic = 'force-dynamic';
 

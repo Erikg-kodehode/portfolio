@@ -1,9 +1,24 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { validateJWTFromRequest } from '@/lib/jwt-auth'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: Request) {
+  console.log('🔍 [CV-REQUEST-ACTIONS] Validating JWT token...');
+  
+  // Validate JWT token
+  const admin = await validateJWTFromRequest(request)
+  if (!admin) {
+    console.log('🔍 [CV-REQUEST-ACTIONS] JWT validation failed');
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    )
+  }
+
+  console.log('🔍 [CV-REQUEST-ACTIONS] JWT valid for admin:', admin.username);
+  
   try {
     const body = await request.json()
     const { action } = body

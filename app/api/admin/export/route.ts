@@ -1,20 +1,23 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { validateJWTFromRequest } from '@/lib/jwt-auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  // Check admin authorization
-  const authResponse = await fetch(new URL('/api/admin/validate', request.url), {
-    headers: request.headers
-  });
-
-  if (!authResponse.ok) {
+  console.log('🔍 [EXPORT] Validating JWT token...');
+  
+  // Validate JWT token
+  const admin = await validateJWTFromRequest(request)
+  if (!admin) {
+    console.log('🔍 [EXPORT] JWT validation failed');
     return NextResponse.json(
       { error: 'Unauthorized' },
       { status: 401 }
-    );
+    )
   }
+
+  console.log('🔍 [EXPORT] JWT valid for admin:', admin.username);
   try {
     // Fetch all relevant data
 // Add error handling for each promise

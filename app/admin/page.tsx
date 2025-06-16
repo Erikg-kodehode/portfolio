@@ -1,14 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-
-type AdminData = {
-  id: string
-  username: string
-  role: string
-}
+import { useAdminAuth } from '@/hooks/useAdminAuth'
 
 type AdminStats = {
   pendingRequests: number
@@ -21,106 +16,16 @@ type AdminStats = {
 
 export default function AdminPage() {
   const router = useRouter()
-  const [admin, setAdmin] = useState<AdminData | null>(null)
+  const { admin, loading, error } = useAdminAuth()
   const [stats, setStats] = useState<AdminStats | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
+  // Load stats when admin is available
   useEffect(() => {
-    console.log('🏠 [DASHBOARD] Component mounted, checking authentication...');
-    
-    // Add a small delay to ensure the component is fully mounted
-    const initializeAuth = async () => {
-      try {
-        // Check if we're on the client side
-        if (typeof window === 'undefined') {
-          console.log('🏠 [DASHBOARD] Server-side render detected, skipping auth check');
-          return;
-        }
-        
-        console.log('🏠 [DASHBOARD] Client-side detected, checking localStorage...');
-        
-        // First check if admin data exists in localStorage
-        const storedAdmin = localStorage.getItem('admin_data');
-        console.log('🏠 [DASHBOARD] Stored admin data found:', !!storedAdmin);
-        
-        if (storedAdmin) {
-          try {
-            const adminData = JSON.parse(storedAdmin);
-            console.log('🏠 [DASHBOARD] Parsed admin data:', adminData);
-            
-            // Validate that the admin data has required fields
-            if (adminData && adminData.id && adminData.username) {
-              setAdmin(adminData);
-              setLoading(false); // Set loading false immediately when admin data is found
-              console.log('🏠 [DASHBOARD] Admin state set successfully, fetching stats...');
-              fetchStats(); // This can run in background
-              return; // Exit early if localStorage data is valid
-            } else {
-              console.warn('🏠 [DASHBOARD] Invalid admin data structure, clearing localStorage...');
-              localStorage.removeItem('admin_data');
-            }
-          } catch (err) {
-            console.error('🏠 [DASHBOARD] Failed to parse admin data:', err);
-            localStorage.removeItem('admin_data');
-          }
-        }
-        
-        console.log('🏠 [DASHBOARD] No valid localStorage data, checking session cookie...');
-        // No localStorage data, check if there's a valid session cookie
-        await validateSession();
-        
-      } catch (error) {
-        console.error('🏠 [DASHBOARD] Error during auth initialization:', error);
-        setLoading(false);
-        router.push('/admin/login?error=auth_failed');
-      }
-    };
-    
-    // Use setTimeout to ensure component is fully mounted and session is persisted
-    const timeoutId = setTimeout(initializeAuth, 100); // Reduced delay
-    
-    return () => clearTimeout(timeoutId);
-  }, [])
-
-  async function validateSession() {
-    console.log('🔍 [DASHBOARD] Validating session...');
-    
-    try {
-      const response = await fetch('/api/admin/validate', {
-        method: 'POST',
-        credentials: 'include'
-      })
-      
-      console.log('🔍 [DASHBOARD] Session validation response status:', response.status);
-      console.log('🔍 [DASHBOARD] Session validation response headers:', Object.fromEntries(response.headers.entries()));
-      
-      if (response.ok) {
-        const data = await response.json()
-        console.log('🔍 [DASHBOARD] Session validation data:', data);
-        
-        if (data.valid && data.admin) {
-          console.log('🔍 [DASHBOARD] Session valid, setting admin data');
-          setAdmin(data.admin)
-          localStorage.setItem('admin_data', JSON.stringify(data.admin))
-          fetchStats()
-          setLoading(false)
-          return
-        } else {
-          console.warn('🔍 [DASHBOARD] Session invalid or no admin data');
-        }
-      } else {
-        console.warn('🔍 [DASHBOARD] Session validation request failed');
-      }
-    } catch (err) {
-      console.error('🔍 [DASHBOARD] Session validation exception:', err)
+    if (admin) {
+      console.log('🏠 [DASHBOARD] Admin loaded, fetching stats...');
+      fetchStats();
     }
-    
-    // If session validation fails, redirect to login
-    console.log('🔍 [DASHBOARD] Session validation failed, redirecting to login...');
-    setLoading(false)
-    router.push('/admin/login')
-  }
+  }, [admin])
 
   async function fetchStats() {
     try {

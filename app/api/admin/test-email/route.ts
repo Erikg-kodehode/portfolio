@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { validateJWTFromRequest } from '@/lib/jwt-auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -7,7 +8,21 @@ export const dynamic = 'force-dynamic';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
-  console.log('Attempting to send test email...');
+  console.log('🔍 [TEST-EMAIL] Validating JWT token...');
+  
+  // Validate JWT token
+  const admin = await validateJWTFromRequest(request)
+  if (!admin) {
+    console.log('🔍 [TEST-EMAIL] JWT validation failed');
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    )
+  }
+
+  console.log('🔍 [TEST-EMAIL] JWT valid for admin:', admin.username);
+  console.log('📧 [TEST-EMAIL] Attempting to send test email...');
+  
   try {
     const result = await resend.emails.send({
       from: 'Erik Gulliksen <onboarding@resend.dev>',
