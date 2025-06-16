@@ -55,12 +55,24 @@ export async function middleware(request: NextRequest) {
       const sessionToken = request.cookies.get('admin_session')?.value
 
       if (!sessionToken) {
+        console.log('🔐 [MIDDLEWARE] No session token found, redirecting to login');
         return NextResponse.redirect(new URL('/admin/login', request.url))
       }
 
-      const admin = await validateSessionToken(sessionToken)
-      if (!admin) {
-        // Clear invalid session cookie
+      console.log('🔐 [MIDDLEWARE] Session token found, validating...', sessionToken.substring(0, 10) + '...');
+      
+      try {
+        const admin = await validateSessionToken(sessionToken)
+        if (!admin) {
+          console.log('🔐 [MIDDLEWARE] Session validation failed, redirecting to login');
+          // Clear invalid session cookie
+          const response = NextResponse.redirect(new URL('/admin/login', request.url))
+          response.cookies.delete('admin_session')
+          return response
+        }
+        console.log('🔐 [MIDDLEWARE] Session valid for admin:', admin.username);
+      } catch (error) {
+        console.error('🔐 [MIDDLEWARE] Session validation error:', error);
         const response = NextResponse.redirect(new URL('/admin/login', request.url))
         response.cookies.delete('admin_session')
         return response

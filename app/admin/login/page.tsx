@@ -50,12 +50,12 @@ export default function AdminLogin() {
         }
         
         console.log('🔐 [LOGIN] Redirecting to /admin...');
-        // Add a small delay to ensure localStorage is written and use router for better handling
+        // Force a small delay to ensure cookie is set and localStorage is written
         setTimeout(() => {
           console.log('🔐 [LOGIN] Executing redirect now...');
-          // Use router.replace for proper Next.js navigation
-          router.replace('/admin');
-        }, 150);
+          // Use window.location for a hard redirect to avoid client-side routing issues
+          window.location.href = '/admin';
+        }, 300);
       } else {
         console.error('🔐 [LOGIN] Login failed:', data);
         setError(data.error || 'Login failed');

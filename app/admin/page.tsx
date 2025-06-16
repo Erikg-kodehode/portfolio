@@ -55,21 +55,21 @@ export default function AdminPage() {
               setLoading(false); // Set loading false immediately when admin data is found
               console.log('🏠 [DASHBOARD] Admin state set successfully, fetching stats...');
               fetchStats(); // This can run in background
+              return; // Exit early if localStorage data is valid
             } else {
-              console.warn('🏠 [DASHBOARD] Invalid admin data structure, validating session...');
-              await validateSession();
+              console.warn('🏠 [DASHBOARD] Invalid admin data structure, clearing localStorage...');
+              localStorage.removeItem('admin_data');
             }
           } catch (err) {
             console.error('🏠 [DASHBOARD] Failed to parse admin data:', err);
-            // If localStorage data is corrupted, try to validate session
-            console.log('🏠 [DASHBOARD] Falling back to session validation...');
-            await validateSession();
+            localStorage.removeItem('admin_data');
           }
-        } else {
-          console.log('🏠 [DASHBOARD] No localStorage data, checking session cookie...');
-          // No localStorage data, check if there's a valid session cookie
-          await validateSession();
         }
+        
+        console.log('🏠 [DASHBOARD] No valid localStorage data, checking session cookie...');
+        // No localStorage data, check if there's a valid session cookie
+        await validateSession();
+        
       } catch (error) {
         console.error('🏠 [DASHBOARD] Error during auth initialization:', error);
         setLoading(false);
@@ -78,7 +78,7 @@ export default function AdminPage() {
     };
     
     // Use setTimeout to ensure component is fully mounted and session is persisted
-    const timeoutId = setTimeout(initializeAuth, 300);
+    const timeoutId = setTimeout(initializeAuth, 100); // Reduced delay
     
     return () => clearTimeout(timeoutId);
   }, [])
