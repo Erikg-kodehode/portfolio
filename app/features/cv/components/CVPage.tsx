@@ -6,6 +6,10 @@ import CVRequestForm from "./CVRequestForm";
 export default function CVPage() {
   const pathname = usePathname();
   const isEnglish = pathname?.startsWith("/en");
+  
+  // Debug logging
+  console.log('🔍 [CVPage] Pathname:', pathname);
+  console.log('🔍 [CVPage] isEnglish:', isEnglish);
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-2xl">

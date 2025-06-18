@@ -7,6 +7,10 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     const { name, email, company, purpose, isEnglish } = body
+    
+    // Debug logging
+    console.log('🔍 [CV-REQUEST-API] Received data:', { name, email, company, purpose, isEnglish })
+    console.log('🔍 [CV-REQUEST-API] Language detected as:', isEnglish ? 'English' : 'Norwegian')
 
     // Basic validation
     if (!name || !email || !purpose) {

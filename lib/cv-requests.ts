@@ -145,7 +145,7 @@ export async function updateCVRequestStatus(
       }
 
       if (cvUrl.includes('[your-cv-url')) {
-        throw new Error('CV URL contains placeholder value. Please update environment variables with actual CV URLs.');
+        throw new Error(`CV URL contains placeholder value. CV_URL_EN: "${process.env.CV_URL_EN}", CV_URL_NO: "${process.env.CV_URL_NO}". Please update environment variables with actual CV URLs.`);
       }
 
       console.log('📧 [CV-APPROVAL] Sending approval email to:', updatedRequest.email);
