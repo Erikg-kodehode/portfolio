@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     const limit = parseInt(url.searchParams.get('limit') || '10');
 
     // Fetch recent CV requests
-    const recentCVRequests = await prisma.cvRequest.findMany({
+    const recentCVRequests = await prisma.cVRequest.findMany({
       orderBy: { createdAt: 'desc' },
       take: Math.min(limit, 50), // Cap at 50 for performance
       select: {
@@ -50,7 +50,7 @@ export async function GET(request: Request) {
         level: true,
         message: true,
         createdAt: true,
-        metadata: true,
+        details: true,
       },
     }).catch(() => []); // Handle case where SystemLog table doesn't exist
 
