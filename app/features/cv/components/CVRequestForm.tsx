@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Input, Button } from '@/components/ui';
 import { FaUser, FaEnvelope, FaBuilding, FaClipboardList, FaPaperPlane, FaSpinner } from 'react-icons/fa';
@@ -79,6 +79,26 @@ export default function CVRequestForm({ isEnglish }: CVRequestFormProps) {
     );
   }
 
+  useEffect(() => {
+    if (formState.status === 'idle') {
+      window.addEventListener('beforeunload', handleFormAbandonment);
+    }
+    return () => {
+      window.removeEventListener('beforeunload', handleFormAbandonment);
+    };
+  }, [formState.status]);
+
+  const handleFormAbandonment = () => {
+    if (formData.name || formData.email || formData.company || formData.purpose) {
+      navigator.sendBeacon('/api/log-abandonment', JSON.stringify({
+        name: formData.name,
+        email: formData.email,
+        time: new Date().toISOString(),
+        page: window.location.pathname
+      }));
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <Input
@@ -87,7 +107,7 @@ export default function CVRequestForm({ isEnglish }: CVRequestFormProps) {
         label={isEnglish ? "Name" : "Navn"}
         value={formData.name}
         icon={<FaUser />}
-        onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+        onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
         required
         disabled={formState.status === 'submitting'}
       />
@@ -98,7 +118,7 @@ export default function CVRequestForm({ isEnglish }: CVRequestFormProps) {
         label={isEnglish ? "Email" : "E-post"}
         value={formData.email}
         icon={<FaEnvelope />}
-        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+        onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
         required
         disabled={formState.status === 'submitting'}
       />

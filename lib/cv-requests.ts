@@ -81,6 +81,19 @@ export async function checkRateLimit(key: string): Promise<boolean> {
 
   // If within the hour window and already at limit, reject
   if (existingRateLimit.count >= LIMIT) {
+    // Log rate limit trigger
+    try {
+      await prisma.systemLog.create({
+        data: {
+          level: 'warning',
+          message: 'Rate limit triggered',
+          details: `Key: ${key}, Count: ${existingRateLimit.count}, Limit: ${LIMIT}, Reset at: ${existingRateLimit.resetAt.toISOString()}`,
+          source: 'rate-limit'
+        }
+      });
+    } catch (logError) {
+      console.error('Failed to log rate limit trigger:', logError);
+    }
     return true
   }
 

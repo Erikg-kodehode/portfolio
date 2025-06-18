@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { verifyJWTEdge } from './lib/edge-jwt'
+import { verifyJWTEdge } from '@/lib/edge-jwt'
+import { trackPageVisit } from './middleware-analytics'
 
 const locales = ['en', 'no']
 const defaultLocale = 'no'
@@ -33,6 +34,9 @@ const PUBLIC_ADMIN_PATHS = [
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
+  
+  // Track page visits for analytics (async, doesn't block request)
+  trackPageVisit(request).catch(console.error)
 
   // Check admin routes first
   if (pathname.startsWith('/admin')) {

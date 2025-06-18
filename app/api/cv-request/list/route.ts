@@ -22,7 +22,8 @@ export async function GET(request: Request) {
     console.log('📋 [CV-REQUESTS-API] JWT valid for admin:', admin.username);
     console.log('📋 [CV-REQUESTS-API] Fetching CV requests...');
 
-    // Get all CV requests
+    // Get all CV requests with performance monitoring
+    const queryStartTime = Date.now();
     const requests = await prisma.cVRequest.findMany({
       orderBy: { createdAt: 'desc' },
       select: {
@@ -38,7 +39,20 @@ export async function GET(request: Request) {
         isEnglish: true
       },
       take: 100 // Limit to last 100 requests
-    })
+    });
+    const queryTime = Date.now() - queryStartTime;
+    
+    // Log slow queries (>500ms)
+    if (queryTime > 500) {
+      await prisma.systemLog.create({
+        data: {
+          level: 'warning',
+          message: 'Slow database query detected',
+          details: `Query: cv-request-list, Time: ${queryTime}ms, Records: ${requests.length}`,
+          source: 'database-performance'
+        }
+      });
+    }
 
     return NextResponse.json(requests)
   } catch (error) {

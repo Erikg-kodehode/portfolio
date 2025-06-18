@@ -4,7 +4,7 @@ import { validateJWTFromRequest } from '@/lib/jwt-auth'
 
 export const dynamic = 'force-dynamic'
 
-export async function POST(request: Request, { params }: { params: { requestId: string } }) {
+export async function POST(request: Request, context: { params: Promise<{ requestId: string }> }) {
   console.log('🔍 [RESEND-EMAIL] Validating JWT token...');
   
   // Validate JWT token
@@ -19,6 +19,7 @@ export async function POST(request: Request, { params }: { params: { requestId: 
 
   console.log('🔍 [RESEND-EMAIL] JWT valid for admin:', admin.username);
   
+  const params = await context.params;
   const { requestId } = params;
 
   if (!requestId) {

@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { prisma } from '@/lib/prisma';
 
 // Use Resend's default domain until a custom domain is configured
 // TODO: Change this to erik@gulliksen.dev once domain is verified
@@ -25,12 +26,13 @@ type CVApprovalEmailConfig = BaseEmailConfig & {
 
 export async function sendCVRequestEmail(config: CVRequestEmailConfig) {
   const { name, email, company, purpose, isEnglish = true } = config;
+  const startTime = Date.now();
   
   try {
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: 'Erik Gulliksen <onboarding@resend.dev>',
       to: ADMIN_EMAIL,
-subject: isEnglish ? `New CV Request from ${name}` : `Ny CV-forespørsel fra ${name}`,
+      subject: isEnglish ? `New CV Request from ${name}` : `Ny CV-forespørsel fra ${name}`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -67,7 +69,33 @@ subject: isEnglish ? `New CV Request from ${name}` : `Ny CV-forespørsel fra ${n
         </html>
       `,
     });
+    
+    const deliveryTime = Date.now() - startTime;
+    
+    // Log successful email delivery
+    await prisma.systemLog.create({
+      data: {
+        level: 'info',
+        message: 'CV request email sent successfully',
+        details: `To: ${ADMIN_EMAIL}, From: ${name} <${email}>, Delivery time: ${deliveryTime}ms, Language: ${isEnglish ? 'English' : 'Norwegian'}`,
+        source: 'email-delivery'
+      }
+    });
+    
+    return result;
   } catch (error) {
+    const deliveryTime = Date.now() - startTime;
+    
+    // Log failed email delivery
+    await prisma.systemLog.create({
+      data: {
+        level: 'error',
+        message: 'CV request email delivery failed',
+        details: `To: ${ADMIN_EMAIL}, From: ${name} <${email}>, Error: ${error instanceof Error ? error.message : 'Unknown error'}, Delivery time: ${deliveryTime}ms`,
+        source: 'email-delivery'
+      }
+    });
+    
     console.error('Failed to send CV request email:', error);
     throw error;
   }
@@ -75,9 +103,10 @@ subject: isEnglish ? `New CV Request from ${name}` : `Ny CV-forespørsel fra ${n
 
 export async function sendCVApprovalEmail(config: CVApprovalEmailConfig) {
   const { name, email, cvUrl, isEnglish } = config;
+  const startTime = Date.now();
   
   try {
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: 'Erik Gulliksen <onboarding@resend.dev>',
       to: email,
       subject: isEnglish ? 'CV Access Approved' : 'CV-tilgang godkjent',
@@ -113,7 +142,33 @@ export async function sendCVApprovalEmail(config: CVApprovalEmailConfig) {
         </html>
       `,
     });
+    
+    const deliveryTime = Date.now() - startTime;
+    
+    // Log successful email delivery
+    await prisma.systemLog.create({
+      data: {
+        level: 'info',
+        message: 'CV approval email sent successfully',
+        details: `To: ${email}, Name: ${name}, CV URL: ${cvUrl.substring(0, 50)}..., Delivery time: ${deliveryTime}ms, Language: ${isEnglish ? 'English' : 'Norwegian'}`,
+        source: 'email-delivery'
+      }
+    });
+    
+    return result;
   } catch (error) {
+    const deliveryTime = Date.now() - startTime;
+    
+    // Log failed email delivery
+    await prisma.systemLog.create({
+      data: {
+        level: 'error',
+        message: 'CV approval email delivery failed',
+        details: `To: ${email}, Name: ${name}, Error: ${error instanceof Error ? error.message : 'Unknown error'}, Delivery time: ${deliveryTime}ms`,
+        source: 'email-delivery'
+      }
+    });
+    
     console.error('Failed to send CV approval email:', error);
     throw error;
   }

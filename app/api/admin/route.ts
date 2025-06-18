@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { loginAdminJWT } from '@/lib/jwt-auth'
+import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
@@ -13,6 +14,11 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const startTime = Date.now();
+  const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+  const userAgent = request.headers.get('user-agent') || 'unknown';
+  const clientInfo = `IP: ${ipAddress}, UA: ${userAgent.substring(0, 100)}`;
+  
   try {
     console.log('🔑 [API] Login request received');
     
@@ -34,6 +40,18 @@ export async function POST(request: Request) {
     
     if (!result) {
       console.log('🔑 [API] Login failed - invalid credentials');
+      
+      // Log failed login attempt
+      const responseTime = Date.now() - startTime;
+      await prisma.systemLog.create({
+        data: {
+          level: 'warning',
+          message: 'Failed login attempt',
+          details: `Username: ${username}, ${clientInfo}, Response time: ${responseTime}ms`,
+          source: 'admin-auth'
+        }
+      });
+      
       return NextResponse.json(
         { error: 'Invalid credentials' },
         { status: 401 }
@@ -43,6 +61,17 @@ export async function POST(request: Request) {
     const { token, admin } = result
     console.log('🔑 [API] Login successful for user:', admin.username);
     console.log('🔑 [API] JWT token created:', { token: token.substring(0, 20) + '...' });
+    
+    // Log successful login attempt
+    const responseTime = Date.now() - startTime;
+    await prisma.systemLog.create({
+      data: {
+        level: 'info',
+        message: 'Successful admin login',
+        details: `Username: ${admin.username}, ${clientInfo}, Response time: ${responseTime}ms`,
+        source: 'admin-auth'
+      }
+    });
 
     // Set JWT cookie with longer expiry
     const cookieStore = await cookies()
@@ -74,6 +103,22 @@ export async function POST(request: Request) {
     return NextResponse.json(responseData)
   } catch (error) {
     console.error('🔑 [API] Login error:', error)
+    
+    // Log system error
+    const responseTime = Date.now() - startTime;
+    try {
+      await prisma.systemLog.create({
+        data: {
+          level: 'error',
+          message: 'Admin login system error',
+          details: `Error: ${error instanceof Error ? error.message : 'Unknown error'}, ${clientInfo}, Response time: ${responseTime}ms`,
+          source: 'admin-auth'
+        }
+      });
+    } catch (logError) {
+      console.error('Failed to log login error:', logError);
+    }
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
