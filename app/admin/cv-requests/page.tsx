@@ -18,6 +18,7 @@ type CVRequest = {
   status: 'PENDING' | 'APPROVED' | 'DENIED' | 'EXPIRED'
   createdAt: string
   accessCount: number
+  isEnglish: boolean
 }
 
 export default function AdminPage() {
@@ -48,25 +49,10 @@ export default function AdminPage() {
     }
   }
 
-  // Function to reliably detect the language of a request
+  // Function to get the language of a request from database field
   function detectRequestLanguage(request: CVRequest): 'en' | 'no' {
-    // Check the purpose field first as it's most reliable
-    if (request.purpose) {
-      const purposeLower = request.purpose.toLowerCase();
-      if (purposeLower.includes('purpose') || purposeLower.includes('why do you need')) return 'en';
-      if (purposeLower.includes('formål') || purposeLower.includes('hvorfor trenger')) return 'no';
-    }
-
-    // Check company field if available
-    if (request.company) {
-      const companyLower = request.company.toLowerCase();
-      if (companyLower.includes('company') || companyLower.includes('organization')) return 'en';
-      if (companyLower.includes('firma') || companyLower.includes('organisasjon')) return 'no';
-    }
-
-    // Fallback to checking for Norwegian characters in all text fields
-    const allText = `${request.name} ${request.purpose || ''} ${request.company || ''}`;
-    return allText.match(/[æøåÆØÅ]/) ? 'no' : 'en';
+    // Use the actual isEnglish field from the database
+    return request.isEnglish ? 'en' : 'no';
   }
 
   async function handleLanguageToggle(requestId: string) {

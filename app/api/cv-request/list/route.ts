@@ -34,7 +34,8 @@ export async function GET(request: Request) {
         purpose: true,
         status: true,
         createdAt: true,
-        accessCount: true
+        accessCount: true,
+        isEnglish: true
       },
       take: 100 // Limit to last 100 requests
     })
