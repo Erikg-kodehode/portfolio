@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
 
 // Analytics data structure
 interface PageVisitData {
@@ -28,13 +27,21 @@ function detectLanguage(pathname: string): 'en' | 'no' {
 
 async function logPageVisit(data: PageVisitData) {
   try {
-    await prisma.systemLog.create({
-      data: {
+    // Use fetch to call our logging API instead of direct Prisma access
+    // This works in Edge runtime unlike Prisma
+    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+    
+    await fetch(`${baseUrl}/api/log-page-visit`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         level: 'info',
         message: 'Page visit tracked',
         details: `Path: ${data.path}, Language: ${data.language}, Bot: ${data.isBot}, IP: ${data.ipAddress}, UA: ${data.userAgent.substring(0, 100)}, Referer: ${data.referer || 'none'}`,
         source: 'page-analytics'
-      }
+      })
     });
   } catch (error) {
     console.error('Failed to log page visit:', error);
