@@ -130,6 +130,49 @@ export default function AdminPage() {
     }
   }
 
+  async function handleResendEmail(requestId: string) {
+    try {
+      const request = requests.find(r => r.requestId === requestId);
+      if (!request) throw new Error('Request not found');
+
+      const response = await fetch(`/api/cv-request/${requestId}/resend-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          isEnglish: detectRequestLanguage(request) === 'en'
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Failed to resend email: ${error}`);
+      }
+      
+      toast.success('CV approval email resent successfully', {
+        duration: 3000,
+        position: 'top-right',
+        style: {
+          background: 'rgba(255, 255, 255, 0.9)',
+          color: '#1F2937',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(209, 213, 219, 0.3)',
+          zIndex: 9999
+        },
+        className: 'dark:!bg-gray-800/90 dark:!text-gray-100 dark:!border-gray-700/30'
+      });
+      
+    } catch (err) {
+      console.error('Failed to resend email:', err);
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to resend email',
+        {
+          duration: 4000,
+          position: 'bottom-right'
+        }
+      );
+    }
+  }
+
   async function handleResetRateLimit(email: string) {
     const confirmed = await new Promise((resolve) => {
       // Create a custom toast for confirmation
@@ -489,6 +532,15 @@ export default function AdminPage() {
                               Deny
                             </button>
                           </>
+                        )}
+                        {request.status === 'APPROVED' && (
+                          <button
+                            onClick={() => handleResendEmail(request.requestId)}
+                            className="px-3 py-1 text-sm bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors flex items-center gap-1"
+                            title="Resend CV approval email"
+                          >
+                            <span>📧</span> Resend Email
+                          </button>
                         )}
                       </div>
                     </td>
