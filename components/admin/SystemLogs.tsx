@@ -11,10 +11,21 @@ interface SystemLog {
   resolvedAt?: string;
 }
 
-export default function SystemLogs() {
+interface SystemLogsProps {
+  maxLogs?: number;
+  autoRefresh?: boolean;
+  showFilters?: boolean;
+}
+
+export default function SystemLogs({ 
+  maxLogs = 10, 
+  autoRefresh = true,
+  showFilters = false 
+}: SystemLogsProps) {
   const [logs, setLogs] = useState<SystemLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedLevel, setSelectedLevel] = useState<string>('all');
 
   useEffect(() => {
     fetchLogs();

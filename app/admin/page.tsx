@@ -151,16 +151,21 @@ export default function AdminPage() {
       </nav>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           {stats && (
             <>
-              <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 dark:from-blue-500/20 dark:to-blue-600/20 rounded-lg shadow-md p-6 backdrop-blur-sm border border-blue-100 dark:border-blue-900">
+              <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 dark:from-blue-500/20 dark:to-blue-600/20 rounded-lg shadow-md p-6 backdrop-blur-sm border border-blue-100 dark:border-blue-900 relative overflow-hidden">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Pending</h3>
                   <span className="text-blue-600 dark:text-blue-400">⏳</span>
                 </div>
                 <p className="mt-2 text-3xl font-semibold text-blue-600 dark:text-blue-400">{stats.pendingRequests}</p>
                 <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Awaiting review</p>
+                {stats.pendingRequests > 0 && (
+                  <div className="absolute top-2 right-2">
+                    <div className="w-3 h-3 bg-orange-400 rounded-full animate-pulse"></div>
+                  </div>
+                )}
               </div>
 
               <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 dark:from-green-500/20 dark:to-green-600/20 rounded-lg shadow-md p-6 backdrop-blur-sm border border-green-100 dark:border-green-900">
@@ -188,6 +193,18 @@ export default function AdminPage() {
                 </div>
                 <p className="mt-2 text-3xl font-semibold text-gray-600 dark:text-gray-400">{stats.totalRequests}</p>
                 <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">All time requests</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/10 dark:from-emerald-500/20 dark:to-emerald-600/20 rounded-lg shadow-md p-6 backdrop-blur-sm border border-emerald-100 dark:border-emerald-900">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Health</h3>
+                  <span className="text-emerald-600 dark:text-emerald-400">💚</span>
+                </div>
+                <p className="mt-2 text-3xl font-semibold text-emerald-600 dark:text-emerald-400">OK</p>
+                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">All systems operational</p>
+                <div className="absolute top-2 right-8">
+                  <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
+                </div>
               </div>
             </>
           )}

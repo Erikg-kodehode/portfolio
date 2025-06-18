@@ -1,9 +1,8 @@
 import { Resend } from 'resend';
 import { prisma } from '@/lib/prisma';
 
-// Use Resend's default domain until a custom domain is configured
-// TODO: Change this to erik@gulliksen.dev once domain is verified
-const SENDER_EMAIL = 'onboarding@resend.dev';
+// Using verified custom domain for professional email delivery
+const SENDER_EMAIL = 'erik@fjordev.org';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'erik.gulliksen@gmail.com';
 
 // Initialize Resend client
@@ -30,7 +29,7 @@ export async function sendCVRequestEmail(config: CVRequestEmailConfig) {
   
   try {
     const result = await resend.emails.send({
-      from: 'Erik Gulliksen <onboarding@resend.dev>',
+      from: `Erik Gulliksen <${SENDER_EMAIL}>`,
       to: ADMIN_EMAIL,
       subject: isEnglish ? `New CV Request from ${name}` : `Ny CV-forespørsel fra ${name}`,
       html: `
@@ -72,12 +71,29 @@ export async function sendCVRequestEmail(config: CVRequestEmailConfig) {
     
     const deliveryTime = Date.now() - startTime;
     
-    // Log successful email delivery
+    // Check if the Resend API returned an error
+    if (result.error) {
+      console.error('❌ [EMAIL-SERVICE] Resend API error:', result.error);
+      
+      // Log failed email delivery
+      await prisma.systemLog.create({
+        data: {
+          level: 'error',
+          message: 'CV request email delivery failed',
+          details: `To: ${ADMIN_EMAIL}, From: ${name} <${email}>, Error: ${result.error.message || 'Unknown Resend API error'}, Delivery time: ${deliveryTime}ms`,
+          source: 'email-delivery'
+        }
+      });
+      
+      throw new Error(`Resend API error: ${result.error.message}`);
+    }
+    
+    // Log successful email delivery only if no error
     await prisma.systemLog.create({
       data: {
         level: 'info',
         message: 'CV request email sent successfully',
-        details: `To: ${ADMIN_EMAIL}, From: ${name} <${email}>, Delivery time: ${deliveryTime}ms, Language: ${isEnglish ? 'English' : 'Norwegian'}`,
+        details: `To: ${ADMIN_EMAIL}, From: ${name} <${email}>, Delivery time: ${deliveryTime}ms, Language: ${isEnglish ? 'English' : 'Norwegian'}, Email ID: ${result.data?.id || 'Unknown'}`,
         source: 'email-delivery'
       }
     });
@@ -118,7 +134,7 @@ export async function sendCVApprovalEmail(config: CVApprovalEmailConfig) {
     console.log('📤 [EMAIL-SERVICE] Sending CV approval email...');
     
     const result = await resend.emails.send({
-      from: 'Erik Gulliksen <onboarding@resend.dev>',
+      from: `Erik Gulliksen <${SENDER_EMAIL}>`,
       to: email,
       subject: isEnglish ? 'CV Access Approved' : 'CV-tilgang godkjent',
       html: `
@@ -158,12 +174,29 @@ export async function sendCVApprovalEmail(config: CVApprovalEmailConfig) {
     
     const deliveryTime = Date.now() - startTime;
     
-    // Log successful email delivery
+    // Check if the Resend API returned an error
+    if (result.error) {
+      console.error('❌ [EMAIL-SERVICE] Resend API error:', result.error);
+      
+      // Log failed email delivery
+      await prisma.systemLog.create({
+        data: {
+          level: 'error',
+          message: 'CV approval email delivery failed',
+          details: `To: ${email}, Name: ${name}, Error: ${result.error.message || 'Unknown Resend API error'}, Delivery time: ${deliveryTime}ms`,
+          source: 'email-delivery'
+        }
+      });
+      
+      throw new Error(`Resend API error: ${result.error.message}`);
+    }
+    
+    // Log successful email delivery only if no error
     await prisma.systemLog.create({
       data: {
         level: 'info',
         message: 'CV approval email sent successfully',
-        details: `To: ${email}, Name: ${name}, CV URL: ${cvUrl.substring(0, 50)}..., Delivery time: ${deliveryTime}ms, Language: ${isEnglish ? 'English' : 'Norwegian'}`,
+        details: `To: ${email}, Name: ${name}, CV URL: ${cvUrl.substring(0, 50)}..., Delivery time: ${deliveryTime}ms, Language: ${isEnglish ? 'English' : 'Norwegian'}, Email ID: ${result.data?.id || 'Unknown'}`,
         source: 'email-delivery'
       }
     });
@@ -192,7 +225,7 @@ export async function sendContactEmail({ name, email, subject, message }: { name
     console.log('Sending contact email with data:', { name, email, subject });
     
     const result = await resend.emails.send({
-      from: `Erik <${SENDER_EMAIL}>`,
+      from: `Erik Gulliksen <${SENDER_EMAIL}>`,
       to: ADMIN_EMAIL,
       subject: `Portfolio Contact: ${subject}`,
       html: `
@@ -224,8 +257,14 @@ export async function sendContactEmail({ name, email, subject, message }: { name
       replyTo: email
     });
 
+    // Check if the Resend API returned an error
+    if (result.error) {
+      console.error('❌ [EMAIL-SERVICE] Resend API error:', result.error);
+      return { success: false, error: result.error };
+    }
+
     console.log('Email sent successfully:', result);
-    return { success: true };
+    return { success: true, emailId: result.data?.id };
   } catch (error) {
     console.error('Failed to send contact email:', error);
     return { success: false, error };
