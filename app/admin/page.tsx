@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAdminAuth } from '@/hooks/useAdminAuth'
+import { RecentActivityFeed } from '@/components/admin'
 
 type AdminStats = {
   pendingRequests: number
@@ -292,7 +293,10 @@ export default function AdminPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Recent Activity Feed */}
+          <RecentActivityFeed className="lg:col-span-1" limit={8} />
+          
           <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Documentation</h2>

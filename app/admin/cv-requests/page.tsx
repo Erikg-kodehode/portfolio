@@ -25,8 +25,16 @@ export default function AdminPage() {
   const router = useRouter()
   const { admin, loading: authLoading, error: authError } = useAdminAuth()
   const [requests, setRequests] = useState<CVRequest[]>([])
+  const [filteredRequests, setFilteredRequests] = useState<CVRequest[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  
+  // Search and filter state
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'PENDING' | 'APPROVED' | 'DENIED' | 'EXPIRED'>('ALL')
+  const [languageFilter, setLanguageFilter] = useState<'ALL' | 'EN' | 'NO'>('ALL')
+  const [sortBy, setSortBy] = useState<'date' | 'name' | 'status'>('date')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
   // Load requests when admin is available
   useEffect(() => {
@@ -35,6 +43,65 @@ export default function AdminPage() {
       fetchRequests();
     }
   }, [admin])
+
+  // Filter and search effect
+  useEffect(() => {
+    let filtered = [...requests];
+
+    // Apply search filter
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(
+        request =>
+          request.name.toLowerCase().includes(term) ||
+          request.email.toLowerCase().includes(term) ||
+          (request.company && request.company.toLowerCase().includes(term)) ||
+          request.purpose.toLowerCase().includes(term)
+      );
+    }
+
+    // Apply status filter
+    if (statusFilter !== 'ALL') {
+      filtered = filtered.filter(request => request.status === statusFilter);
+    }
+
+    // Apply language filter
+    if (languageFilter !== 'ALL') {
+      filtered = filtered.filter(request => {
+        const lang = detectRequestLanguage(request);
+        return languageFilter === 'EN' ? lang === 'en' : lang === 'no';
+      });
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      let aValue, bValue;
+      
+      switch (sortBy) {
+        case 'name':
+          aValue = a.name;
+          bValue = b.name;
+          break;
+        case 'status':
+          aValue = a.status;
+          bValue = b.status;
+          break;
+        case 'date':
+        default:
+          aValue = new Date(a.createdAt).getTime();
+          bValue = new Date(b.createdAt).getTime();
+          break;
+      }
+
+      if (sortOrder === 'asc') {
+        return aValue > bValue ? 1 : -1;
+      } else {
+        return aValue < bValue ? 1 : -1;
+      }
+    });
+
+    setFilteredRequests(filtered);
+  }, [requests, searchTerm, statusFilter, languageFilter, sortBy, sortOrder])
 
   async function fetchRequests() {
     try {
@@ -422,9 +489,88 @@ export default function AdminPage() {
       <AdminHeader title="CV Requests" />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Actions Bar */}
-        <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-6 mb-8">
+        {/* Search and Filter Bar */}
+        <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+            {/* Search Input */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Search
+              </label>
+              <input
+                type="text"
+                placeholder="Search by name, email, company, or purpose..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white/70 dark:bg-gray-900/70 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+            
+            {/* Status Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Status
+              </label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as any)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white/70 dark:bg-gray-900/70 text-gray-900 dark:text-gray-100"
+              >
+                <option value="ALL">All Status</option>
+                <option value="PENDING">Pending</option>
+                <option value="APPROVED">Approved</option>
+                <option value="DENIED">Denied</option>
+                <option value="EXPIRED">Expired</option>
+              </select>
+            </div>
+            
+            {/* Language Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Language
+              </label>
+              <select
+                value={languageFilter}
+                onChange={(e) => setLanguageFilter(e.target.value as any)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white/70 dark:bg-gray-900/70 text-gray-900 dark:text-gray-100"
+              >
+                <option value="ALL">All Languages</option>
+                <option value="EN">English</option>
+                <option value="NO">Norwegian</option>
+              </select>
+            </div>
+          </div>
+          
+          {/* Sort Controls and Actions */}
           <div className="flex flex-wrap justify-between items-center">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Sort by:
+                </label>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  className="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white/70 dark:bg-gray-900/70 text-sm"
+                >
+                  <option value="date">Date</option>
+                  <option value="name">Name</option>
+                  <option value="status">Status</option>
+                </select>
+                <button
+                  onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                  className="px-2 py-1 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+                  title={`Sort ${sortOrder === 'asc' ? 'descending' : 'ascending'}`}
+                >
+                  {sortOrder === 'asc' ? '↑' : '↓'}
+                </button>
+              </div>
+              
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                Showing {filteredRequests.length} of {requests.length} requests
+              </div>
+            </div>
+            
             <div className="flex gap-4">
               <button
                 onClick={() => handleBulkApprove()}
@@ -434,14 +580,15 @@ export default function AdminPage() {
                 <span>✓</span>
                 <span>Approve All Pending</span>
               </button>
+              
+              <button
+                onClick={() => fetchRequests()}
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors flex items-center gap-1"
+                title="Refresh list"
+              >
+                <span className="text-lg">↻</span> Refresh
+              </button>
             </div>
-            <button
-              onClick={() => fetchRequests()}
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors flex items-center gap-1"
-              title="Refresh list"
-            >
-              <span className="text-lg">↻</span> Refresh
-            </button>
           </div>
         </div>
 
@@ -468,7 +615,7 @@ export default function AdminPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {requests.map((request) => (
+                {filteredRequests.map((request) => (
                   <tr key={request.requestId} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 w-[120px] sticky left-0 bg-white/50 dark:bg-gray-800/50">
                       <div>{format(new Date(request.createdAt), 'MMM d, yyyy')}</div>
