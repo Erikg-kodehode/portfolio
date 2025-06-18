@@ -92,11 +92,13 @@ export default function Navigation({ className = '' }: NavigationProps) {
   return (
     <header 
       key={isEnglish ? 'en' : 'no'}
-      className={`fixed top-4 left-0 right-0 z-50 
-        mx-auto max-w-7xl px-4 sm:px-6 lg:px-8
+      className={`fixed top-0 left-0 right-0 z-50 
+        bg-white/5 dark:bg-slate-900/5 backdrop-blur-sm
+        py-4 px-4 sm:px-6 lg:px-8
         transform-gpu transition-all duration-300 ease-in-out
         ${className}`}
       role="banner"
+      style={{ height: '88px' }} // Fixed height for consistent spacing
     >
       <nav className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-theme rounded-2xl px-6 py-4 flex justify-between items-center">
         <Link 

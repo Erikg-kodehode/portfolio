@@ -52,26 +52,103 @@
     position: relative;
     overflow-y: scroll;
     overflow-x: hidden;
-    /* Firefox-specific optimizations */
-    scroll-behavior: auto; /* Override smooth scrolling for Firefox */
-    will-change: auto; /* Reduce layer creation */
-    transform: translateZ(0); /* Force hardware acceleration only when needed */
+    /* Improved header spacing */
+    padding-top: 100px; /* Ensure content doesn't overlap with fixed header */
   }
   
-  /* Firefox-specific performance optimizations */
+  /* Aggressive Firefox performance optimizations */
   @-moz-document url-prefix() {
     body {
-      transition: none; /* Disable transitions in Firefox for better performance */
-    }
-    
-    .interactive {
-      transition: opacity 200ms ease-in-out; /* Simplified transitions for Firefox */
-    }
-    
-    .animate-fade-in {
-      animation: none; /* Disable complex animations in Firefox */
-      opacity: 1;
+      /* Disable all transitions and animations in Firefox */
+      transition: none !important;
+      animation: none !important;
+      scroll-behavior: auto !important;
+      /* Optimize rendering */
+      will-change: auto;
       transform: none;
+      backface-visibility: hidden;
+      perspective: 1000px;
+    }
+    
+    /* Disable all transitions for interactive elements in Firefox */
+    .interactive,
+    .interactive *,
+    .transition-all,
+    .transition-colors,
+    .transition-transform,
+    .transition-opacity {
+      transition: none !important;
+      animation: none !important;
+      transform: none !important;
+    }
+    
+    /* Simplify hover effects for Firefox */
+    .interactive:hover {
+      transition: none !important;
+    }
+    
+    /* Disable complex animations in Firefox */
+    .animate-fade-in,
+    .animate-pulse,
+    .animate-spin,
+    .animate-bounce {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    
+    /* Optimize background gradients for Firefox */
+    .bg-gradient-to-br,
+    .bg-gradient-to-r,
+    .bg-gradient-to-tr {
+      background: var(--tw-gradient-from) !important;
+    }
+    
+    /* Disable backdrop filters for Firefox (performance killer) */
+    .backdrop-blur-sm,
+    .backdrop-blur-md,
+    .backdrop-blur-lg {
+      backdrop-filter: none !important;
+      background-color: rgba(255, 255, 255, 0.95) !important;
+    }
+    
+    .dark .backdrop-blur-sm,
+    .dark .backdrop-blur-md,
+    .dark .backdrop-blur-lg {
+      background-color: rgba(30, 41, 59, 0.95) !important;
+    }
+    
+    /* Additional Firefox optimizations */
+    * {
+      transform: translateZ(0) !important; /* Force hardware acceleration */
+    }
+    
+    /* Disable expensive CSS properties in Firefox */
+    .shadow-theme,
+    .shadow-md,
+    .shadow-lg,
+    .shadow-xl {
+      box-shadow: none !important;
+      border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    /* Simplify transforms in Firefox */
+    .transform,
+    .transform-gpu {
+      transform: none !important;
+    }
+    
+    /* Disable hover effects that cause repaints */
+    .hover\:scale-110:hover,
+    .hover\:scale-105:hover,
+    .hover\:-translate-y-1:hover {
+      transform: none !important;
+    }
+    
+    /* Optimize images for Firefox */
+    img {
+      image-rendering: auto !important;
+      will-change: auto !important;
     }
   }
 
