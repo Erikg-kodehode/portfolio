@@ -196,7 +196,7 @@ export default function AdminPage() {
           <div className="lg:col-span-2">
             <div className="bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-md backdrop-blur-sm p-6">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Quick Actions</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <Link 
                   href="/admin/cv-requests"
                   className="group flex items-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg
@@ -218,6 +218,38 @@ export default function AdminPage() {
                     </p>
                   </div>
                   <span className="text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                </Link>
+                
+                <Link 
+                  href="/admin/analytics"
+                  className="group flex items-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg
+                    hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-all duration-300
+                    border border-purple-200 dark:border-purple-800"
+                >
+                  <div className="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 text-2xl group-hover:scale-110 transition-transform">📊</div>
+                  <div className="ml-4 flex-grow">
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Analytics</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      View detailed insights & metrics
+                    </p>
+                  </div>
+                  <span className="text-purple-600 dark:text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                </Link>
+                
+                <Link 
+                  href="/admin/email-templates"
+                  className="group flex items-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg
+                    hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-all duration-300
+                    border border-emerald-200 dark:border-emerald-800"
+                >
+                  <div className="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 text-2xl group-hover:scale-110 transition-transform">📧</div>
+                  <div className="ml-4 flex-grow">
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Email Templates</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Manage email templates
+                    </p>
+                  </div>
+                  <span className="text-emerald-600 dark:text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                 </Link>
               </div>
             </div>
