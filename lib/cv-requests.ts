@@ -138,18 +138,35 @@ export async function updateCVRequestStatus(
         ? process.env.CV_URL_EN
         : process.env.CV_URL_NO;
 
+      console.log('🔍 [CV-APPROVAL] Checking CV URL:', { cvUrl, isEnglish });
+
       if (!cvUrl) {
-        throw new Error('CV URL not found in environment variables');
+        throw new Error(`CV URL not found in environment variables. CV_URL_EN: ${process.env.CV_URL_EN}, CV_URL_NO: ${process.env.CV_URL_NO}`);
       }
 
+      if (cvUrl.includes('[your-cv-url')) {
+        throw new Error('CV URL contains placeholder value. Please update environment variables with actual CV URLs.');
+      }
+
+      console.log('📧 [CV-APPROVAL] Sending approval email to:', updatedRequest.email);
       await sendCVApprovalEmail({
         name: updatedRequest.name,
         email: updatedRequest.email,
         cvUrl,
         isEnglish
       });
+      console.log('✅ [CV-APPROVAL] Email sent successfully');
     } catch (error) {
-      console.error('Failed to send CV approval email:', error);
+      console.error('❌ [CV-APPROVAL] Failed to send CV approval email:', error);
+      // Log the error to database
+      await prisma.systemLog.create({
+        data: {
+          level: 'error',
+          message: 'Failed to send CV approval email',
+          details: error instanceof Error ? error.message : 'Unknown error',
+          source: 'cv-approval-email'
+        }
+      });
       // Don't throw the error - we don't want to rollback the status update
       // just because the email failed to send
     }
