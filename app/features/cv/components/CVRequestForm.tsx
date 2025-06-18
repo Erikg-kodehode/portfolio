@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { Input, Button } from '@/components/ui';
 import { FaUser, FaEnvelope, FaBuilding, FaClipboardList, FaPaperPlane, FaSpinner } from 'react-icons/fa';
@@ -25,6 +25,28 @@ export default function CVRequestForm({ isEnglish }: CVRequestFormProps) {
     error: undefined,
     data: undefined
   });
+
+  // Handle form abandonment tracking
+  const handleFormAbandonment = useCallback(() => {
+    if (formData.name || formData.email || formData.company || formData.purpose) {
+      navigator.sendBeacon('/api/log-abandonment', JSON.stringify({
+        name: formData.name,
+        email: formData.email,
+        time: new Date().toISOString(),
+        page: window.location.pathname
+      }));
+    }
+  }, [formData]);
+
+  // Set up form abandonment tracking (must be before any early returns)
+  useEffect(() => {
+    if (formState.status === 'idle') {
+      window.addEventListener('beforeunload', handleFormAbandonment);
+    }
+    return () => {
+      window.removeEventListener('beforeunload', handleFormAbandonment);
+    };
+  }, [formState.status, handleFormAbandonment]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -63,6 +85,7 @@ export default function CVRequestForm({ isEnglish }: CVRequestFormProps) {
     }
   };
 
+  // Early return AFTER all hooks
   if (formState.status === 'success') {
     return (
       <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 
@@ -78,26 +101,6 @@ export default function CVRequestForm({ isEnglish }: CVRequestFormProps) {
       </div>
     );
   }
-
-  useEffect(() => {
-    if (formState.status === 'idle') {
-      window.addEventListener('beforeunload', handleFormAbandonment);
-    }
-    return () => {
-      window.removeEventListener('beforeunload', handleFormAbandonment);
-    };
-  }, [formState.status]);
-
-  const handleFormAbandonment = () => {
-    if (formData.name || formData.email || formData.company || formData.purpose) {
-      navigator.sendBeacon('/api/log-abandonment', JSON.stringify({
-        name: formData.name,
-        email: formData.email,
-        time: new Date().toISOString(),
-        page: window.location.pathname
-      }));
-    }
-  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
