@@ -1,8 +1,8 @@
 import { Resend } from 'resend';
 import { prisma } from '@/lib/prisma';
 
-// Using verified custom domain for professional email delivery
-const SENDER_EMAIL = 'erik@fjordev.org';
+// Using verified custom subdomain for professional email delivery
+const SENDER_EMAIL = 'erik@send.fjordev.org';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'erik.gulliksen@gmail.com';
 
 // Initialize Resend client
