@@ -105,7 +105,18 @@ export async function sendCVApprovalEmail(config: CVApprovalEmailConfig) {
   const { name, email, cvUrl, isEnglish } = config;
   const startTime = Date.now();
   
+  // Enhanced logging before sending
+  console.log('🔍 [EMAIL-SERVICE] Attempting to send CV approval email:', {
+    to: email,
+    name,
+    cvUrl: cvUrl.substring(0, 50) + '...',
+    isEnglish,
+    resendApiKey: process.env.RESEND_API_KEY ? '✅ Set' : '❌ Missing'
+  });
+  
   try {
+    console.log('📤 [EMAIL-SERVICE] Sending CV approval email...');
+    
     const result = await resend.emails.send({
       from: 'Erik Gulliksen <onboarding@resend.dev>',
       to: email,
@@ -142,6 +153,8 @@ export async function sendCVApprovalEmail(config: CVApprovalEmailConfig) {
         </html>
       `,
     });
+    
+    console.log('✅ [EMAIL-SERVICE] Resend API response:', result);
     
     const deliveryTime = Date.now() - startTime;
     
