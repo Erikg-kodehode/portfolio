@@ -46,12 +46,33 @@
     from-gray-50/95 via-blue-50/90 to-white/95 
     dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 
     text-slate-800 dark:text-slate-100 
-    antialiased transition-all duration-300;
+    antialiased;
     min-height: 100vh;
     width: 100%;
     position: relative;
     overflow-y: scroll;
     overflow-x: hidden;
+    /* Firefox-specific optimizations */
+    scroll-behavior: auto; /* Override smooth scrolling for Firefox */
+    will-change: auto; /* Reduce layer creation */
+    transform: translateZ(0); /* Force hardware acceleration only when needed */
+  }
+  
+  /* Firefox-specific performance optimizations */
+  @-moz-document url-prefix() {
+    body {
+      transition: none; /* Disable transitions in Firefox for better performance */
+    }
+    
+    .interactive {
+      transition: opacity 200ms ease-in-out; /* Simplified transitions for Firefox */
+    }
+    
+    .animate-fade-in {
+      animation: none; /* Disable complex animations in Firefox */
+      opacity: 1;
+      transform: none;
+    }
   }
 
   #__next {

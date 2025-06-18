@@ -22,7 +22,16 @@ function detectBot(userAgent: string): boolean {
 }
 
 function detectLanguage(pathname: string): 'en' | 'no' {
-  return pathname.startsWith('/en') ? 'en' : 'no';
+  // Check if the path starts with /en/ or is exactly /en
+  if (pathname === '/en' || pathname.startsWith('/en/')) {
+    return 'en';
+  }
+  // Check if the path starts with /no/ or is exactly /no  
+  if (pathname === '/no' || pathname.startsWith('/no/')) {
+    return 'no';
+  }
+  // Default to 'no' for root and other paths (since default locale is 'no')
+  return 'no';
 }
 
 async function logPageVisit(data: PageVisitData) {
