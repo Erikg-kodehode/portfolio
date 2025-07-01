@@ -12,7 +12,11 @@ import { getLocaleFromPath } from "@/i18n";
 
 export const metadata: Metadata = {
   title: "Erik - Portfolio",
-  description: "Backend developer portfolio"
+  description: "Backend developer portfolio",
+  other: {
+    "google": "notranslate",
+    "format-detection": "translate=no"
+  }
 };
 
 function getLanguageFromPath(pathname: string): string {
